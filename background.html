@@ -2,12 +2,11 @@
 <head>
 <script>
 chrome.tabs.onSelectionChanged.addListener(
-    function(tabId, selectionInfo) {
-        //var elem = document.createElement('li');
-        //elem.innerHTML = '<i>'++'</i>';
-        //document.body.appendChild(elem);
-        //console.log('Now active tab: '+tabId);
-        window.localStorage.setItem('currentTab', tabId);
+    function(tabId, selectInfo) {
+        chrome.tabs.captureVisibleTab(null, null, function(dataUrl) {
+            window.localStorage.setItem(
+                'tabsense_capture_'+tabId+':'+selectInfo.windowId, dataUrl);
+        });
     }
 );
 </script>
