@@ -1,0 +1,15 @@
+<html>
+<head>
+<script>
+chrome.tabs.onSelectionChanged.addListener(
+    function(tabId, selectionInfo) {
+        //var elem = document.createElement('li');
+        //elem.innerHTML = '<i>'++'</i>';
+        //document.body.appendChild(elem);
+        //console.log('Now active tab: '+tabId);
+        window.localStorage.setItem('currentTab', tabId);
+    }
+);
+</script>
+</head>
+</html>

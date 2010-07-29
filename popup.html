@@ -1,0 +1,106 @@
+<html>
+<head>
+<style>
+body {
+  min-width:357px;
+  overflow-x:hidden;
+}
+
+img {
+  margin:5px;
+  border:2px solid black;
+  vertical-align:middle;
+  width:75px;
+  height:75px;
+}
+</style>
+
+<script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
+
+<script>
+$(document).ready(function(){
+        var curtab = window.localStorage.getItem('currentTab');
+        var elem = document.createElement('li');
+        elem.innerHTML = '<i> JQ CUR TAB'+curtab+'</i>';
+        document.body.appendChild(elem);
+
+        chrome.tabs.captureVisibleTab(null, null, function(dataUrl) {
+            var img = $('<img/>');
+            img.attr('src', dataUrl);
+            $('body').append(img);
+        });
+
+    
+});
+/*
+chrome.windows.getAll(null, 
+    function(windows) {
+
+
+
+        for(var i=0; i <windows.length; i++) {
+            var elem = document.createElement('ul');
+            elem.innerHTML = '<b>'+windows[i].id+'</b>';
+            document.body.appendChild(elem);
+
+            var tabs = chrome.tabs.getAllInWindow(windows[i].id,
+                function(tabs) {
+                    if(tabs) {
+                        for(var j=0; j < tabs.length; j++) {
+                            var elem = document.createElement('li');
+                            elem.innerHTML = '<i>'+tabs[j].windowId+':'+tabs[j].id+']'+
+                                            tabs[j].title+'</i>';
+
+                            document.body.appendChild(elem);
+                        }
+                    } else {
+                        var elem = document.createElement('li');
+                        elem.innerHTML = '<i>undefined</i>';
+                        document.body.appendChild(elem);
+                    }
+                }
+            );
+        }
+    }
+);
+*/
+/*
+var req = new XMLHttpRequest();
+req.open(
+    "GET",
+    "http://api.flickr.com/services/rest/?" +
+        "method=flickr.photos.search&" +
+        "api_key=90485e931f687a9b9c2a66bf58a3861a&" +
+        "text=hello%20world&" +
+        "safe_search=1&" +  // 1 is "safe"
+        "content_type=1&" +  // 1 is "photos only"
+        "sort=relevance&" +  // another good one is "interestingness-desc"
+        "per_page=20",
+    true);
+req.onload = showPhotos;
+req.send(null);
+
+function showPhotos() {
+  var photos = req.responseXML.getElementsByTagName("photo");
+
+  for (var i = 0, photo; photo = photos[i]; i++) {
+    var img = document.createElement("image");
+    img.src = constructImageURL(photo);
+    document.body.appendChild(img);
+  }
+}
+
+// See: http://www.flickr.com/services/api/misc.urls.html
+function constructImageURL(photo) {
+  return "http://farm" + photo.getAttribute("farm") +
+      ".static.flickr.com/" + photo.getAttribute("server") +
+      "/" + photo.getAttribute("id") +
+      "_" + photo.getAttribute("secret") +
+      "_s.jpg";
+}
+*/
+</script>
+</head>
+<body>
+</body>
+</html>
