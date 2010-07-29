@@ -21,9 +21,6 @@ img {
 $(document).ready(function(){
     chrome.windows.getAll(null, 
         function(windows) {
-            var emptytab = $('<img/>');
-            emptytab.attr('src', chrome.extension.getURL(
-                'images/emptytab.png'));
 
             var wl = windows.length;
             for(var i=0; i < wl; i++) {
@@ -34,15 +31,42 @@ $(document).ready(function(){
                             var tab = tabs[j];
                             var wid = tab.windowId
                             var tid = tab.id;
+
+                            var mtab = $('<div></div>').attr('class','mtab');
+
                             var dataUrl = window.localStorage.getItem(
                                 'tabsense_capture_'+tid+':'+wid);
                             if(dataUrl) {
                                 var img = $('<img/>');
-                                img.attr('src', dataUrl);
-                                $('body').append(img);
+                                img.attr('src', dataUrl)
+                                    .attr('class', 'preview');
                             } else {
-                                $('body').append(emptytab);
+                                var img = $('<img/>');
+                                img.attr('src', chrome.extension.getURL(
+                                    'images/emptytab.png'))
+                                    .attr('class','preview');
                             }
+                            mtab.append(img);
+
+                            if(tab.favIconUrl) {
+                                var favicon = $('<img/>');
+                                favicon.attr('src', tab.favIconUrl)
+                                            .attr('class','favicon')
+                                            .width('24px')
+                                            .height('24px');
+                                mtab.append(favicon);
+                            }
+
+                            $('body').append(mtab);
+
+                            $('.mtab .favicon').css({
+                                'float' : 'top'
+                            });
+                            $('.mtab .preview').css({
+                            });
+                            $('.mtab').css({
+                                'float' : 'top'
+                            });
                         }
                     }
                 );
