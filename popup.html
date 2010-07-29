@@ -19,25 +19,6 @@ img {
 
 <script>
 $(document).ready(function(){
-    /*
-    var curtab = window.localStorage.getItem('currentTab');
-    var curwin = window.localStorage.getItem('currentWindow');
-
-    var elem = document.createElement('li');
-    elem.innerHTML = '<i> JQ CUR TAB '+curtab+'</i>';
-    document.body.appendChild(elem);
-
-    var elem = document.createElement('li');
-    elem.innerHTML = '<i> JQ CUR WINDOW '+curwin+'</i>';
-    document.body.appendChild(elem);
-
-    chrome.tabs.captureVisibleTab(null, null, function(dataUrl) {
-        var img = $('<img/>');
-        img.attr('src', dataUrl);
-        $('body').append(img);
-    });
-    */
-
     chrome.windows.getAll(null, 
         function(windows) {
             var emptytab = $('<img/>');
@@ -70,38 +51,6 @@ $(document).ready(function(){
     );
     
 });
-/*
-chrome.windows.getAll(null, 
-    function(windows) {
-
-
-
-        for(var i=0; i <windows.length; i++) {
-            var elem = document.createElement('ul');
-            elem.innerHTML = '<b>'+windows[i].id+'</b>';
-            document.body.appendChild(elem);
-
-            var tabs = chrome.tabs.getAllInWindow(windows[i].id,
-                function(tabs) {
-                    if(tabs) {
-                        for(var j=0; j < tabs.length; j++) {
-                            var elem = document.createElement('li');
-                            elem.innerHTML = '<i>'+tabs[j].windowId+':'+tabs[j].id+']'+
-                                            tabs[j].title+'</i>';
-
-                            document.body.appendChild(elem);
-                        }
-                    } else {
-                        var elem = document.createElement('li');
-                        elem.innerHTML = '<i>undefined</i>';
-                        document.body.appendChild(elem);
-                    }
-                }
-            );
-        }
-    }
-);
-*/
 </script>
 </head>
 <body>
