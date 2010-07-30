@@ -28,6 +28,14 @@ function processTabs(tabs) {
 
         windowMap[wid].append(mtab);
     }
+    $('.mtab:even',windowMap[wid]).css('background','#eee');
+    $('.mtab:odd',windowMap[wid]).css('background','#ddd');
+    $('.mtab', windowMap[wid]).click(function(ev) {
+        var match = /tab_(\d+)/.exec($(this).attr('id'));
+        if(match && match[1]) {
+            chrome.tabs.update(parseInt(match[1]), {selected : true});
+        }
+    });
 }
 
 var windowMap = [];
