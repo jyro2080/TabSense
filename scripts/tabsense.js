@@ -58,7 +58,7 @@ function layout_windows() {
     for(var i=0; i < doneWindows.length; i++) {
         total_tabs += doneWindows[i].numtabs;
     }
-    tabs_per_col = total_tabs/NUMCOL;
+    tabs_per_col = parseInt(total_tabs/NUMCOL);
     doneWindows.sort(function(a,b) { return (a.numtabs-b.numtabs); });
 
     columns = new Array(NUMCOL);
@@ -72,6 +72,7 @@ function layout_windows() {
                 i == (NUMCOL-1))
             {
                 columns[i].push(doneWindows[j].wid);
+                columntabs += doneWindows[j].numtabs;
                 doneWindows[j] = null;
             }
         }
