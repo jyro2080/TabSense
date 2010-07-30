@@ -58,4 +58,6 @@ $(document).ready(function(){
         }
     );
     
+    $('#creator').css('top',($(document).height()-50)+'px');
+    $('#creator').css('left',($(document).width()-140)+'px');
 });
