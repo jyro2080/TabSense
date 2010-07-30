@@ -37,6 +37,7 @@ function processTabs(tabs) {
             chrome.tabs.update(parseInt(match[1]), {selected : true});
         }
     });
+
     $('.mtab > div', windowMap[wid]).css({'width': (winw-70)+'px'})
 
     $('.mtab:last', windowMap[wid]).css({
@@ -68,13 +69,23 @@ $(document).ready(function(){
 
                 var mwin = $('<div></div>')
                             .attr('class','mwin')
-                            .text(''+windows[i].id)
                             .css({
                                 'width': winw+'px',
                                 'left' : ((i % NUMCOL) * winw + 
                                         ((i % NUMCOL)+0.5) * HMARGIN)+'px',
                                 'top' : CEILING+'px'
                             });
+                var wtitle = $('<div></div>')
+                        .attr('class','wtitle')
+                        .css({
+                            'height':'40px',
+                            '-webkit-border-top-left-radius':'15px',
+                            '-webkit-border-top-right-radius':'15px',
+                            'text-align':'center'
+                        });
+                wtitle.text('Name this window');
+                mwin.append(wtitle);
+
 
                 windowMap[windows[i].id] = mwin; 
                 windowList[i] = mwin;
