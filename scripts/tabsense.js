@@ -6,7 +6,8 @@ function processTabs(tabs) {
         var wid = tab.windowId
         var tid = tab.id;
 
-        var mtab = $('<div></div>').attr('class','mtab');
+        var mtab = $('<div></div>').attr('class','mtab')
+                    .attr('id','tab_'+tid);
 
         var favicon = $('<img/>');
         if(tab.favIconUrl) {
