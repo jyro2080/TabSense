@@ -2,16 +2,24 @@
 <head>
 <style>
 body {
-  min-width:357px;
-  overflow-x:hidden;
 }
 
+.mtab .favicon {
+    position : absolute;
+}
+.mtab {
+    float : left;
+}
+.mwin {
+    float : top;
+    padding : 10px;
+    margin : 5px;
+    border : solid 1px #000;
+}
 img {
-  margin:5px;
-  border:2px solid black;
-  vertical-align:middle;
-  width:75px;
-  height:75px;
+    margin : 4px;
+    width:80px;
+    height:100px;
 }
 </style>
 
@@ -24,6 +32,9 @@ $(document).ready(function(){
 
             var wl = windows.length;
             for(var i=0; i < wl; i++) {
+
+                var mwin = $('<div></div>').attr('class','mwin');
+
                 var tabs = chrome.tabs.getAllInWindow(windows[i].id,
                     function(tabs) {
                         var tl = tabs.length;
@@ -57,17 +68,9 @@ $(document).ready(function(){
                                 mtab.append(favicon);
                             }
 
-                            $('body').append(mtab);
-
-                            $('.mtab .favicon').css({
-                                'float' : 'top'
-                            });
-                            $('.mtab .preview').css({
-                            });
-                            $('.mtab').css({
-                                'float' : 'top'
-                            });
+                            mwin.append(mtab);
                         }
+                        $('body').append(mwin);
                     }
                 );
             }
