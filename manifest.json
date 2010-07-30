@@ -1,10 +1,8 @@
 {
   "name": "TabSense",
   "version": "1.0",
-  "description": "Making sense of tabs",
-  "browser_action": {
-    "default_icon": "images/icon.png"
-  },
+
+  "description": "Making sense of Tabs",
   "chrome_url_overrides": {
     "newtab" : "newtab.html"
   },
