@@ -1,9 +1,10 @@
 
 function processTabs(tabs) {
     var tl = tabs.length;
+    var wid;
     for(var j=0; j < tl; j++) {
         var tab = tabs[j];
-        var wid = tab.windowId
+        wid = tab.windowId
         var tid = tab.id;
 
         var mtab = $('<div></div>').attr('class','mtab')
@@ -44,13 +45,58 @@ function processTabs(tabs) {
         '-webkit-border-bottom-left-radius':'15px',
         '-webkit-border-bottom-right-radius':'15px'
     });
+
+    doneWindows.push({wid:wid,numtabs:tl});
+
+    if(doneWindows.length == windowList.length) {
+        layout_windows();
+    }
+}
+
+function layout_windows() {
+    var total_tabs = 0;
+    for(var i=0; i < doneWindows.length; i++) {
+        total_tabs += doneWindows[i].numtabs;
+    }
+    tabs_per_col = total_tabs/NUMCOL;
+    doneWindows.sort(function(a,b) { return (a.numtabs-b.numtabs); });
+
+    columns = new Array(NUMCOL);
+    for(var i=0; i < NUMCOL; i++) {
+        columns[i] = [];
+        columntabs = 0;
+        for(j=0; j < doneWindows.length; j++) {
+            if(!doneWindows[j]) continue;
+
+            if(doneWindows[j].numtabs + columntabs <= tabs_per_col ||
+                i == (NUMCOL-1))
+            {
+                columns[i].push(doneWindows[j].wid);
+                doneWindows[j] = null;
+            }
+        }
+    }
+    columns.sort(function(a,b) { return b.length-a.length; });
+    for(var i=0; i < NUMCOL; i++) {
+        var ceiling = CEILING;
+        for(var j=0; j < columns[i].length; j++) {
+            var wid = columns[i][j];
+            var mwin = windowMap[wid];
+            mwin.css({
+                'left' : (i * winw + (i+0.5) * HMARGIN)+'px',
+                'top' : ceiling+'px'
+            });
+            ceiling += mwin.height() + VMARGIN;
+        }
+    }
 }
 
 var windowMap = [];
 var windowList = [];
+var doneWindows = [];
 var dw, dh, winw;
-var HMARGIN = 30;
-var VMARGIN = 5;
+var HMARGIN = 20;
+var VMARGIN = 20;
 var NUMCOL = 3;
 var CEILING = 20;
 
@@ -118,13 +164,13 @@ $(document).ready(function(){
 
                 var mwin = $('<div></div>')
                             .attr('class','mwin')
-                            .attr('id', windows[i].id)
-                            .css({
+                            .attr('id', windows[i].id);
+                            /*.css({
                                 'width': winw+'px',
                                 'left' : ((i % NUMCOL) * winw + 
                                         ((i % NUMCOL)+0.5) * HMARGIN)+'px',
                                 'top' : CEILING+'px'
-                            });
+                            });*/
                 var title_str = window.localStorage.getItem(
                                     'window_title_'+windows[i].id);
                 if(title_str) {
