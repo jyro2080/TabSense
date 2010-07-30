@@ -1,6 +1,6 @@
 {
   "name": "TabSense",
-  "version": "1.0",
+  "version": "1.0.1",
 
   "description": "Making sense of Tabs",
   "chrome_url_overrides": {
