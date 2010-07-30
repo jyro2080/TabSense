@@ -37,11 +37,28 @@ function processTabs(tabs) {
             chrome.tabs.update(parseInt(match[1]), {selected : true});
         }
     });
+    $('.mtab > div', windowMap[wid]).css({'width': (winw-70)+'px'})
+
+    $('.mtab:last', windowMap[wid]).css({
+        '-webkit-border-bottom-left-radius':'15px',
+        '-webkit-border-bottom-right-radius':'15px'
+    });
 }
 
 var windowMap = [];
+var windowList = [];
+var dw, dh, winw;
+var HMARGIN = 30;
+var VMARGIN = 5;
+var NUMCOL = 3;
+var CEILING = 20;
 
 $(document).ready(function(){
+
+    dw = $(document).width();
+    dh = $(document).height();
+
+    winw = parseInt((dw/NUMCOL) - HMARGIN);
 
     chrome.windows.getAll(null, 
         function(windows) {
@@ -49,16 +66,27 @@ $(document).ready(function(){
             var wl = windows.length;
             for(var i=0; i < wl; i++) {
 
-                var mwin = $('<div></div>').attr('class','mwin')
-                            .text(''+windows[i].id);
+                var mwin = $('<div></div>')
+                            .attr('class','mwin')
+                            .text(''+windows[i].id)
+                            .css({
+                                'width': winw+'px',
+                                'left' : ((i % NUMCOL) * winw + 
+                                        ((i % NUMCOL)+0.5) * HMARGIN)+'px',
+                                'top' : CEILING+'px'
+                            });
+
                 windowMap[windows[i].id] = mwin; 
+                windowList[i] = mwin;
+
                 $('body').append(mwin);
 
                 chrome.tabs.getAllInWindow(windows[i].id, processTabs);
             }
         }
     );
+
     
-    $('#creator').css('top',($(document).height()-50)+'px');
-    $('#creator').css('left',($(document).width()-140)+'px');
+    $('#creator').css('top',(dh-50)+'px');
+    $('#creator').css('left',(dw-140)+'px');
 });
