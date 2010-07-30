@@ -2,13 +2,20 @@
 <head>
 <style>
 body {
+    width : 900px;
 }
 
-.mtab .favicon {
-    position : absolute;
+.mtab > * {
+    float : left;
+}
+.mtab img {
+    margin : 8px;
 }
 .mtab {
-    float : left;
+    float : top;
+    height : 35px;
+    padding : 5px;
+    margin : 4px;
 }
 .mwin {
     float : top;
@@ -16,70 +23,13 @@ body {
     margin : 5px;
     border : solid 1px #000;
 }
-img {
-    margin : 4px;
-    width:80px;
-    height:100px;
-}
 </style>
 
 <script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="scripts/tabsense.js"></script>
 
-<script>
-$(document).ready(function(){
-    chrome.windows.getAll(null, 
-        function(windows) {
-
-            var wl = windows.length;
-            for(var i=0; i < wl; i++) {
-
-                var mwin = $('<div></div>').attr('class','mwin');
-
-                var tabs = chrome.tabs.getAllInWindow(windows[i].id,
-                    function(tabs) {
-                        var tl = tabs.length;
-                        for(var j=0; j < tl; j++) {
-                            var tab = tabs[j];
-                            var wid = tab.windowId
-                            var tid = tab.id;
-
-                            var mtab = $('<div></div>').attr('class','mtab');
-
-                            var dataUrl = window.localStorage.getItem(
-                                'tabsense_capture_'+tid+':'+wid);
-                            if(dataUrl) {
-                                var img = $('<img/>');
-                                img.attr('src', dataUrl)
-                                    .attr('class', 'preview');
-                            } else {
-                                var img = $('<img/>');
-                                img.attr('src', chrome.extension.getURL(
-                                    'images/emptytab.png'))
-                                    .attr('class','preview');
-                            }
-                            mtab.append(img);
-
-                            if(tab.favIconUrl) {
-                                var favicon = $('<img/>');
-                                favicon.attr('src', tab.favIconUrl)
-                                            .attr('class','favicon')
-                                            .width('24px')
-                                            .height('24px');
-                                mtab.append(favicon);
-                            }
-
-                            mwin.append(mtab);
-                        }
-                        $('body').append(mwin);
-                    }
-                );
-            }
-        }
-    );
-    
-});
-</script>
 </head>
 <body>
+<div id="log"></div>
 </body>
 </html>
