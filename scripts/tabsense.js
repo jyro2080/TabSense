@@ -104,6 +104,8 @@ $(document).ready(function(){
             var p = $(this).parent().parent();
             $(this).parent().remove();    
             var wtitle = create_window_title($(this).val());
+            window.localStorage.setItem(
+                'window_title_'+p.attr('id'), $(this).val());
             p.prepend(wtitle);
         });
     }
@@ -123,7 +125,13 @@ $(document).ready(function(){
                                         ((i % NUMCOL)+0.5) * HMARGIN)+'px',
                                 'top' : CEILING+'px'
                             });
-                var wtitle = create_window_title('Name this window');
+                var title_str = window.localStorage.getItem(
+                                    'window_title_'+windows[i].id);
+                if(title_str) {
+                    var wtitle = create_window_title(title_str);
+                } else {
+                    var wtitle = create_window_title("Name this window");
+                }
                 mwin.append(wtitle);
 
                 windowMap[windows[i].id] = mwin; 
