@@ -61,6 +61,53 @@ $(document).ready(function(){
 
     winw = parseInt((dw/NUMCOL) - HMARGIN);
 
+    function create_window_title(title) {
+        return $('<div></div>')
+            .attr('class','wtitle')
+            .text(title)
+            .css({
+                'color' : '#eee',
+                'height':'30px',
+                'padding-top' : '10px',
+                '-webkit-border-top-left-radius':'15px',
+                '-webkit-border-top-right-radius':'15px',
+                'text-align':'center'
+            })
+            .click(title_modifier);
+    }
+
+    function create_window_title_input() {
+        var inp = $('<input></input>')
+            .css({
+                'height':'20px',
+                'margin-top' : '5px',
+                'text-align':'center'
+            });
+        var inpw = $('<div></div>').css({
+                'height':'30px',
+                '-webkit-border-top-left-radius':'15px',
+                '-webkit-border-top-right-radius':'15px',
+                'text-align':'center'
+            });
+        inpw.append(inp);
+        return { wrapper:inpw, inp:inp };
+    }
+
+    function title_modifier() {
+        var p = $(this).parent();
+        $(this).remove();    
+
+        var ninput = create_window_title_input();
+        p.prepend(ninput.wrapper);
+        ninput.inp.focus();
+        ninput.inp.blur(function() {
+            var p = $(this).parent().parent();
+            $(this).parent().remove();    
+            var wtitle = create_window_title($(this).val());
+            p.prepend(wtitle);
+        });
+    }
+
     chrome.windows.getAll(null, 
         function(windows) {
 
@@ -69,23 +116,15 @@ $(document).ready(function(){
 
                 var mwin = $('<div></div>')
                             .attr('class','mwin')
+                            .attr('id', windows[i].id)
                             .css({
                                 'width': winw+'px',
                                 'left' : ((i % NUMCOL) * winw + 
                                         ((i % NUMCOL)+0.5) * HMARGIN)+'px',
                                 'top' : CEILING+'px'
                             });
-                var wtitle = $('<div></div>')
-                        .attr('class','wtitle')
-                        .css({
-                            'height':'40px',
-                            '-webkit-border-top-left-radius':'15px',
-                            '-webkit-border-top-right-radius':'15px',
-                            'text-align':'center'
-                        });
-                wtitle.text('Name this window');
+                var wtitle = create_window_title('Name this window');
                 mwin.append(wtitle);
-
 
                 windowMap[windows[i].id] = mwin; 
                 windowList[i] = mwin;
