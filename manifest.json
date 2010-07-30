@@ -6,7 +6,7 @@
     "default_icon": "images/icon.png"
   },
   "chrome_url_overrides": {
-    "newtab" : "popup.html"
+    "newtab" : "newtab.html"
   },
   "background_page" : "background.html",
   "permissions": [
