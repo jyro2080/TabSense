@@ -8,14 +8,19 @@ function processTabs(tabs) {
 
         var mtab = $('<div></div>').attr('class','mtab');
 
+        var favicon = $('<img/>');
         if(tab.favIconUrl) {
-            var favicon = $('<img/>');
             favicon.attr('src', tab.favIconUrl)
                         .attr('class','favicon')
                         .width('24px')
                         .height('24px');
-            mtab.append(favicon);
+        } else {
+            favicon.attr('src', chrome.extension.getURL('images/icon.png'))
+                        .attr('class','favicon')
+                        .width('24px')
+                        .height('24px');
         }
+            mtab.append(favicon);
 
         tabtitle = $('<div></div>')
                 .attr('class','title').text(tab.title);
