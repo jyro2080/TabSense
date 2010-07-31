@@ -1,0 +1,3 @@
+#!/bin/bash
+
+zip tabsense.zip src/* src/{scripts,images}/*
