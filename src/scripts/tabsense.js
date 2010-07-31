@@ -166,12 +166,6 @@ $(document).ready(function(){
                 var mwin = $('<div></div>')
                             .attr('class','mwin')
                             .attr('id', windows[i].id);
-                            /*.css({
-                                'width': winw+'px',
-                                'left' : ((i % NUMCOL) * winw + 
-                                        ((i % NUMCOL)+0.5) * HMARGIN)+'px',
-                                'top' : CEILING+'px'
-                            });*/
                 var title_str = window.localStorage.getItem(
                                     'window_title_'+windows[i].id);
                 if(title_str) {
