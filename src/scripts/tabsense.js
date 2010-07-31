@@ -7,6 +7,8 @@ function processTabs(tabs) {
         wid = tab.windowId
         var tid = tab.id;
 
+        tabMap[tid] = tab;
+
         var mtab = $('<div></div>').attr('class','mtab')
                     .attr('id','tab_'+tid);
 
@@ -24,6 +26,34 @@ function processTabs(tabs) {
         }
         mtab.append(favicon);
 
+        var staricon = $('<img/>');
+        staricon.attr('src', chrome.extension.getURL('images/fav'+
+                    (Fav.is(tab.url) ? 'on':'off')+'.png'))
+                    .attr('class','star')
+                    .width('24px')
+                    .height('24px');
+        mtab.append(staricon);
+        staricon.hide();
+        staricon.click(function(){
+            var p = $(this).parent();
+            var match = /tab_(\d+)/.exec(p.attr('id'));
+            if(match && match[1]) {
+                var tab = tabMap[parseInt(match[1])];
+                if(Fav.is(tab.url)) {
+                    Fav.remove(tab.url);
+                    $(this).attr('src', 
+                        chrome.extension.getURL('images/favoff.png'));
+                } else {
+                    Fav.add(tab.url, tab.favIconUrl);
+                    $(this).attr('src', 
+                        chrome.extension.getURL('images/favon.png'));
+                }
+            } else {
+                alert('Error recognizing the tab');
+            }
+            return false;
+        });
+
         tabtitle = $('<div></div>')
                 .attr('class','title').text(tab.title);
         mtab.append(tabtitle);
@@ -39,7 +69,15 @@ function processTabs(tabs) {
         }
     });
 
-    $('.mtab > div', windowMap[wid]).css({'width': (winw-70)+'px'})
+    $('.mtab', windowMap[wid]).mouseenter(function(ev) {
+        $('.star', $(this)).show();
+    });
+    $('.mtab', windowMap[wid]).mouseleave(function(ev) {
+        $('.star', $(this)).hide();
+    });
+
+    $('.mtab', windowMap[wid]).css({'width': (winw-50)+'px'})
+    $('.mtab > div', windowMap[wid]).css({'width': (winw-140)+'px'})
 
     $('.mtab:last', windowMap[wid]).css({
         '-webkit-border-bottom-left-radius':'15px',
@@ -92,6 +130,7 @@ function layout_windows() {
     }
 }
 
+var tabMap = [];
 var windowMap = [];
 var windowList = [];
 var doneWindows = [];
