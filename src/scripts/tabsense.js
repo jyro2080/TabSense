@@ -49,6 +49,7 @@ function processTabs(tabs) {
                     $(this).attr('src', 
                         chrome.extension.getURL('images/favon.png'));
                 }
+                refresh_favorites();
             } else {
                 alert('Error recognizing the tab');
             }
@@ -139,7 +140,7 @@ var dw, dh, winw;
 var HMARGIN = 20;
 var VMARGIN = 20;
 var NUMCOL = 3;
-var CEILING = 20;
+var CEILING = 50;
 
 $(document).ready(function(){
 
@@ -224,8 +225,27 @@ $(document).ready(function(){
             }
         }
     );
-
+    refresh_favorites();
     
     $('#creator').css('top',(dh-50)+'px');
     $('#creator').css('left',(dw-140)+'px');
 });
+
+function refresh_favorites()
+{
+    // Load favorite favicons
+    var favlist = Fav.list();
+    var fll = favlist.length;
+    var topbar = $('#topbar');
+    topbar.empty();
+    for(var i=0; i < fll; i++) {
+        if(favlist[i].favIconUrl) {
+            var img = $('<img/>').attr('src',favlist[i].favIconUrl)
+                                .width('24px')
+                                .height('24px');
+            var link = $('<a></a>').attr('href', favlist[i].url);
+            link.append(img);
+            topbar.append(link);
+        }
+    }
+}
