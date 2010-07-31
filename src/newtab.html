@@ -34,14 +34,31 @@ body {
     width : 100px;
     text-align : center;
 }
+#topbar {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    margin-top : 0px;
+    padding-top :0px;
+    height : 40px;
+    background-color : #ddd;
+    width : 100%;
+    -webkit-box-shadow : rgba(20,20,20,1) 1px 1px 5px;
+}
+#topbar img {
+    float : left;
+    margin : 8px;
+}
 </style>
 
 <script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="scripts/utils.js"></script>
 <script type="text/javascript" src="scripts/favorite.js"></script>
 <script type="text/javascript" src="scripts/tabsense.js"></script>
 
 </head>
 <body>
+<div id="topbar"></div>
 <div id="creator" 
     style="z-index:10;font-size:75%;font-style:italic;position:absolute">
     Created by:
