@@ -44,7 +44,8 @@ function processTabs(tabs) {
                     $(this).attr('src', 
                         chrome.extension.getURL('images/favoff.png'));
                 } else {
-                    Fav.add(tab.url, tab.favIconUrl);
+                    var fi = $(this).siblings('.favicon');
+                    Fav.add(tab.url, fi.attr('src'));
                     $(this).attr('src', 
                         chrome.extension.getURL('images/favon.png'));
                 }

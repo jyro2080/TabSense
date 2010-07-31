@@ -23,7 +23,7 @@ Fav.add = function(url, favIconUrl)
 {
     if(!Fav._cache) Fav._load();
     if(Fav.is(url)) return;
-    Fav._cache.push({url:url});
+    Fav._cache.push({url:url, favIconUrl:favIconUrl});
     Fav._save();
 }
 
@@ -50,6 +50,5 @@ Fav._load = function()
 Fav._save = function()
 {
     var favstr = JSON.stringify(Fav._cache);
-    console.info('save: '+favstr);
     window.localStorage.setItem('tabsense_favorites', favstr);
 }
