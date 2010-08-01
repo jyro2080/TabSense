@@ -8,6 +8,12 @@ chrome.tabs.onSelectionChanged.addListener(
             window.localStorage.setItem(
                 'tabsense_capture_'+tabId+':'+selectInfo.windowId, dataUrl);
         });
+chrome.browserAction.onClicked.addListener(
+    function(tab) {
+        chrome.tabs.create({url:
+            chrome.extension.getURL('newtab.html')});
+    }
+);
     }
 );
 */
