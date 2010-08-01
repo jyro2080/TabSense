@@ -1,8 +1,8 @@
 {
   "name": "TabSense",
-  "version": "1.1",
+  "version": "1.2",
 
-  "description": "Lost in million tabs? Use TabSense.",
+  "description": "Lost in million tabs? Use TabSense (Shift+Ctrl+T)",
   "background_page": "background.html",
   "browser_action":{
     "default_icon" : "images/icon48.png"
