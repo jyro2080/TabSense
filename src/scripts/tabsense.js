@@ -251,8 +251,8 @@ function refresh_favorites()
     // Load favorite favicons
     var favlist = Fav.list();
     var fll = favlist.length;
-    var topbar = $('#topbar');
-    topbar.empty();
+    var favbar = $('#topbar #favbar');
+    favbar.empty();
     for(var i=0; i < fll; i++) {
         if(favlist[i].favIconUrl) {
             var img = $('<img/>').attr('src',favlist[i].favIconUrl)
@@ -260,7 +260,7 @@ function refresh_favorites()
                                 .height('24px');
             var link = $('<a></a>').attr('href', favlist[i].url);
             link.append(img);
-            topbar.append(link);
+            favbar.append(link);
         }
     }
 }
