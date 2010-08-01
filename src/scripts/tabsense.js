@@ -151,14 +151,10 @@ $(document).ready(function(){
 
     function create_window_title(title) {
         return $('<div></div>')
-            .attr('class','wtitle')
             .text(title)
             .css({
                 'color' : '#eee',
-                'height':'30px',
-                'padding-top' : '10px',
-                '-webkit-border-top-left-radius':'15px',
-                '-webkit-border-top-right-radius':'15px',
+                'margin-top' : '5px',
                 'text-align':'center'
             })
             .click(title_modifier);
@@ -167,14 +163,16 @@ $(document).ready(function(){
     function create_window_title_input() {
         var inp = $('<input></input>')
             .css({
-                'height':'20px',
-                'margin-top' : '5px',
-                'text-align':'center'
+                'height':'25px',
+                'width':'300px',
+                'text-align':'center',
+                'color' : '#eee',
+                'background-color' : '#777'
             });
-        var inpw = $('<div></div>').css({
-                'height':'30px',
-                '-webkit-border-top-left-radius':'15px',
-                '-webkit-border-top-right-radius':'15px',
+        var inpw = $('<div></div>')
+            .css({
+                'margin-top' : '5px',
+                'height':'25px',
                 'text-align':'center'
             });
         inpw.append(inp);
@@ -183,17 +181,24 @@ $(document).ready(function(){
 
     function title_modifier() {
         var p = $(this).parent();
+        var oldtitle = $(this).text();
         $(this).remove();    
 
         var ninput = create_window_title_input();
-        p.prepend(ninput.wrapper);
+        p.append(ninput.wrapper);
+        ninput.inp.val(oldtitle);
         ninput.inp.focus();
         ninput.inp.blur(function() {
             var p = $(this).parent().parent();
             $(this).parent().remove();    
-            var wtitle = create_window_title($(this).val());
+            var newtitle = $(this).val();
+            if($.trim(newtitle) == '') {
+                newtitle = oldtitle;
+            }
+            var wtitle = create_window_title(newtitle);
+            var wid = p.parent().attr('id');
             window.localStorage.setItem(
-                'window_title_'+p.attr('id'), $(this).val());
+                'window_title_'+wid, newtitle);
             p.prepend(wtitle);
         });
     }
@@ -210,10 +215,20 @@ $(document).ready(function(){
                 var title_str = window.localStorage.getItem(
                                     'window_title_'+windows[i].id);
                 if(title_str) {
-                    var wtitle = create_window_title(title_str);
+                    var text = create_window_title(title_str);
                 } else {
-                    var wtitle = create_window_title("Name this window");
+                    var text = create_window_title("Name this window");
                 }
+                var wtitle = $('<div></div>')
+                    .attr('class','wtitle')
+                    .css({
+                        'color' : '#eee',
+                        'height':'30px',
+                        '-webkit-border-top-left-radius':'15px',
+                        '-webkit-border-top-right-radius':'15px',
+                        'text-align':'center'
+                    })
+                wtitle.append(text);
                 mwin.append(wtitle);
 
                 windowMap[windows[i].id] = mwin; 
