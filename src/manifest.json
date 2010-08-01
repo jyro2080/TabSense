@@ -2,7 +2,7 @@
   "name": "TabSense",
   "version": "1.1",
 
-  "description": "Making sense of Tabs",
+  "description": "Lost in million tabs? Use TabSense.",
   "background_page": "background.html",
   "browser_action":{
     "default_icon" : "images/icon48.png"
