@@ -19,7 +19,7 @@ function processTabs(tabs) {
                         .width('24px')
                         .height('24px');
         } else {
-            favicon.attr('src', chrome.extension.getURL('images/icon28x28.png'))
+            favicon.attr('src', chrome.extension.getURL('images/icon28.png'))
                         .attr('class','favicon')
                         .width('24px')
                         .height('24px');
