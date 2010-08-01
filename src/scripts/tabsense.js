@@ -62,8 +62,8 @@ function processTabs(tabs) {
 
         windowMap[wid].append(mtab);
     }
-    $('.mtab:even',windowMap[wid]).css('background','#eee');
-    $('.mtab:odd',windowMap[wid]).css('background','#ddd');
+    $('.mtab:even',windowMap[wid]).css('background','#eeeeee');
+    $('.mtab:odd',windowMap[wid]).css('background','#e0e0e0');
     $('.mtab', windowMap[wid]).click(function(ev) {
         var match = /tab_(\d+)/.exec($(this).attr('id'));
         if(match && match[1]) {
@@ -242,9 +242,62 @@ $(document).ready(function(){
     );
     refresh_favorites();
     
+    $('#topbar #search').focus(function() {
+        run_query('');
+    });
+    $('#topbar #search').blur(function() {
+        blur_all_tabs(false);
+    });
+
+    $('#topbar #search').keyup(function() {
+        run_query($(this).val());
+    });
+
     $('#creator').css('top',(dh-50)+'px');
     $('#creator').css('left',(dw-140)+'px');
 });
+
+function blur_all_tabs(yes)
+{
+    if(yes) {
+        even_color = '#f0f0f0';
+        odd_color = '#e2e2e2';
+        text_color = '#aaa';
+    } else {
+        even_color = '#eeeeee';
+        odd_color = '#e0e0e0';
+        text_color = '#000';
+    }
+    var wl = windowList.length;
+    for(var i=0; i < wl; i++) {
+        var win = windowList[i];
+        $('.mtab:even',win).css('background', even_color);
+        $('.mtab:odd',win).css('background', odd_color);
+        $('.mtab',win).css('color', text_color);
+    }
+}
+function run_query(query)
+{
+    blur_all_tabs(true);
+    if($.trim(query) != '') {
+        query = query.toLowerCase();
+        for (i in tabMap) {
+            var tabTitle = tabMap[i].title;
+            if(tabTitle && tabTitle.toLowerCase().indexOf(query) >= 0) {
+                console.log(tabTitle);
+                tab_selector = 'tab_'+tabMap[i].id;
+                console.log(tab_selector);
+                var wl = windowList.length;
+                for(var j=0; j < wl; j++) {
+                    $('#'+tab_selector, windowList[j]).css({
+                        'color':'#000'
+                    });
+                }
+            }
+        }
+    }
+
+}
 
 function refresh_favorites()
 {
