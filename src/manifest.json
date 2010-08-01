@@ -7,6 +7,11 @@
   "browser_action":{
     "default_icon" : "images/icon48.png"
   },
+  "content_scripts":[{
+    "matches" : ["http://*/*","https://*/*","ftp://*/*","file://*/*"],
+    "js" : ["scripts/register_key_shortcut.js"],
+    "run_at" : "document_start"
+  }],
   "permissions": [
     "tabs"
   ]
