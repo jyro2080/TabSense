@@ -3,8 +3,6 @@
   "version": "1.1",
 
   "description": "Making sense of Tabs",
-  "chrome_url_overrides": {
-    "newtab" : "newtab.html"
   },
   "permissions": [
     "tabs"
