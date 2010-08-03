@@ -14,7 +14,7 @@
     "128" : "images/icon128.png"
   },
   "content_scripts":[{
-    "matches" : ["http://*/*","https://*/*","ftp://*/*","file://*/*"],
+    "matches" : ["http://*/*","https://*/*","ftp://*/*"],
     "js" : ["scripts/register_key_shortcut.js"],
     "run_at" : "document_start"
   }],
