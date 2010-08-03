@@ -1,3 +1,10 @@
+v1.3
+Tue Aug  3 03:49:07 UTC 2010
+* Search through tabs capability
+
+v1.2
+Tue Aug  2 03:48:01 UTC 2010
+* Don't hijack chrome://newtab. The extension is now launched either by press of icon or with "Shift+Ctrl+S"
 
 v1.1
 Sat Jul 31 13:46:45 IST 2010
