@@ -1,16 +1,8 @@
 
-function processTabs(tabs) {
-    var tl = tabs.length;
-    var wid;
-    for(var j=0; j < tl; j++) {
-        var tab = tabs[j];
-        wid = tab.windowId
-        var tid = tab.id;
-
-        tabMap[tid] = tab;
+function createTab(tab) {
 
         var mtab = $('<div></div>').attr('class','mtab')
-                    .attr('id','tab_'+tid);
+                    .attr('id','tab_'+tab.id);
 
         var favicon = $('<img/>');
         if(tab.favIconUrl) {
@@ -60,15 +52,32 @@ function processTabs(tabs) {
                 .attr('class','title').text(tab.title);
         mtab.append(tabtitle);
 
+        return mtab;
+}
+
+function processTabs(tabs) {
+    var tl = tabs.length;
+    var wid;
+    for(var j=0; j < tl; j++) {
+        var tab = tabs[j];
+        wid = tab.windowId
+        var tid = tab.id;
+
+        tabMap[tid] = tab;
+
+        mtab = createTab(tab);
+
         windowMap[wid].append(mtab);
     }
     $('.mtab:even',windowMap[wid]).css('background','#eeeeee');
     $('.mtab:odd',windowMap[wid]).css('background','#e0e0e0');
     $('.mtab', windowMap[wid]).click(function(ev) {
+        /*
         var match = /tab_(\d+)/.exec($(this).attr('id'));
         if(match && match[1]) {
             chrome.tabs.update(parseInt(match[1]), {selected : true});
         }
+        */
     });
 
     $('.mtab', windowMap[wid]).mouseenter(function(ev) {
@@ -91,7 +100,43 @@ function processTabs(tabs) {
     if(doneWindows.length == windowList.length) {
         layout_windows();
     }
+
+
+    $('.mtab', windowMap[wid]).mousedown(function(ev) {
+        /*
+        var match = /tab_(\d+)/.exec($(this).attr('id'));
+        if(match && match[1]) {
+            tabOnMove = tabMap[parseInt(match[1])];
+
+            tabOnMove = createTab(tabOnMove);
+        }
+        */
+
+        tabOnMove = $(this);
+        console.log(tabOnMove.html());
+        tabOnMove.css({
+            'position' : 'absolute',
+            'top' : ev.clientY+'px',
+            'left' : ev.clientX+'px'
+        });
+
+        tabOnMove.detach();
+        $('body').append(tabOnMove);
+    });
+    $(document).mouseup(function(ev) {
+        tabOnMove = null;        
+    });
+    $(document).mousemove(function(ev) {
+        if(tabOnMove) {
+            tabOnMove.css({
+                'top' : ev.clientY+'px',
+                'left' : ev.clientX+'px'
+            });
+        }
+    });
 }
+
+var tabOnMove = null;
 
 function layout_windows() {
     var total_tabs = 0;
