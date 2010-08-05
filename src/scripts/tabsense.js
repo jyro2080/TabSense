@@ -124,92 +124,18 @@ $(document).ready(function(){
 
     winw = parseInt((dw/NUMCOL) - HMARGIN);
 
-    function create_window_title(title) {
-        return $('<div></div>')
-            .text(title)
-            .css({
-                'color' : '#eee',
-                'margin-top' : '5px',
-                'text-align':'center'
-            })
-            .click(title_modifier);
-    }
-
-    function create_window_title_input() {
-        var inp = $('<input></input>')
-            .css({
-                'height':'25px',
-                'width':'300px',
-                'text-align':'center',
-                'color' : '#eee',
-                'background-color' : '#777'
-            });
-        var inpw = $('<div></div>')
-            .css({
-                'margin-top' : '5px',
-                'height':'25px',
-                'text-align':'center'
-            });
-        inpw.append(inp);
-        return { wrapper:inpw, inp:inp };
-    }
-
-    function title_modifier() {
-        var p = $(this).parent();
-        var oldtitle = $(this).text();
-        $(this).remove();    
-
-        var ninput = create_window_title_input();
-        p.append(ninput.wrapper);
-        ninput.inp.val(oldtitle);
-        ninput.inp.focus();
-        ninput.inp.blur(function() {
-            var p = $(this).parent().parent();
-            $(this).parent().remove();    
-            var newtitle = $(this).val();
-            if($.trim(newtitle) == '') {
-                newtitle = oldtitle;
-            }
-            var wtitle = create_window_title(newtitle);
-            var wid = p.parent().attr('id');
-            window.localStorage.setItem(
-                'window_title_'+wid, newtitle);
-            p.prepend(wtitle);
-        });
-    }
-
     chrome.windows.getAll(null, 
         function(windows) {
 
             var wl = windows.length;
             for(var i=0; i < wl; i++) {
 
-                var mwin = $('<div></div>')
-                            .attr('class','mwin')
-                            .attr('id', windows[i].id);
-                var title_str = window.localStorage.getItem(
-                                    'window_title_'+windows[i].id);
-                if(title_str) {
-                    var text = create_window_title(title_str);
-                } else {
-                    var text = create_window_title("Name this window");
-                }
-                var wtitle = $('<div></div>')
-                    .attr('class','wtitle')
-                    .css({
-                        'color' : '#eee',
-                        'height':'30px',
-                        '-webkit-border-top-left-radius':'15px',
-                        '-webkit-border-top-right-radius':'15px',
-                        'text-align':'center'
-                    })
-                wtitle.append(text);
-                mwin.append(wtitle);
+                var mwin = new WinFrame(windows[i].id);
 
-                windowMap[windows[i].id] = mwin; 
-                windowList[i] = mwin;
+                windowMap[windows[i].id] = mwin.elem; 
+                windowList[i] = mwin.elem;
 
-                $('body').append(mwin);
+                $('body').append(mwin.elem);
 
                 chrome.tabs.getAllInWindow(windows[i].id, processTabs);
             }
