@@ -22,7 +22,8 @@ function Tab(rtab) {
 
     rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
 
-    this.elem.click(Tab.clicked);
+    $('.favicon', this.elem).click(Tab.selectTab);
+
     this.elem.mouseenter(Tab.mouseenter);
     this.elem.mouseleave(Tab.mouseleave);
 
@@ -33,8 +34,8 @@ Tab.fallbackIcon = chrome.extension.getURL('images/icon28.png');
 Tab.starOn = chrome.extension.getURL('images/favon.png');
 Tab.starOff = chrome.extension.getURL('images/favoff.png');
 
-Tab.clicked = function() {
-    var match = /tab_(\d+)/.exec($(this).attr('id'));
+Tab.selectTab = function() {
+    var match = /tab_(\d+)/.exec($(this).parent().attr('id'));
     if(match && match[1]) {
         chrome.tabs.update(parseInt(match[1]), {selected : true});
     }
