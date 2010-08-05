@@ -1,5 +1,6 @@
 function Tab(rtab) {
     this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+rtab.id);
+    var elem = this.elem;
 
     var favicon = $('<img/>');
     if(rtab.favIconUrl) {
@@ -22,6 +23,10 @@ function Tab(rtab) {
 
     rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
 
+    this.elem.mousedown(function(ev) { Tab.pick(elem, ev); });
+    this.elem.mousemove(function(ev) { Tab.drag(elem, ev); });
+    this.elem.mouseup(function(ev) { Tab.drop(elem, ev); });
+
     $('.favicon', this.elem).click(Tab.selectTab);
 
     this.elem.mouseenter(Tab.mouseenter);
@@ -39,6 +44,24 @@ Tab.selectTab = function() {
     if(match && match[1]) {
         chrome.tabs.update(parseInt(match[1]), {selected : true});
     }
+}
+
+Tab.tabInMotion = false;
+
+Tab.pick = function(elem, ev) {
+    Tab.tabInMotion = true;
+
+}
+
+Tab.drag = function(elem, ev) {
+    if(Tab.tabInMotion) {
+        console.log('drag');
+    }
+}
+
+Tab.drop = function(elem, ev) {
+    Tab.tabInMotion = false;
+    console.log('drop');
 }
 
 Tab.toggleFav = function() {
