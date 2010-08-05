@@ -130,7 +130,7 @@ $(document).ready(function(){
             var wl = windows.length;
             for(var i=0; i < wl; i++) {
 
-                var mwin = new WinFrame(windows[i].id);
+                var mwin = new WinFrame(windows[i]);
 
                 windowMap[windows[i].id] = mwin.elem; 
                 windowList[i] = mwin.elem;
