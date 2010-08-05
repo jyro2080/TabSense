@@ -1,91 +1,19 @@
 
-function createTab(tab) {
-
-        var mtab = $('<div></div>').attr('class','mtab')
-                    .attr('id','tab_'+tab.id);
-
-        var favicon = $('<img/>');
-        if(tab.favIconUrl) {
-            favicon.attr('src', tab.favIconUrl)
-                        .attr('class','favicon')
-                        .width('24px')
-                        .height('24px');
-        } else {
-            favicon.attr('src', chrome.extension.getURL('images/icon28.png'))
-                        .attr('class','favicon')
-                        .width('24px')
-                        .height('24px');
-        }
-        mtab.append(favicon);
-
-        var staricon = $('<img/>');
-        staricon.attr('src', chrome.extension.getURL('images/fav'+
-                    (Fav.is(tab.url) ? 'on':'off')+'.png'))
-                    .attr('class','star')
-                    .width('24px')
-                    .height('24px');
-        mtab.append(staricon);
-        staricon.hide();
-        staricon.click(function(){
-            var p = $(this).parent();
-            var match = /tab_(\d+)/.exec(p.attr('id'));
-            if(match && match[1]) {
-                var tab = tabMap[parseInt(match[1])];
-                if(Fav.is(tab.url)) {
-                    Fav.remove(tab.url);
-                    $(this).attr('src', 
-                        chrome.extension.getURL('images/favoff.png'));
-                } else {
-                    var fi = $(this).siblings('.favicon');
-                    Fav.add(tab.url, fi.attr('src'));
-                    $(this).attr('src', 
-                        chrome.extension.getURL('images/favon.png'));
-                }
-                refresh_favorites();
-            } else {
-                alert('Error recognizing the tab');
-            }
-            return false;
-        });
-
-        tabtitle = $('<div></div>')
-                .attr('class','title').text(tab.title);
-        mtab.append(tabtitle);
-
-        return mtab;
-}
-
-function processTabs(tabs) {
-    var tl = tabs.length;
+function processTabs(realtabs) {
+    var tl = realtabs.length;
     var wid;
     for(var j=0; j < tl; j++) {
-        var tab = tabs[j];
-        wid = tab.windowId
-        var tid = tab.id;
+        var rtab = realtabs[j];
+        wid = rtab.windowId
 
-        tabMap[tid] = tab;
+        tabMap[rtab.id] = rtab;
 
-        mtab = createTab(tab);
+        mtab = new Tab(rtab);
 
-        windowMap[wid].append(mtab);
+        windowMap[wid].append(mtab.elem);
     }
     $('.mtab:even',windowMap[wid]).css('background','#eeeeee');
     $('.mtab:odd',windowMap[wid]).css('background','#e0e0e0');
-    $('.mtab', windowMap[wid]).click(function(ev) {
-        /*
-        var match = /tab_(\d+)/.exec($(this).attr('id'));
-        if(match && match[1]) {
-            chrome.tabs.update(parseInt(match[1]), {selected : true});
-        }
-        */
-    });
-
-    $('.mtab', windowMap[wid]).mouseenter(function(ev) {
-        $('.star', $(this)).show();
-    });
-    $('.mtab', windowMap[wid]).mouseleave(function(ev) {
-        $('.star', $(this)).hide();
-    });
 
     $('.mtab', windowMap[wid]).css({'width': (winw-50)+'px'})
     $('.mtab > div', windowMap[wid]).css({'width': (winw-140)+'px'})
@@ -102,6 +30,7 @@ function processTabs(tabs) {
     }
 
 
+    /*
     $('.mtab', windowMap[wid]).mousedown(function(ev) {
         /*
         var match = /tab_(\d+)/.exec($(this).attr('id'));
@@ -110,7 +39,7 @@ function processTabs(tabs) {
 
             tabOnMove = createTab(tabOnMove);
         }
-        */
+        * /
 
         tabOnMove = $(this);
         console.log(tabOnMove.html());
@@ -134,6 +63,7 @@ function processTabs(tabs) {
             });
         }
     });
+    */
 }
 
 var tabOnMove = null;
