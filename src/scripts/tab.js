@@ -1,6 +1,5 @@
 function Tab(rtab) {
-    this.elem = $('<div></div>').attr('class','mtab')
-                .attr('id','rtab_'+rtab.id);
+    this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+rtab.id);
 
     var favicon = $('<img/>');
     if(rtab.favIconUrl) {
@@ -24,8 +23,8 @@ function Tab(rtab) {
     rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
 
     this.elem.click(Tab.clicked);
-    this.elem.mouseenter(this.mouseenter);
-    this.elem.mouseleave(this.mouseleave);
+    this.elem.mouseenter(Tab.mouseenter);
+    this.elem.mouseleave(Tab.mouseleave);
 
     this.elem.append(rtabtitle);
 }
@@ -61,13 +60,14 @@ Tab.toggleFav = function() {
     return false;
 }
 
-Tab.prototype = {
-    mouseenter : function(ev) {
-        $('.star', $(this)).show();
-    },
+Tab.mouseenter = function(ev) {
+    $('.star', $(this)).show();
+},
 
-    mouseleave : function(ev) {
-        $('.star', $(this)).hide();
-    }
+Tab.mouseleave = function(ev) {
+    $('.star', $(this)).hide();
+}
+
+Tab.prototype = {
 }
 
