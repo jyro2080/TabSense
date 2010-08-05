@@ -9,46 +9,19 @@ function WinFrame(rwindow) {
     } else {
         var text = WinFrame.createTitle("Name this window");
     }
-
-    var wtitle = $('<div></div>')
-        .attr('class','wtitle')
-        .css({
-            'color' : '#eee',
-            'height':'30px',
-            '-webkit-border-top-left-radius':'15px',
-            '-webkit-border-top-right-radius':'15px',
-            'text-align':'center'
-        })
+    var wtitle = $('<div></div>').attr('class','wtitle');
     wtitle.append(text);
     this.elem.append(wtitle);
 }
 
 WinFrame.createTitle = function(title) {
-    return $('<div></div>')
-        .text(title)
-        .css({
-            'color' : '#eee',
-            'margin-top' : '5px',
-            'text-align':'center'
-        })
+    return $('<div></div>').attr('class','text').text(title)
         .click(WinFrame.editTitle);
 }
 
 WinFrame.createTitleInput = function() {
-    var inp = $('<input></input>')
-        .css({
-            'height':'25px',
-            'width':'300px',
-            'text-align':'center',
-            'color' : '#eee',
-            'background-color' : '#777'
-        });
-    var inpw = $('<div></div>')
-        .css({
-            'margin-top' : '5px',
-            'height':'25px',
-            'text-align':'center'
-        });
+    var inp = $('<input></input>');
+    var inpw = $('<div></div>');
     inpw.append(inp);
     return { wrapper:inpw, inp:inp };
 }
