@@ -24,8 +24,8 @@ function Tab(rtab) {
     rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
 
     this.elem.mousedown(function(ev) { Tab.pick(elem, ev); });
-    this.elem.mousemove(function(ev) { Tab.drag(elem, ev); });
-    this.elem.mouseup(function(ev) { Tab.drop(elem, ev); });
+    $(document).mousemove(function(ev) { Tab.drag(ev); });
+    $(document).mouseup(function(ev) { Tab.drop(ev); });
 
     $('.favicon', this.elem).click(Tab.selectTab);
 
@@ -46,22 +46,29 @@ Tab.selectTab = function() {
     }
 }
 
-Tab.tabInMotion = false;
 
 Tab.pick = function(elem, ev) {
-    Tab.tabInMotion = true;
-
+    elem.css({
+        'position':'absolute',
+        'top' : (ev.clientY - 15)+'px',
+        'left' : (ev.clientX - winw/2)+'px'
+        });
+    elem.detach();
+    $('body').append(elem);
+    Tab.tabInMotion = elem;
 }
 
-Tab.drag = function(elem, ev) {
+Tab.drag = function(ev) {
     if(Tab.tabInMotion) {
-        console.log('drag');
+        Tab.tabInMotion.css({
+            'top' : (ev.clientY - 15)+'px',
+            'left' : (ev.clientX - winw/2)+'px'
+        });
     }
 }
 
-Tab.drop = function(elem, ev) {
-    Tab.tabInMotion = false;
-    console.log('drop');
+Tab.drop = function(ev) {
+    Tab.tabInMotion = null;
 }
 
 Tab.toggleFav = function() {
