@@ -170,9 +170,7 @@ function run_query(query)
         for (i in tabMap) {
             var tabTitle = tabMap[i].title;
             if(tabTitle && tabTitle.toLowerCase().indexOf(query) >= 0) {
-                console.log(tabTitle);
                 tab_selector = 'tab_'+tabMap[i].id;
-                console.log(tab_selector);
                 var wl = windowList.length;
                 for(var j=0; j < wl; j++) {
                     $('#'+tab_selector, windowList[j].elem).css({

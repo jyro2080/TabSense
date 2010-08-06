@@ -116,7 +116,6 @@ Tab.prototype = {
             if(win.contains(ev.clientX, ev.clientY)) {
                 var title_str = window.localStorage.getItem(
                         'window_title_'+win.real.id);
-                console.log(title_str);
                 this.elem.css({
                     'position':'relative',
                     '-webkit-box-shadow' : null,
@@ -125,7 +124,6 @@ Tab.prototype = {
                     });
                 win.addTab(this);
                 win.refreshStyle();
-                console.log('Moving '+this.real.id+' to '+win.real.id);
                 chrome.tabs.move(this.real.id, 
                     { windowId : win.real.id, index:100 });
                 break;

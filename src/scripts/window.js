@@ -104,8 +104,6 @@ WinFrame.prototype = {
         var b = t + this.elem.height();
         var r = l + this.elem.width();
 
-        //console.log('['+x+','+y+'] '+l+','+r+','+t+','+b);
-
         return ( (x>l) && (x<r) && (y>t) && (y<b) );
     }
 }
