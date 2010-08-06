@@ -126,9 +126,11 @@ Tab.prototype = {
                 win.refreshStyle();
                 chrome.tabs.move(this.real.id, 
                     { windowId : win.real.id, index:100 });
-                break;
+                return;
             }
         }
+
+        // Not dropped on a window, create a new one
     },
 }
 
