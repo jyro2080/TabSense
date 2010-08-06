@@ -86,7 +86,8 @@ Tab.prototype = {
         this.elem.css({
             'position':'absolute',
             'top' : (ev.clientY - 15)+'px',
-            'left' : (ev.clientX - winw/2)+'px'
+            'left' : (ev.clientX - winw/2)+'px',
+            '-webkit-box-shadow' : 'rgba(20,20,20,1) 1px 1px 5px'
             });
         this.elem.detach();
         $('body').append(this.elem);
@@ -118,6 +119,7 @@ Tab.prototype = {
                 console.log(title_str);
                 this.elem.css({
                     'position':'relative',
+                    '-webkit-box-shadow' : null,
                     'top':'0px',
                     'left':'0px'
                     });
