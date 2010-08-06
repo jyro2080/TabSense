@@ -1,4 +1,4 @@
 #!/bin/bash
 
 version=`awk -F : '/version/ {printf $2}' src/manifest.json | sed 's/^[^"]"//g' | sed 's/".*$//g'`
-zip release/tabsense_$version.zip src/* src/{scripts,images}/*
+zip release/tabsense_$version.zip src/* src/{scripts,images,css}/*
