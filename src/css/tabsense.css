@@ -40,6 +40,7 @@ a:hover {
 }
 .mtab .star {
     float : right;
+    cursor : pointer;
 }
 .mtab {
     float : top;

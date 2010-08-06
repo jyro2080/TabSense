@@ -23,7 +23,7 @@ function Tab(rtab) {
     this.staricon.attr('class','star');
     this.elem.append(this.staricon);
     this.staricon.hide();
-    this.staricon.click(Tab.toggleFav);
+    this.staricon.click(Tab.toggleFav).mousedown(consume).mouseup(consume);
 
     rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
 
