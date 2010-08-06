@@ -1,4 +1,6 @@
 function Tab(rtab) {
+    this.real = rtab;
+    this.parent = null;
     this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+rtab.id);
     var elem = this.elem;
 
@@ -23,9 +25,10 @@ function Tab(rtab) {
 
     rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
 
-    this.elem.mousedown(function(ev) { Tab.pick(elem, ev); });
-    $(document).mousemove(function(ev) { Tab.drag(ev); });
-    $(document).mouseup(function(ev) { Tab.drop(ev); });
+    var tab = this;
+    this.elem.mousedown(function(ev) { tab.pick(ev); });
+    $(document).mousemove(function(ev) { tab.drag(ev); });
+    $(document).mouseup(function(ev) { tab.drop(ev); });
 
     $('.favicon', this.elem).click(Tab.selectTab);
 
@@ -44,31 +47,6 @@ Tab.selectTab = function() {
     if(match && match[1]) {
         chrome.tabs.update(parseInt(match[1]), {selected : true});
     }
-}
-
-
-Tab.pick = function(elem, ev) {
-    elem.css({
-        'position':'absolute',
-        'top' : (ev.clientY - 15)+'px',
-        'left' : (ev.clientX - winw/2)+'px'
-        });
-    elem.detach();
-    $('body').append(elem);
-    Tab.tabInMotion = elem;
-}
-
-Tab.drag = function(ev) {
-    if(Tab.tabInMotion) {
-        Tab.tabInMotion.css({
-            'top' : (ev.clientY - 15)+'px',
-            'left' : (ev.clientX - winw/2)+'px'
-        });
-    }
-}
-
-Tab.drop = function(ev) {
-    Tab.tabInMotion = null;
 }
 
 Tab.toggleFav = function() {
@@ -100,5 +78,53 @@ Tab.mouseleave = function(ev) {
 }
 
 Tab.prototype = {
+    pick : function(ev) {
+        this.elem.css({
+            'position':'absolute',
+            'top' : (ev.clientY - 15)+'px',
+            'left' : (ev.clientX - winw/2)+'px'
+            });
+        this.elem.detach();
+        $('body').append(this.elem);
+        this.inTransit = true;
+        this.parent.refreshStyle();
+    },
+
+    drag : function(ev) {
+        if(this.inTransit) {
+            this.elem.css({
+                'top' : (ev.clientY - 15)+'px',
+                'left' : (ev.clientX - winw/2)+'px'
+            });
+        }
+    },
+
+    drop : function(ev) {
+        if(!this.inTransit) return;
+
+        this.inTransit = false;
+
+        // Check on which window are we dropping
+        var wl = windowList.length;
+        for(var i=0; i < wl; i++) {
+            var win = windowList[i];
+            if(win.contains(ev.clientX, ev.clientY)) {
+                var title_str = window.localStorage.getItem(
+                        'window_title_'+win.real.id);
+                console.log(title_str);
+                this.elem.css({
+                    'position':'relative',
+                    'top':'0px',
+                    'left':'0px'
+                    });
+                win.addTab(this);
+                win.refreshStyle();
+                console.log('Moving '+this.real.id+' to '+win.real.id);
+                chrome.tabs.move(this.real.id, 
+                    { windowId : win.real.id, index:100 });
+                break;
+            }
+        }
+    },
 }
 

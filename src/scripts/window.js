@@ -1,6 +1,6 @@
 
 function WinFrame(rwindow) { 
-
+    this.real = rwindow;
     this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+rwindow.id);
 
     var title_str = window.localStorage.getItem('window_title_'+rwindow.id);
@@ -53,6 +53,7 @@ WinFrame.editTitle = function() {
 WinFrame.prototype = {
     addTab : function(tab) {
         this.elem.append(tab.elem);
+        tab.parent = this;
     },
 
     refreshStyle : function() {
@@ -62,6 +63,10 @@ WinFrame.prototype = {
         $('.mtab', this.elem).css({'width': (winw-50)+'px'})
         $('.mtab > div', this.elem).css({'width': (winw-140)+'px'})
 
+        $('.mtab:not(:last)', this.elem).css({
+            '-webkit-border-bottom-left-radius':null,
+            '-webkit-border-bottom-right-radius':null
+        });
         $('.mtab:last', this.elem).css({
             '-webkit-border-bottom-left-radius':'15px',
             '-webkit-border-bottom-right-radius':'15px'
@@ -91,5 +96,16 @@ WinFrame.prototype = {
         $('.mtab:even', this.elem).css('background', even_color);
         $('.mtab:odd', this.elem).css('background', odd_color);
         $('.mtab', this.elem).css('color', text_color);
+    },
+
+    contains : function(x, y) {
+        var t = parseInt(/(\d+)px/.exec(this.elem.css('top'))[1]);
+        var l = parseInt(/(\d+)px/.exec(this.elem.css('left'))[1]);
+        var b = t + this.elem.height();
+        var r = l + this.elem.width();
+
+        //console.log('['+x+','+y+'] '+l+','+r+','+t+','+b);
+
+        return ( (x>l) && (x<r) && (y>t) && (y<b) );
     }
 }
