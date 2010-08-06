@@ -1,3 +1,5 @@
+function consume(ev) { return false; }
+
 function Tab(rtab) {
     this.real = rtab;
     this.parent = null;
@@ -30,7 +32,8 @@ function Tab(rtab) {
     $(document).mousemove(function(ev) { tab.drag(ev); });
     $(document).mouseup(function(ev) { tab.drop(ev); });
 
-    $('.favicon', this.elem).click(Tab.selectTab);
+    $('.favicon', this.elem).click(Tab.selectTab)
+        .mousedown(consume).mouseup(consume).mousemove(consume);
 
     this.elem.mouseenter(Tab.mouseenter);
     this.elem.mouseleave(Tab.mouseleave);
@@ -47,6 +50,7 @@ Tab.selectTab = function() {
     if(match && match[1]) {
         chrome.tabs.update(parseInt(match[1]), {selected : true});
     }
+    return false;
 }
 
 Tab.toggleFav = function() {
