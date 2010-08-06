@@ -10,18 +10,10 @@ function processTabs(realtabs) {
 
         mtab = new Tab(rtab);
 
-        windowMap[wid].append(mtab.elem);
+        windowMap[wid].addTab(mtab);
     }
-    $('.mtab:even',windowMap[wid]).css('background','#eeeeee');
-    $('.mtab:odd',windowMap[wid]).css('background','#e0e0e0');
 
-    $('.mtab', windowMap[wid]).css({'width': (winw-50)+'px'})
-    $('.mtab > div', windowMap[wid]).css({'width': (winw-140)+'px'})
-
-    $('.mtab:last', windowMap[wid]).css({
-        '-webkit-border-bottom-left-radius':'15px',
-        '-webkit-border-bottom-right-radius':'15px'
-    });
+    windowMap[wid].refreshStyle();
 
     doneWindows.push({wid:wid,numtabs:tl});
 
@@ -97,7 +89,7 @@ function layout_windows() {
         var ceiling = CEILING;
         for(var j=0; j < columns[i].length; j++) {
             var wid = columns[i][j];
-            var mwin = windowMap[wid];
+            var mwin = windowMap[wid].elem;
             mwin.css({
                 'left' : (i * winw + (i+0.5) * HMARGIN)+'px',
                 'top' : ceiling+'px'
@@ -132,7 +124,7 @@ $(document).ready(function(){
 
                 var mwin = new WinFrame(windows[i]);
 
-                windowMap[windows[i].id] = mwin.elem; 
+                windowMap[windows[i].id] = mwin;
                 windowList[i] = mwin.elem;
 
                 $('body').append(mwin.elem);

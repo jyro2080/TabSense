@@ -49,3 +49,22 @@ WinFrame.editTitle = function() {
         p.prepend(wtitle);
     });
 }
+
+WinFrame.prototype = {
+    addTab : function(tab) {
+        this.elem.append(tab.elem);
+    },
+
+    refreshStyle : function() {
+        $('.mtab:even',this.elem).css('background','#eeeeee');
+        $('.mtab:odd',this.elem).css('background','#e0e0e0');
+
+        $('.mtab', this.elem).css({'width': (winw-50)+'px'})
+        $('.mtab > div', this.elem).css({'width': (winw-140)+'px'})
+
+        $('.mtab:last', this.elem).css({
+            '-webkit-border-bottom-left-radius':'15px',
+            '-webkit-border-bottom-right-radius':'15px'
+        });
+    }
+}
