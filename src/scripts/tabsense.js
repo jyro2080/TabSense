@@ -1,3 +1,7 @@
+var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.php?id=139713996058999&amp;width=500&amp;connections=10&amp;stream=true&amp;header=false&amp;height=555" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:555px;" allowTransparency="true"></iframe>';
+var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
+var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
+
 
 function processTabs(realtabs) {
     var tl = realtabs.length;
@@ -109,7 +113,45 @@ $(document).ready(function(){
 
     $('#creator').css('top',(dh-50)+'px');
     $('#creator').css('left',(dw-140)+'px');
+
+    $('#topbar #info').click(function(ev) {
+        if($.trim($('#infopanel').html()) === '') {
+
+            var topline = $('<div></div>').attr('id','topline')
+                .append('<a href="'+SOURCE_URL+'">Source</a>'+
+                    '&nbsp;&nbsp;&nbsp;'+
+                    '<a href="'+BUGS_URL+'">Bugs/Features</a>'+
+                    '&nbsp;&nbsp;&nbsp;'+
+                    '<a id="close" href="#">Close</a>');
+            
+            $('#infopanel')
+                .append(topline)
+                .append(FACEBOOK_PAGE_HTML);
+        }
+        $('#infopanel').show();
+    });
+
+    $('#infopanel #close').click(function() { 
+        $(this).hide(); 
+    });
+    $('#infopanel').click(function() { 
+        $(this).hide(); 
+    });
+
+    position_infopanel();
+
 });
+
+function position_infopanel() {
+    var ipw = 550;
+    var iph = 600;
+    var left = (dw - ipw)/2;
+    var top = (dh - iph)/2;
+    $('#infopanel').css({
+        'left' : left+'px',
+        'top' : top+'px'
+    });
+}
 
 function blur_all_tabs(yes)
 {

@@ -3,6 +3,24 @@ body {
     font-size : 14px;
     -webkit-user-select : none;
 }
+a {
+    color: gray;
+    text-decoration: none;
+    cursor : hand;
+}
+a:link {
+    color: gray;
+    text-decoration: none;
+}
+a:visited {
+    color: gray;
+    text-decoration: none;
+}
+a:hover {
+    color: black;
+    text-decoration: none;
+}
+
 .mtab > * {
     float : left;
 }
@@ -81,4 +99,32 @@ body {
     width : 300px;
     margin : 5px 5px 5px 5px;
     -webkit-border-radius : 10px;
+}
+#topbar #info {
+    float : right;
+    margin : 5px 10px 5px 5px;
+}
+
+#infopanel {
+    position : absolute;
+    z-index : 100;
+    background-color : #f7f7f7;
+    text-align : left;
+    width : 550px;
+    height : 600px;
+    display : none;
+
+    -webkit-border-radius:5px;
+    -webkit-box-shadow:rgba(20,20,20,1) 1px 1px 5px;
+}
+
+#infopanel #topline {
+    padding : 5px;
+    margin-bottom : 5px;
+    text-align : center;
+    font-size : 90%;
+    float : top;
+}
+#infopanel iframe {
+    margin-left : 25px;
 }
