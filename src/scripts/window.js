@@ -73,5 +73,23 @@ WinFrame.prototype = {
             'left' : left+'px',
             'top' : top+'px'
         });
+    },
+
+    blurTabs : function() {
+        var even_color = '#f0f0f0';
+        var odd_color = '#e2e2e2';
+        var text_color = '#aaa';
+        $('.mtab:even', this.elem).css('background', even_color);
+        $('.mtab:odd', this.elem).css('background', odd_color);
+        $('.mtab', this.elem).css('color', text_color);
+    },
+
+    unblurTabs : function() {
+        var even_color = '#eeeeee';
+        var odd_color = '#e0e0e0';
+        var text_color = '#000';
+        $('.mtab:even', this.elem).css('background', even_color);
+        $('.mtab:odd', this.elem).css('background', odd_color);
+        $('.mtab', this.elem).css('color', text_color);
     }
 }

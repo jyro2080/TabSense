@@ -86,7 +86,7 @@ $(document).ready(function(){
                 var mwin = new WinFrame(windows[i]);
 
                 windowMap[windows[i].id] = mwin;
-                windowList[i] = mwin.elem;
+                windowList[i] = mwin;
 
                 $('body').append(mwin.elem);
 
@@ -113,23 +113,13 @@ $(document).ready(function(){
 
 function blur_all_tabs(yes)
 {
-    if(yes) {
-        even_color = '#f0f0f0';
-        odd_color = '#e2e2e2';
-        text_color = '#aaa';
-    } else {
-        even_color = '#eeeeee';
-        odd_color = '#e0e0e0';
-        text_color = '#000';
-    }
     var wl = windowList.length;
     for(var i=0; i < wl; i++) {
         var win = windowList[i];
-        $('.mtab:even',win).css('background', even_color);
-        $('.mtab:odd',win).css('background', odd_color);
-        $('.mtab',win).css('color', text_color);
+        (yes ? win.blurTabs : win.unblurTabs)();
     }
 }
+
 function run_query(query)
 {
     blur_all_tabs(true);
@@ -143,7 +133,7 @@ function run_query(query)
                 console.log(tab_selector);
                 var wl = windowList.length;
                 for(var j=0; j < wl; j++) {
-                    $('#'+tab_selector, windowList[j]).css({
+                    $('#'+tab_selector, windowList[j].elem).css({
                         'color':'#000'
                     });
                 }
