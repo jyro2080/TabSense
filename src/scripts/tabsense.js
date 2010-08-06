@@ -53,11 +53,8 @@ function layout_windows() {
         var ceiling = CEILING;
         for(var j=0; j < columns[i].length; j++) {
             var wid = columns[i][j];
+            windowMap[wid].setLocation(ceiling, (i*winw+(i+0.5) * HMARGIN));
             var mwin = windowMap[wid].elem;
-            mwin.css({
-                'left' : (i * winw + (i+0.5) * HMARGIN)+'px',
-                'top' : ceiling+'px'
-            });
             ceiling += mwin.height() + VMARGIN;
         }
     }

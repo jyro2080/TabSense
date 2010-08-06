@@ -66,5 +66,12 @@ WinFrame.prototype = {
             '-webkit-border-bottom-left-radius':'15px',
             '-webkit-border-bottom-right-radius':'15px'
         });
+    },
+
+    setLocation : function(top, left) {
+        this.elem.css({
+            'left' : left+'px',
+            'top' : top+'px'
+        });
     }
 }
