@@ -20,42 +20,6 @@ function processTabs(realtabs) {
     if(doneWindows.length == windowList.length) {
         layout_windows();
     }
-
-
-    /*
-    $('.mtab', windowMap[wid]).mousedown(function(ev) {
-        /*
-        var match = /tab_(\d+)/.exec($(this).attr('id'));
-        if(match && match[1]) {
-            tabOnMove = tabMap[parseInt(match[1])];
-
-            tabOnMove = createTab(tabOnMove);
-        }
-        * /
-
-        tabOnMove = $(this);
-        console.log(tabOnMove.html());
-        tabOnMove.css({
-            'position' : 'absolute',
-            'top' : ev.clientY+'px',
-            'left' : ev.clientX+'px'
-        });
-
-        tabOnMove.detach();
-        $('body').append(tabOnMove);
-    });
-    $(document).mouseup(function(ev) {
-        tabOnMove = null;        
-    });
-    $(document).mousemove(function(ev) {
-        if(tabOnMove) {
-            tabOnMove.css({
-                'top' : ev.clientY+'px',
-                'left' : ev.clientX+'px'
-            });
-        }
-    });
-    */
 }
 
 var tabOnMove = null;
