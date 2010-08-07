@@ -133,18 +133,35 @@ Tab.prototype = {
         // Not dropped on a window, create a new one
         var thistab = this;
         var dropcol = get_column(ev.clientX);
+
+        function removeAllButThisTab(tabs) {
+            for(var i=0; i < tabs.length; i++) {
+                if(tabs[i].id != thistab.real.id) {
+                    chrome.tabs.remove(tabs[i].id);
+                }
+            }
+             
+        }
+
         chrome.windows.create(null, 
             function(win) {
+
                 var wf = new WinFrame(win);
                 windowMap[win.id] = wf;
                 windowList.push(wf);
+
                 $('body').append(wf.elem);
                 wf.addTab(thistab);
                 wf.refreshStyle();
-                chrome.tabs.move(thistab.real.id,
-                    { windowId : win.id, index:0 });
                 winColumns[dropcol].push(windowList.length-1);
                 relayout_column(dropcol);
+
+                chrome.tabs.move(thistab.real.id,
+                    { windowId : win.id, index:0 },
+                    function() {
+                        chrome.tabs.getAllInWindow(
+                            win.id, removeAllButThisTab);
+                    });
             }
         );
     },
