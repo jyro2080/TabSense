@@ -89,10 +89,9 @@ Tab.prototype = {
             'left' : (ev.clientX - winw/2)+'px',
             '-webkit-box-shadow' : 'rgba(20,20,20,1) 1px 1px 5px'
             });
-        this.elem.detach();
-        $('body').append(this.elem);
-        this.inTransit = true;
+        this.parent.removeTab(this);
         this.parent.refreshStyle();
+        this.inTransit = true;
     },
 
     drag : function(ev) {

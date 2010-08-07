@@ -1,5 +1,6 @@
 
 function WinFrame(rwindow) { 
+    this.numTabs = 0;
     this.real = rwindow;
     this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+rwindow.id);
 
@@ -51,9 +52,17 @@ WinFrame.editTitle = function() {
 }
 
 WinFrame.prototype = {
+    
     addTab : function(tab) {
         this.elem.append(tab.elem);
         tab.parent = this;
+        this.numTabs++;
+    },
+
+    removeTab : function(tab) {
+        tab.elem.detach();
+        $('body').append(tab.elem);
+        this.numTabs--;
     },
 
     refreshStyle : function() {
