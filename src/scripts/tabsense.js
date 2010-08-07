@@ -52,7 +52,6 @@ function layout_windows() {
 
     var colCount = 0;
     var columns = new Array(NUMCOL);
-    var ceiling = CEILING;
     for(var i=0; i < windowList.length; i++) {
 
         colCount = columnNumber(i);
