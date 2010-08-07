@@ -74,7 +74,7 @@ var windowMap = [];
 var windowList = [];
 var doneWindows = 0;
 var dw, dh, winw;
-var HMARGIN = 20;
+var HMARGIN = 30;
 var VMARGIN = 20;
 var NUMCOL = 3;
 var CEILING = 50;
@@ -84,7 +84,7 @@ $(document).ready(function(){
     dw = $(document).width();
     dh = $(document).height();
 
-    winw = parseInt((dw/NUMCOL) - HMARGIN);
+    winw = parseInt(dw/NUMCOL);
 
     chrome.windows.getAll(null, 
         function(windows) {
