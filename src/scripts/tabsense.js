@@ -29,38 +29,43 @@ function processTabs(realtabs) {
 var tabOnMove = null;
 
 function layout_windows() {
-    var total_tabs = 0;
-    for(var i=0; i < doneWindows.length; i++) {
-        total_tabs += doneWindows[i].numtabs;
-    }
-    tabs_per_col = parseInt(total_tabs/NUMCOL);
-    doneWindows.sort(function(a,b) { return (a.numtabs-b.numtabs); });
+    windowList.sort(function(a,b) { return (b.numTabs-a.numTabs); });
 
-    columns = new Array(NUMCOL);
-    for(var i=0; i < NUMCOL; i++) {
-        columns[i] = [];
-        columntabs = 0;
-        for(j=0; j < doneWindows.length; j++) {
-            if(!doneWindows[j]) continue;
-
-            if(doneWindows[j].numtabs + columntabs <= tabs_per_col ||
-                i == (NUMCOL-1))
-            {
-                columns[i].push(doneWindows[j].wid);
-                columntabs += doneWindows[j].numtabs;
-                doneWindows[j] = null;
-            }
-        }
+    var colDir = 1;
+    function columnNumber(counter) {
+        var r = parseInt(counter / NUMCOL);
+        var c = counter % NUMCOL;
+        return ( ((r % 2) == 0) ? c : (NUMCOL-1-c) );
     }
-    columns.sort(function(a,b) { return b.length-a.length; });
-    for(var i=0; i < NUMCOL; i++) {
-        var ceiling = CEILING;
-        for(var j=0; j < columns[i].length; j++) {
-            var wid = columns[i][j];
-            windowMap[wid].setLocation(ceiling, (i*winw+(i+0.5) * HMARGIN));
-            var mwin = windowMap[wid].elem;
-            ceiling += mwin.height() + VMARGIN;
+
+    function getColumnHeight(colNum) {
+        var h = CEILING;
+        if(!columns[colNum]) columns[colNum] = [];
+        for(var i=0; i < columns[colNum].length; i++) {
+            var wi = columns[colNum][i];
+            var w = windowList[wi];
+            var height = w.elem.height() + VMARGIN;
+            h += height;
         }
+        return h;
+    }
+
+    var colCount = 0;
+    var columns = new Array(NUMCOL);
+    var ceiling = CEILING;
+    for(var i=0; i < windowList.length; i++) {
+
+        colCount = columnNumber(i);
+
+        var wh = windowList[i].elem.height();
+
+        if(!columns[colCount]) columns[colCount] = [];
+
+        windowList[i].setLocation(
+            getColumnHeight(colCount),
+            (colCount*windowList[i].elem.width()+(colCount+0.5) * HMARGIN));
+
+        columns[colCount].push(i);
     }
 }
 
