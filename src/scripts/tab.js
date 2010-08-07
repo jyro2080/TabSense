@@ -91,6 +91,7 @@ Tab.prototype = {
             });
         this.parent.removeTab(this);
         this.parent.refreshStyle();
+        relayout_column(get_column(ev.clientX));
         this.inTransit = true;
     },
 
@@ -125,6 +126,7 @@ Tab.prototype = {
                 win.refreshStyle();
                 chrome.tabs.move(this.real.id, 
                     { windowId : win.real.id, index:100 });
+                relayout_column(get_column(ev.clientX));
                 return;
             }
         }

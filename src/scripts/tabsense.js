@@ -52,23 +52,39 @@ function layout_windows() {
 
 
     var colCount = 0;
-    var columns = new Array(NUMCOL);
     for(var i=0; i < windowList.length; i++) {
 
         colCount = columnNumber(i);
 
         var wh = windowList[i].elem.height();
 
-        if(!columns[colCount]) columns[colCount] = [];
+        if(!winColumns[colCount]) winColumns[colCount] = [];
 
         windowList[i].setLocation(
             getColumnHeight(colCount),
             (colCount*windowList[i].elem.width()+(colCount+0.5) * HMARGIN));
 
-        columns[colCount].push(i);
+        winColumns[colCount].push(i);
     }
 }
 
+function get_column(x) {
+    return parseInt((x - 0.5*HMARGIN)/windowList[0].elem.width());
+}
+function relayout_column(colnum) {
+    var column = winColumns[colnum]
+    var wl = column.splice(0); // copy array and empty it
+    for(var i=0; i < wl.length; i++) {
+        var win = windowList[wl[i]];
+        win.setLocation(
+            getColumnHeight(colnum),
+            colnum * win.elem.width() + (colnum+0.5) * HMARGIN);
+        column.push(wl[i]);
+    }
+    
+}
+
+var winColumns = new Array(NUMCOL);
 var tabMap = [];
 var windowMap = [];
 var windowList = [];
