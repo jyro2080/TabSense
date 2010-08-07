@@ -8,7 +8,7 @@ function processTabs(realtabs) {
     var wid;
     for(var j=0; j < tl; j++) {
         var rtab = realtabs[j];
-        wid = rtab.windowId
+        wid = rtab.windowId;
 
         tabMap[rtab.id] = rtab;
 
