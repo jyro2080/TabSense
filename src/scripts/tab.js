@@ -109,19 +109,18 @@ Tab.prototype = {
 
         this.inTransit = false;
 
+        this.elem.css({
+            'position':'relative',
+            '-webkit-box-shadow' : null,
+            'top':'0px',
+            'left':'0px'
+            });
+
         // Check on which window are we dropping
         var wl = windowList.length;
         for(var i=0; i < wl; i++) {
             var win = windowList[i];
             if(win.contains(ev.clientX, ev.clientY)) {
-                var title_str = window.localStorage.getItem(
-                        'window_title_'+win.real.id);
-                this.elem.css({
-                    'position':'relative',
-                    '-webkit-box-shadow' : null,
-                    'top':'0px',
-                    'left':'0px'
-                    });
                 win.addTab(this);
                 win.refreshStyle();
                 chrome.tabs.move(this.real.id, 
@@ -132,6 +131,22 @@ Tab.prototype = {
         }
 
         // Not dropped on a window, create a new one
+        var thistab = this;
+        var dropcol = get_column(ev.clientX);
+        chrome.windows.create(null, 
+            function(win) {
+                var wf = new WinFrame(win);
+                windowMap[win.id] = wf;
+                windowList.push(wf);
+                $('body').append(wf.elem);
+                wf.addTab(thistab);
+                wf.refreshStyle();
+                chrome.tabs.move(thistab.real.id,
+                    { windowId : win.id, index:0 });
+                winColumns[dropcol].push(windowList.length-1);
+                relayout_column(dropcol);
+            }
+        );
     },
 }
 
