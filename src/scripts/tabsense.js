@@ -28,6 +28,18 @@ function processTabs(realtabs) {
 
 var tabOnMove = null;
 
+function getColumnHeight(colNum) {
+    var h = CEILING;
+    if(!winColumns[colNum]) winColumns[colNum] = [];
+    for(var i=0; i < winColumns[colNum].length; i++) {
+        var wi = winColumns[colNum][i];
+        var w = windowList[wi];
+        var height = w.elem.height() + VMARGIN;
+        h += height;
+    }
+    return h;
+}
+
 function layout_windows() {
     windowList.sort(function(a,b) { return (b.numTabs-a.numTabs); });
 
@@ -38,17 +50,6 @@ function layout_windows() {
         return ( ((r % 2) == 0) ? c : (NUMCOL-1-c) );
     }
 
-    function getColumnHeight(colNum) {
-        var h = CEILING;
-        if(!columns[colNum]) columns[colNum] = [];
-        for(var i=0; i < columns[colNum].length; i++) {
-            var wi = columns[colNum][i];
-            var w = windowList[wi];
-            var height = w.elem.height() + VMARGIN;
-            h += height;
-        }
-        return h;
-    }
 
     var colCount = 0;
     var columns = new Array(NUMCOL);
