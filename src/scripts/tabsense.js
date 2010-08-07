@@ -19,9 +19,9 @@ function processTabs(realtabs) {
 
     windowMap[wid].refreshStyle();
 
-    doneWindows.push({wid:wid,numtabs:tl});
+    doneWindows++;
 
-    if(doneWindows.length == windowList.length) {
+    if(doneWindows == windowList.length) {
         layout_windows();
     }
 }
@@ -67,7 +67,7 @@ function layout_windows() {
 var tabMap = [];
 var windowMap = [];
 var windowList = [];
-var doneWindows = [];
+var doneWindows = 0;
 var dw, dh, winw;
 var HMARGIN = 20;
 var VMARGIN = 20;
