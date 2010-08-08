@@ -1,6 +1,6 @@
 {
   "name": "TabSense",
-  "version": "1.4.2",
+  "version": "1.4.3",
 
   "description": "Lost in million tabs? Use TabSense.",
   "background_page": "background.html",
