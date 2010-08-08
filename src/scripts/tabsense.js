@@ -71,7 +71,7 @@ function get_column(x) {
     return parseInt((x - 0.5*HMARGIN)/windowList[0].elem.width());
 }
 function relayout_column(colnum) {
-    var column = winColumns[colnum]
+    var column = winColumns[colnum];
     var wl = column.splice(0); // copy array and empty it
     for(var i=0; i < wl.length; i++) {
         var win = windowList[wl[i]];
