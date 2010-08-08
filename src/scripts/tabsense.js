@@ -43,7 +43,6 @@ function getColumnHeight(colNum) {
 function layout_windows() {
     windowList.sort(function(a,b) { return (b.numTabs-a.numTabs); });
 
-    var colDir = 1;
     function columnNumber(counter) {
         var r = parseInt(counter / NUMCOL);
         var c = counter % NUMCOL;
