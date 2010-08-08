@@ -134,3 +134,28 @@ a:hover {
 #infopanel iframe {
     margin-left : 25px;
 }
+
+#bagbar {
+    position : absolute;
+    left : 0px;
+    margin-bottom : 0px;
+    padding-bottom :0px;
+    height : 40px;
+    background-color : rgba(0,0,0,0.0);
+}
+#bagbar .winentry {
+    background-color : #777;
+    color : #eee;
+    float : left;
+    -webkit-border-top-left-radius:10px;
+    -webkit-border-top-right-radius:10px;
+    width : 100;
+    height : 20px;
+    overflow : hidden;
+    white-space : nowrap;
+    font-size : 90%;
+    padding : 10px;
+    margin : 5px;
+    text-align : center;
+    cursor : pointer;
+}
