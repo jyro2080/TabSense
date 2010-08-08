@@ -131,8 +131,8 @@ $(document).ready(function(){
         run_query($(this).val());
     });
 
-    $('#creator').css('top',(dh-50)+'px');
-    $('#creator').css('left',(dw-140)+'px');
+    $('#creator').css('top',(dh-40)+'px');
+    $('#creator').css('left',(dw-120)+'px');
 
     $('#topbar #info').click(function(ev) {
         if($.trim($('#infopanel').html()) === '') {
@@ -160,7 +160,63 @@ $(document).ready(function(){
 
     position_infopanel();
 
+    $('#bagbar').css({
+        'top' : (dh-40)+'px',
+        'width' : (dw-140)+'px'
+    })
+
+    load_bag();
 });
+
+function load_bag() {
+    var bagWinList = Bag.list();
+    $('#bagbar').empty();
+    for(var i=0; i < bagWinList.length; i++) {
+        var w = bagWinList[i];
+        var entry = $('<div></div>')
+                .attr('class','winentry')
+                .attr('id', w.id)
+                .text(w.title)
+                .click(bagEntryClicked);
+        $('#bagbar').append(entry);
+    }
+}
+
+function bagEntryClicked(ev) {
+    var id = $(this).attr('id');
+    var saved = Bag.remove(id); 
+
+    chrome.windows.create(null,
+        function(win) {
+            var wf = new WinFrame(win);
+            windowMap[win.id] = wf;
+            windowList.push(wf);
+            $('body').append(wf.elem);
+
+            var totalTabs = saved.tabs.length;
+
+            for(var i=0; i<totalTabs; i++) {
+                var t = saved.tabs[i];
+                chrome.tabs.create({
+                    windowId : win.id,
+                    index : t.index,
+                    url : t.url,
+                    selected : t.selected
+                }, 
+                function(tab) {
+                    wf.addTab(new Tab(tab));
+                    if(wf.tabArray.length == totalTabs) {
+                        wf.refreshStyle();
+                        layout_windows();
+                    }
+                });
+            }
+
+        }
+    );
+
+    load_bag();
+}
 
 function position_infopanel() {
     var ipw = 550;

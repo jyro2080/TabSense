@@ -1,5 +1,6 @@
 
 function WinFrame(rwindow) { 
+    this.tabArray = [];
     this.numTabs = 0;
     this.real = rwindow;
     this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+rwindow.id);
@@ -12,7 +13,8 @@ function WinFrame(rwindow) {
     }
 
     var save_icon = $('<img/>').attr('class','saveicon')
-                .attr('src', WinFrame.saveIcon);
+                .attr('src', WinFrame.saveIcon)
+                .click(WinFrame.saveWindow);
 
     var wtitle = $('<div></div>').attr('class','wtitle');
     wtitle.append(save_icon);
@@ -21,6 +23,16 @@ function WinFrame(rwindow) {
 }
 
 WinFrame.saveIcon = chrome.extension.getURL('images/save.png');
+
+WinFrame.saveWindow = function(ev) {
+    var wid = $(this).parent().parent().attr('id');
+    var title = window.localStorage.getItem('window_title_'+wid);
+    var win = windowMap[wid];
+    Bag.save(win, title);
+    win.destroy();
+    chrome.windows.remove(win.real.id);
+    load_bag();
+}
 
 WinFrame.createTitle = function(title) {
     return $('<div></div>').attr('class','text').text(title)
@@ -62,6 +74,7 @@ WinFrame.prototype = {
     
     addTab : function(tab) {
         this.elem.append(tab.elem);
+        this.tabArray.push(tab);
         tab.parent = this;
         this.numTabs++;
     },
