@@ -2,6 +2,7 @@ body {
     font-family : Sans Serif, Arial;
     font-size : 14px;
     -webkit-user-select : none;
+    overflow : hidden;
 }
 a {
     color: gray;
@@ -68,6 +69,10 @@ a:hover {
 }
 .mwin .wtitle .text {
     margin-top : 5px;
+    white-space : nowrap;
+    overflow : hidden;
+    text-align:center;
+    margin-left : 15px;
 }
 .mwin .wtitle div {
     margin-top : 5px;
