@@ -30,7 +30,6 @@ var tabOnMove = null;
 
 function getColumnHeight(colNum) {
     var h = CEILING;
-    if(!winColumns[colNum]) winColumns[colNum] = [];
     for(var i=0; i < winColumns[colNum].length; i++) {
         var wi = winColumns[colNum][i];
         var w = windowList[wi];
@@ -42,6 +41,7 @@ function getColumnHeight(colNum) {
 
 function layout_windows() {
     windowList.sort(function(a,b) { return (b.numTabs-a.numTabs); });
+    for(var i=0; i<NUMCOL; i++) {winColumns[i]=[];}
 
     function columnNumber(counter) {
         var r = parseInt(counter / NUMCOL);
