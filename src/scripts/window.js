@@ -63,6 +63,25 @@ WinFrame.prototype = {
         tab.elem.detach();
         $('body').append(tab.elem);
         this.numTabs--;
+
+        if(this.numTabs == 0) {
+            this.destroy();
+        }
+    },
+
+    destroy : function() {
+        this.elem.detach();
+        windowMap.splice(this.real.id, 1);
+        var idx = windowList.indexOf(this);
+        windowList.splice(idx, 1);
+
+        for(var i=0; i < winColumns.length; i++) {
+            var tmp = winColumns[i].indexOf(this);
+            if(tmp >= 0) {
+                winColumns[i].splice(tmp, 1);
+                break;
+            }
+        }
     },
 
     refreshStyle : function() {
