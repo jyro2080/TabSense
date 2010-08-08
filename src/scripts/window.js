@@ -10,10 +10,17 @@ function WinFrame(rwindow) {
     } else {
         var text = WinFrame.createTitle("Name this window");
     }
+
+    var save_icon = $('<img/>').attr('class','saveicon')
+                .attr('src', WinFrame.saveIcon);
+
     var wtitle = $('<div></div>').attr('class','wtitle');
+    wtitle.append(save_icon);
     wtitle.append(text);
     this.elem.append(wtitle);
 }
+
+WinFrame.saveIcon = chrome.extension.getURL('images/save.png');
 
 WinFrame.createTitle = function(title) {
     return $('<div></div>').attr('class','text').text(title)

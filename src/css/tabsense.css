@@ -61,6 +61,11 @@ a:hover {
     -webkit-border-top-right-radius:15px;
     text-align:center;
 }
+.mwin .wtitle .saveicon {
+    float : right;
+    margin-right : 10px;
+    cursor : pointer;
+}
 .mwin .wtitle .text {
     margin-top : 5px;
 }
