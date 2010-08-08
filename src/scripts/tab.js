@@ -153,7 +153,7 @@ Tab.prototype = {
                 $('body').append(wf.elem);
                 wf.addTab(thistab);
                 wf.refreshStyle();
-                winColumns[dropcol].push(windowList.length-1);
+                winColumns[dropcol].push(wf);
                 relayout_column(dropcol);
 
                 chrome.tabs.move(thistab.real.id,

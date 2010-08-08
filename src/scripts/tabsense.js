@@ -31,8 +31,7 @@ var tabOnMove = null;
 function getColumnHeight(colNum) {
     var h = CEILING;
     for(var i=0; i < winColumns[colNum].length; i++) {
-        var wi = winColumns[colNum][i];
-        var w = windowList[wi];
+        var w = winColumns[colNum][i];
         var height = w.elem.height() + VMARGIN;
         h += height;
     }
@@ -63,7 +62,7 @@ function layout_windows() {
             getColumnHeight(colCount),
             (colCount*windowList[i].elem.width()+(colCount+0.5) * HMARGIN));
 
-        winColumns[colCount].push(i);
+        winColumns[colCount].push(windowList[i]);
     }
 }
 
@@ -74,7 +73,7 @@ function relayout_column(colnum) {
     var column = winColumns[colnum];
     var wl = column.splice(0); // copy array and empty it
     for(var i=0; i < wl.length; i++) {
-        var win = windowList[wl[i]];
+        var win = wl[i];
         win.setLocation(
             getColumnHeight(colnum),
             colnum * win.elem.width() + (colnum+0.5) * HMARGIN);
@@ -84,6 +83,7 @@ function relayout_column(colnum) {
 }
 
 var winColumns = new Array(NUMCOL);
+
 var tabMap = [];
 var windowMap = [];
 var windowList = [];
