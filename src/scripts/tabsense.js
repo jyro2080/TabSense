@@ -188,7 +188,7 @@ function bagEntryClicked(ev) {
 
     chrome.windows.create(null,
         function(win) {
-            var wf = new WinFrame(win);
+            var wf = new WinFrame(win, saved.title);
             windowMap[win.id] = wf;
             windowList.push(wf);
             $('body').append(wf.elem);

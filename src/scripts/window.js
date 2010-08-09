@@ -1,11 +1,15 @@
 
-function WinFrame(rwindow) { 
+function WinFrame(rwindow, title_str) { 
     this.tabArray = [];
     this.numTabs = 0;
     this.real = rwindow;
     this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+rwindow.id);
 
-    var title_str = window.localStorage.getItem('window_title_'+rwindow.id);
+    if(!title_str) {
+        title_str = window.localStorage.getItem('window_title_'+rwindow.id);
+    } else {
+        window.localStorage.setItem('window_title_'+rwindow.id, title_str);
+    }
     if(title_str) {
         var text = WinFrame.createTitle(title_str);
     } else {
