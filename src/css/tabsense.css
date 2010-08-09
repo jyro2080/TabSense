@@ -49,14 +49,14 @@ a:hover {
     padding : 5px;
 }
 .mwin {
-    background-color : #777;
+    background-color : #999;
     float : top;
     position : absolute;
     -webkit-border-radius : 15px;
     -webkit-box-shadow : rgba(20,20,20,1) 1px 1px 5px;
 }
 .mwin .wtitle {
-    color : #eee;
+    color : #fff;
     height : 30px;
     -webkit-border-top-left-radius:15px;
     -webkit-border-top-right-radius:15px;
