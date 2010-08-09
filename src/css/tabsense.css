@@ -148,6 +148,10 @@ a:hover {
     height : 40px;
     background-color : rgba(0,0,0,0.0);
 }
+#bagbar img {
+    float : left;
+    margin : 8px;
+}
 #bagbar .winentry {
     background-color : #777;
     color : #eee;

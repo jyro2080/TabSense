@@ -171,7 +171,11 @@ $(document).ready(function(){
 function load_bag() {
     var bagWinList = Bag.list();
     $('#bagbar').empty();
-    for(var i=0; i < bagWinList.length; i++) {
+    var bagl = bagWinList.length;
+    if(bagl > 0) {
+        $('#bagbar').append($('<img/>').attr('src', WinFrame.saveIcon));
+    }
+    for(var i=0; i < bagl; i++) {
         var w = bagWinList[i];
         var entry = $('<div></div>')
                 .attr('class','winentry')
