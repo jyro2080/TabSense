@@ -81,7 +81,13 @@ Bag.remove = function(winid)
     } else {
         var savedWindowList = [];
     }
-    var idx = savedWindowList.indexOf(winid);
+    var idx = -1;
+    for(var i=0; i < savedWindowList.length; i++) {
+        if(savedWindowList[i] == winid) {
+            idx = i;
+            break;
+        }
+    }
     savedWindowList.splice(idx, 1);
     window.localStorage.setItem(
         'WindowBag', JSON.stringify(savedWindowList));
