@@ -96,7 +96,7 @@ WinFrame.prototype = {
 
     destroy : function() {
         this.elem.detach();
-        windowMap.splice(this.real.id, 1);
+        windowMap[this.real.id] = null;
         var idx = windowList.indexOf(this);
         windowList.splice(idx, 1);
 
