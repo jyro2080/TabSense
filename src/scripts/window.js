@@ -16,17 +16,27 @@ function WinFrame(rwindow, title_str) {
         var text = WinFrame.createTitle("Name this window");
     }
 
+    var email_icon = $('<a></a>')
+                    .attr('class','mailtolink')
+                    .attr('href','')
+                    .append(
+                        $('<img/>')
+                        .attr('class','emailicon')
+                        .attr('src', WinFrame.emailIcon));
+
     var save_icon = $('<img/>').attr('class','saveicon')
                 .attr('src', WinFrame.saveIcon)
                 .click(WinFrame.saveWindow);
 
     var wtitle = $('<div></div>').attr('class','wtitle');
+    wtitle.append(email_icon);
     wtitle.append(save_icon);
     wtitle.append(text);
     this.elem.append(wtitle);
 }
 
 WinFrame.saveIcon = chrome.extension.getURL('images/save.png');
+WinFrame.emailIcon = chrome.extension.getURL('images/email.png');
 
 WinFrame.saveWindow = function(ev) {
     var wid = $(this).parent().parent().attr('id');
@@ -41,7 +51,7 @@ WinFrame.saveWindow = function(ev) {
 WinFrame.createTitle = function(title) {
     return $('<div></div>').attr('class','text').text(title)
         .click(WinFrame.editTitle)
-        .css('width',(winw-100)+'px');
+        .css('width',(winw-150)+'px');
 }
 
 WinFrame.createTitleInput = function() {
@@ -82,6 +92,7 @@ WinFrame.prototype = {
         this.tabArray.push(tab);
         tab.parent = this;
         this.numTabs++;
+        this.updateMailToLink();
     },
 
     removeTab : function(tab) {
@@ -91,6 +102,8 @@ WinFrame.prototype = {
 
         if(this.numTabs == 0) {
             this.destroy();
+        } else {
+            this.updateMailToLink();
         }
     },
 
@@ -158,5 +171,18 @@ WinFrame.prototype = {
         var r = l + this.elem.width();
 
         return ( (x>l) && (x<r) && (y>t) && (y<b) );
+    },
+
+    updateMailToLink : function() {
+        var title = window.localStorage.getItem('window_title_'+this.real.id);
+        var subject = '[TabSense] '+title;
+        var body = 'TabSense Summary of "'+title+'"\n\n';
+        for(var i=0; i<this.numTabs; i++) {
+            var rtab = this.tabArray[i].real;
+            body += rtab.title+'\n[ '+rtab.url+' ]\n\n';
+        }
+        $('.mailtolink', this.elem).attr('href', 
+            'mailto:?subject='+encodeURIComponent(subject)+
+            '&body='+encodeURIComponent(body));
     }
 }

@@ -67,6 +67,11 @@ a:hover {
     margin-right : 10px;
     cursor : pointer;
 }
+.mwin .wtitle .emailicon {
+    float : right;
+    margin-right : 10px;
+    cursor : pointer;
+}
 .mwin .wtitle .text {
     margin-top : 5px;
     white-space : nowrap;
