@@ -1,13 +1,15 @@
 function consume(ev) { return false; }
 
-function Tab(rtab) {
+function Tab(rtab, title, favIconUrl) {
     this.real = rtab;
     this.parent = null;
     this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+rtab.id);
     var elem = this.elem;
 
     var favicon = $('<img/>');
-    if(rtab.favIconUrl) {
+    if(favIconUrl) {
+        favicon.attr('src', favIconUrl).attr('class','favicon');
+    } else if(rtab.favIconUrl) {
         favicon.attr('src', rtab.favIconUrl).attr('class','favicon');
     } else {
         favicon.attr('src', Tab.fallbackIcon).attr('class','favicon');
@@ -25,7 +27,11 @@ function Tab(rtab) {
     this.staricon.hide();
     this.staricon.click(Tab.toggleFav).mousedown(consume).mouseup(consume);
 
-    rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
+    if(title) {
+        rtabtitle = $('<div></div>').attr('class','title').text(title);
+    } else {
+        rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
+    }
 
     var tab = this;
     this.elem.mousedown(function(ev) { tab.pick(ev); });

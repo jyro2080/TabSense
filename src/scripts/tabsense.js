@@ -194,9 +194,13 @@ function bagEntryClicked(ev) {
             $('body').append(wf.elem);
 
             var totalTabs = saved.tabs.length;
+            var tabTitleMap = {};
+            var tabFavIconMap = {};
 
             for(var i=0; i<totalTabs; i++) {
                 var t = saved.tabs[i];
+                tabTitleMap[t.url] = t.title;
+                tabFavIconMap[t.url] = t.favIconUrl;
                 chrome.tabs.create({
                     windowId : win.id,
                     index : t.index,
@@ -204,7 +208,9 @@ function bagEntryClicked(ev) {
                     selected : t.selected
                 }, 
                 function(tab) {
-                    wf.addTab(new Tab(tab));
+                    var title = tabTitleMap[tab.url];
+                    var favIconUrl = tabFavIconMap[tab.url];
+                    wf.addTab(new Tab(tab, title, favIconUrl));
                     if(wf.tabArray.length == totalTabs) {
                         wf.refreshStyle();
                         layout_windows();
