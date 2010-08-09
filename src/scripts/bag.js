@@ -23,7 +23,7 @@ Bag.list = function()
 
     var windows = [];
     for(var i=0; i < savedWindowList.length; i++) {
-        var wid = savedWindowList[i].id;
+        var wid = savedWindowList[i];
         windows.push(JSON.parse(window.localStorage.getItem('Window_'+wid)));
     }
     return windows;
@@ -60,7 +60,7 @@ Bag.save = function(win, title)
         tabs : tabs
     }
 
-    savedWindowList.push({ id : id });
+    savedWindowList.push(id);
 
     window.localStorage.setItem(
         'WindowBag', JSON.stringify(savedWindowList));
