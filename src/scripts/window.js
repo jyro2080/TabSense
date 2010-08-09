@@ -175,8 +175,13 @@ WinFrame.prototype = {
 
     updateMailToLink : function() {
         var title = window.localStorage.getItem('window_title_'+this.real.id);
-        var subject = '[TabSense] '+title;
-        var body = 'TabSense Summary of "'+title+'"\n\n';
+        if(!title) {
+            var subject = 'TabSense Summary';
+            var body = 'TabSense Summary\n\n';
+        } else {
+            var subject = '[TabSense] '+title;
+            var body = 'TabSense Summary of "'+title+'"\n\n';
+        }
         for(var i=0; i<this.numTabs; i++) {
             var rtab = this.tabArray[i].real;
             body += rtab.title+'\n[ '+rtab.url+' ]\n\n';
