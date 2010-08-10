@@ -1,18 +1,6 @@
 <html>
 <head>
-<script>
-chrome.browserAction.onClicked.addListener(
-    function(tab) {
-        chrome.tabs.create({url:
-            chrome.extension.getURL('newtab.html')});
-    }
-);
-chrome.extension.onRequest.addListener(
-    function(request, sender, sendResponse) {
-        chrome.tabs.create({url:
-            chrome.extension.getURL('newtab.html')});
-    }
-);
-</script>
+<script type="text/javascript" src="scripts/db.js"></script>
+<script type="text/javascript" src="scripts/background.js"></script>
 </head>
 </html>
