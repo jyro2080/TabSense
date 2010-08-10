@@ -3,6 +3,7 @@ var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
 
 
+/*
 function processTabs(realtabs) {
     var tl = realtabs.length;
     var wid;
@@ -25,6 +26,7 @@ function processTabs(realtabs) {
         layout_windows();
     }
 }
+*/
 
 var tabOnMove = null;
 
@@ -101,6 +103,7 @@ $(document).ready(function(){
 
     winw = parseInt(dw/NUMCOL);
 
+    /*
     chrome.windows.getAll(null, 
         function(windows) {
 
@@ -118,6 +121,32 @@ $(document).ready(function(){
             }
         }
     );
+    */
+    db.open();
+    db.window.get('',function(tx, results){
+        for(var i=0; i < results.rows.length; i++) {
+            var w = results.rows.item(i);
+            var wf = new WinFrame(w);
+            windowMap[w.wid] = wf;
+            windowList[i] = wf;
+            $('body').append(wf.elem);
+            db.tab.get('WHERE wid = '+w.wid, function(tx, results){
+                var t;
+                for(var i=0; i < results.rows.length; i++) {
+                    t = results.rows.item(i);
+                    tabMap[t.tid] = t;
+                    windowMap[t.wid].addTab(new Tab(t));
+                }
+                windowMap[t.wid].refreshStyle();
+
+                doneWindows++;
+                if(doneWindows == windowList.length) {
+                    layout_windows();
+                }
+            });
+        }
+    });
+
     refresh_favorites();
     
     $('#topbar #search').focus(function() {
@@ -256,7 +285,7 @@ function run_query(query)
         for (i in tabMap) {
             var tabTitle = tabMap[i].title;
             if(tabTitle && tabTitle.toLowerCase().indexOf(query) >= 0) {
-                tab_selector = 'tab_'+tabMap[i].id;
+                tab_selector = 'tab_'+tabMap[i].tid;
                 var wl = windowList.length;
                 for(var j=0; j < wl; j++) {
                     $('#'+tab_selector, windowList[j].elem).css({

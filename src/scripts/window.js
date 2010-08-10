@@ -1,14 +1,14 @@
 
-function WinFrame(rwindow, title_str) { 
+function WinFrame(windb, title_str) { 
     this.tabArray = [];
     this.numTabs = 0;
-    this.real = rwindow;
-    this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+rwindow.id);
+    this.windb = windb;
+    this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+windb.wid);
 
     if(!title_str) {
-        title_str = window.localStorage.getItem('window_title_'+rwindow.id);
+        title_str = window.localStorage.getItem('window_title_'+windb.wid);
     } else {
-        window.localStorage.setItem('window_title_'+rwindow.id, title_str);
+        window.localStorage.setItem('window_title_'+windb.wid, title_str);
     }
     if(title_str) {
         var text = WinFrame.createTitle(title_str);
@@ -44,7 +44,7 @@ WinFrame.saveWindow = function(ev) {
     var win = windowMap[wid];
     Bag.save(win, title);
     win.destroy();
-    chrome.windows.remove(win.real.id);
+    chrome.windows.remove(win.windb.wid);
     load_bag();
 }
 
@@ -109,7 +109,7 @@ WinFrame.prototype = {
 
     destroy : function() {
         this.elem.detach();
-        windowMap[this.real.id] = null;
+        windowMap[this.windb.wid] = null;
         var idx = windowList.indexOf(this);
         windowList.splice(idx, 1);
 
@@ -174,7 +174,7 @@ WinFrame.prototype = {
     },
 
     updateMailToLink : function() {
-        var title = window.localStorage.getItem('window_title_'+this.real.id);
+        var title = this.windb.title;
         if(!title) {
             var subject = 'TabSense Summary';
             var body = 'TabSense Summary\n\n';
@@ -183,8 +183,8 @@ WinFrame.prototype = {
             var body = 'TabSense Summary of "'+title+'"\n\n';
         }
         for(var i=0; i<this.numTabs; i++) {
-            var rtab = this.tabArray[i].real;
-            body += rtab.title+'\n[ '+rtab.url+' ]\n\n';
+            var tabdb = this.tabArray[i].tabdb;
+            body += tabdb.title+'\n[ '+tabdb.url+' ]\n\n';
         }
         $('.mailtolink', this.elem).attr('href', 
             'mailto:?subject='+encodeURIComponent(subject)+

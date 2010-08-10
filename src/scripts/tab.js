@@ -1,23 +1,23 @@
 function consume(ev) { return false; }
 
-function Tab(rtab, title, favIconUrl) {
-    this.real = rtab;
+function Tab(tabdb, title, favIconUrl) {
     this.parent = null;
-    this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+rtab.id);
+    this.tabdb = tabdb;
+    this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+tabdb.tid);
     var elem = this.elem;
 
     var favicon = $('<img/>');
     if(favIconUrl) {
         favicon.attr('src', favIconUrl).attr('class','favicon');
-    } else if(rtab.favIconUrl) {
-        favicon.attr('src', rtab.favIconUrl).attr('class','favicon');
+    } else if(tabdb.faviconurl) {
+        favicon.attr('src', tabdb.faviconurl).attr('class','favicon');
     } else {
         favicon.attr('src', Tab.fallbackIcon).attr('class','favicon');
     }
     this.elem.append(favicon);
 
     this.staricon = $('<img/>');
-    if(Fav.is(rtab.url)) {
+    if(Fav.is(tabdb.url)) {
         this.staricon.attr('src', Tab.starOn);
     } else {
         this.staricon.attr('src', Tab.starOff);
@@ -30,7 +30,7 @@ function Tab(rtab, title, favIconUrl) {
     if(title) {
         rtabtitle = $('<div></div>').attr('class','title').text(title);
     } else {
-        rtabtitle = $('<div></div>').attr('class','title').text(rtab.title);
+        rtabtitle = $('<div></div>').attr('class','title').text(tabdb.title);
     }
 
     var tab = this;
@@ -129,8 +129,8 @@ Tab.prototype = {
             if(win.contains(ev.clientX, ev.clientY)) {
                 win.addTab(this);
                 win.refreshStyle();
-                chrome.tabs.move(this.real.id, 
-                    { windowId : win.real.id, index:100 });
+                chrome.tabs.move(this.tabdb.tid, 
+                    { windowId : win.windb.wid, index:100 });
                 relayout_column(get_column(ev.clientX));
                 return;
             }
@@ -142,7 +142,7 @@ Tab.prototype = {
 
         function removeAllButThisTab(tabs) {
             for(var i=0; i < tabs.length; i++) {
-                if(tabs[i].id != thistab.real.id) {
+                if(tabs[i].id != thistab.tabdb.tid) {
                     chrome.tabs.remove(tabs[i].id);
                 }
             }
@@ -162,7 +162,7 @@ Tab.prototype = {
                 winColumns[dropcol].push(wf);
                 relayout_column(dropcol);
 
-                chrome.tabs.move(thistab.real.id,
+                chrome.tabs.move(thistab.tabdb.tid,
                     { windowId : win.id, index:0 },
                     function() {
                         chrome.tabs.getAllInWindow(
