@@ -71,6 +71,17 @@ chrome.tabs.onRemoved.addListener(
     }
 );
 
+function triggerUIRefresh() {
+    db.tab.get('WHERE url LIKE \'chrome-extension://%/newtab.html\'',
+        function(tx, r) {
+            for(var i=0; i < r.rows.length; i++) {
+                var tab = r.rows.item(i);
+                chrome.tabs.sendRequest(tab.tid, { msg: "RELOAD" });
+            }
+        }
+    );
+}
+
 
 chrome.tabs.onAttached.addListener(
     function(tid, attachInfo) {
