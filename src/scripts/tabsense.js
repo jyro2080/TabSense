@@ -97,37 +97,36 @@ var NUMCOL = 3;
 var CEILING = 50;
 
 function setup_windows() {
-    winColumns = new Array(NUMCOL);
-    doneWindows = 0;
-    windowMap = [];
-    windowList = [];
+    chrome.extension.sendRequest( {action:'listwindows'}, 
+        function(results) { 
+            for(var i=0; i < results.length; i++) {
+                var w = results[i];
+                var wf = new WinFrame(w);
+                windowMap[w.wid] = wf;
+                windowList[i] = wf;
+                $('body').append(wf.elem);
+                chrome.extension.sendRequest(
+                    { action:'listtabs', condition:'WHERE wid = '+w.wid }, 
+                    function(results) {
+                        var t;
+                        for(var i=0; i < results.length; i++) {
+                            t = results[i];
+                            tabMap[t.tid] = t;
+                            windowMap[t.wid].addTab(new Tab(t));
+                        }
+                        windowMap[t.wid].refreshStyle();
 
-    db.window.get('',function(tx, results){
-        for(var i=0; i < results.rows.length; i++) {
-            var w = results.rows.item(i);
-            var wf = new WinFrame(w);
-            windowMap[w.wid] = wf;
-            windowList[i] = wf;
-            $('body').append(wf.elem);
-            db.tab.get('WHERE wid = '+w.wid, function(tx, results){
-                var t;
-                for(var i=0; i < results.rows.length; i++) {
-                    t = results.rows.item(i);
-                    tabMap[t.tid] = t;
-                    windowMap[t.wid].addTab(new Tab(t));
-                }
-                windowMap[t.wid].refreshStyle();
-
-                doneWindows++;
-                if(doneWindows == windowList.length) {
-                    layout_windows();
-                }
-            });
+                        doneWindows++;
+                        if(doneWindows == windowList.length) {
+                            layout_windows();
+                        }
+                    }
+                );
+            }
         }
-    });
+    );
 }
 $(document).ready(function(){
-
     dw = $(document).width();
     dh = $(document).height();
 
@@ -151,8 +150,8 @@ $(document).ready(function(){
             }
         }
     );
-    */
     db.open();
+    */
 
     setup_windows();
 
@@ -204,7 +203,6 @@ $(document).ready(function(){
     })
 
     load_bag();
-
 
     chrome.extension.onRequest.addListener(
         function(request, sender, sendResponse) {
