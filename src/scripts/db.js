@@ -12,7 +12,7 @@ db.open = function() {
         tx.executeSql('CREATE TABLE IF NOT EXISTS '+
             'Tab(id INTEGER PRIMARY KEY ASC, tid INTEGER, title TEXT, '+
             'url TEXT, faviconurl TEXT, wid INTEGER, parent INTEGER, '+
-            'idx INTEGER, depth INTEGER)',
+            'idx INTEGER, depth INTEGER, status TEXT)',
             [], db.onSuccess, db.onError);
     });
 }
