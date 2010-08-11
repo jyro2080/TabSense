@@ -162,6 +162,10 @@ function triggerUIRefresh() {
 chrome.tabs.onAttached.addListener(
     function(tid, attachInfo) {
         // Update our data model
+        db.tab.update('wid = ?', 'WHERE tid = ?', 
+            [attachInfo.newWindowId, tid]); 
+        console.debug('ATTACHED: trigger UI refresh '+tid);
+        triggerUIRefresh();
     }
 );
 chrome.tabs.onDetached.addListener(
@@ -171,7 +175,6 @@ chrome.tabs.onDetached.addListener(
 );
 chrome.tabs.onMoved.addListener(
     function(tid, moveInfo) {
-        // Update our data model
     }
 );
 
@@ -183,5 +186,14 @@ chrome.windows.onRemoved.addListener(
     function(wid) {
         db.window.del('WHERE wid = '+wid);
         db.tab.del('WHERE wid = '+wid);
+        console.debug('WINREMOVE: trigger UI refresh '+wid);
+        triggerUIRefresh();
+    }
+);
+chrome.windows.onCreated.addListener(
+    function(win) {
+        db.put(new db.window(win.id, null));
+        console.debug('WINCREATE: trigger UI refresh '+win.id);
+        triggerUIRefresh();
     }
 );
