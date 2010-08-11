@@ -45,8 +45,16 @@ function processTabs(tabs) {
  */
 
 chrome.tabs.onUpdated.addListener(
+    // Update tab entry in our data model
     function(tid, changeInfo, tab) {
-        // Update tab entry in our data model
+        console.log('Updating '+tab.favIconUrl);
+        db.tab.update('url = ?, status =  ?, title = ?, faviconurl = ? ', 
+                    'WHERE tid = ?',
+                    [tab.url, tab.status, tab.title, tab.favIconUrl, tid]); 
+        if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
+            console.log('trigger UI refresh');
+            triggerUIRefresh();
+        }
     }
 );
 
@@ -63,11 +71,17 @@ chrome.tabs.onCreated.addListener(
         // Is this a new tab or has a URL already?
         // If it's a new tab: its depth is zero (root tab)
         // else: it's a child of currently (or previously) selected tab
+        db.put(new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
+                            tab.index, tab.windowId));
+        if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
+            triggerUIRefresh();
+        }
     }
 );
 chrome.tabs.onRemoved.addListener(
     function(tid) {
-        // Update our data model
+        db.tab.del('WHERE tid = '+tid);
+        triggerUIRefresh();
     }
 );
 
@@ -99,3 +113,13 @@ chrome.tabs.onMoved.addListener(
     }
 );
 
+
+/*
+ * Window event listeners
+ */
+chrome.windows.onRemoved.addListener(
+    function(wid) {
+        db.window.del('WHERE wid = '+wid);
+        db.tab.del('WHERE wid = '+wid);
+    }
+);
