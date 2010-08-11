@@ -96,6 +96,36 @@ var VMARGIN = 20;
 var NUMCOL = 3;
 var CEILING = 50;
 
+function setup_windows() {
+    winColumns = new Array(NUMCOL);
+    doneWindows = 0;
+    windowMap = [];
+    windowList = [];
+
+    db.window.get('',function(tx, results){
+        for(var i=0; i < results.rows.length; i++) {
+            var w = results.rows.item(i);
+            var wf = new WinFrame(w);
+            windowMap[w.wid] = wf;
+            windowList[i] = wf;
+            $('body').append(wf.elem);
+            db.tab.get('WHERE wid = '+w.wid, function(tx, results){
+                var t;
+                for(var i=0; i < results.rows.length; i++) {
+                    t = results.rows.item(i);
+                    tabMap[t.tid] = t;
+                    windowMap[t.wid].addTab(new Tab(t));
+                }
+                windowMap[t.wid].refreshStyle();
+
+                doneWindows++;
+                if(doneWindows == windowList.length) {
+                    layout_windows();
+                }
+            });
+        }
+    });
+}
 $(document).ready(function(){
 
     dw = $(document).width();
@@ -123,29 +153,8 @@ $(document).ready(function(){
     );
     */
     db.open();
-    db.window.get('',function(tx, results){
-        for(var i=0; i < results.rows.length; i++) {
-            var w = results.rows.item(i);
-            var wf = new WinFrame(w);
-            windowMap[w.wid] = wf;
-            windowList[i] = wf;
-            $('body').append(wf.elem);
-            db.tab.get('WHERE wid = '+w.wid, function(tx, results){
-                var t;
-                for(var i=0; i < results.rows.length; i++) {
-                    t = results.rows.item(i);
-                    tabMap[t.tid] = t;
-                    windowMap[t.wid].addTab(new Tab(t));
-                }
-                windowMap[t.wid].refreshStyle();
 
-                doneWindows++;
-                if(doneWindows == windowList.length) {
-                    layout_windows();
-                }
-            });
-        }
-    });
+    setup_windows();
 
     refresh_favorites();
     
