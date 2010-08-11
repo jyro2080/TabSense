@@ -35,13 +35,14 @@ db.onSuccess = function(tx, r) {
 }
 
 
-db.put = function(obj) {
+db.put = function(obj, successCb) {
+    var onSuccess = successCb || db.onSuccess;
     if(obj.constructor == db.window) {
         var win = obj;
         this.DB.transaction(function(tx) {
             tx.executeSql('INSERT INTO Window(wid, title) VALUES (?,?)',
                 [win.wid, win.title],
-                db.onSuccess,
+                onSuccess,
                 db.onError);
         });
     } else if(obj.constructor == db.tab) {
