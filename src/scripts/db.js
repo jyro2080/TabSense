@@ -49,8 +49,9 @@ db.put = function(obj) {
         this.DB.transaction(function(tx) {
             tx.executeSql('INSERT INTO Tab(tid, title, url, faviconurl, '+
                 'wid, parent, idx, depth) VALUES (?,?,?,?,?,?,?,?)',
-                [tab.tid, tab.title, tab.url, tab.faviconurl, tab.wid, 0,0,0],
-                db.onSuccess,
+                [ tab.tid, tab.title, tab.url, tab.faviconurl, tab.wid, 
+                    tab.parent, tab.index, tab.depth ],
+                onSuccess,
                 db.onError);
         });
     } else {
@@ -77,13 +78,15 @@ db.window.del = function(condition, onSuccess) {
     });
 }
 
-db.tab = function(tid, title, url, faviconurl, index, wid) {
+db.tab = function(tid, title, url, faviconurl, index, wid, parent, depth) {
     this.tid = tid;
     this.title = title;
     this.url = url;
     this.faviconurl = faviconurl;
     this.index = index;
     this.wid = wid;
+    this.parent = parent || -1;
+    this.depth = depth || 0;
 }
 
 db.tab.get = function(condition, onSuccess) {
