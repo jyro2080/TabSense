@@ -5,7 +5,7 @@ function keyboardNavigation(e) {
   switch(e.which) { 
      case shift_s: 
          if (e.ctrlKey) { 
-            chrome.extension.sendRequest({}); 
+            chrome.extension.sendRequest({action : 'openui'}); 
          } 
          break; 
   } 
