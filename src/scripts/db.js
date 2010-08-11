@@ -70,6 +70,13 @@ db.window.get = function(condition, onSuccess) {
     });
 }
 
+db.window.del = function(condition, onSuccess) {
+    db.DB.transaction(function(tx) {
+        tx.executeSql('DELETE FROM Window '+condition, [],
+            onSuccess, db.onError);
+    });
+}
+
 db.tab = function(tid, title, url, faviconurl, index, wid) {
     this.tid = tid;
     this.title = title;
@@ -82,6 +89,20 @@ db.tab = function(tid, title, url, faviconurl, index, wid) {
 db.tab.get = function(condition, onSuccess) {
     db.DB.transaction(function(tx) {
         tx.executeSql('SELECT * FROM Tab '+condition, [],
+            onSuccess, db.onError);
+    });
+}
+
+db.tab.del = function(condition, onSuccess) {
+    db.DB.transaction(function(tx) {
+        tx.executeSql('DELETE FROM Tab '+condition, [],
+            onSuccess, db.onError);
+    });
+}
+
+db.tab.update = function(set, condition, data, onSuccess) {
+    db.DB.transaction(function(tx) {
+        tx.executeSql('UPDATE Tab SET '+set+condition, data,
             onSuccess, db.onError);
     });
 }
