@@ -114,7 +114,23 @@ chrome.tabs.onSelectionChanged.addListener(
     function(tid, selectInfo) {
         // Update the current selected tab. 
         // This will be the parent tab of newly created tabs
-        currentTab = tid;
+        db.tab.get('WHERE tid = '+tid, function(tx, r) {
+                if(r.rows.length != 1) {
+                    console.error('How many tabs u want? '+r.rows.length);
+                    return;
+                }
+                var t = r.rows.item(0);
+                currentTab = {
+                    tid : t.tid,
+                    title : t.title,
+                    url : t.url,
+                    faviconurl : t.faviconurl,
+                    index : t.index,
+                    wid : t.wid,
+                    parent : t.parent,
+                    depth : t.depth
+                }
+            });
     }
 );
 
@@ -129,7 +145,8 @@ chrome.tabs.onCreated.addListener(
                             tab.index, tab.windowId, 0, 0);
         } else {
             var t = new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
-                            tab.index, tab.windowId, currentTab, 1); // TODO
+                            tab.index, tab.windowId, 
+                            currentTab.tid, currentTab.depth+1); 
         }
         db.put(t, function(tx, r) {console.log('tab put done');});
         if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
