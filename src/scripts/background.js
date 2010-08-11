@@ -29,7 +29,6 @@ function processWindows(windows) {
 
         chrome.tabs.getAllInWindow(w.id, processTabs);
     }
-
 }
 
 function processTabs(tabs) {
@@ -39,12 +38,6 @@ function processTabs(tabs) {
         db.put(new db.tab(t.id, t.title, t.url, t.favIconUrl, 
                             t.index, t.windowId));
     }
-
-    db.tab.get('',function(tx, results){
-        for(var i=0; i < results.rows.length; i++) {
-            console.log(results.rows.item(i));
-        }
-    });
 }
 
 /*
