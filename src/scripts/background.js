@@ -7,10 +7,52 @@ chrome.browserAction.onClicked.addListener(
 );
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
+        if(request.action == 'openui') {
         chrome.tabs.create({url:
             chrome.extension.getURL('newtab.html')});
+        } else if(request.action == 'listwindows') {
+            db.window.get('',function(tx, results){
+                    console.log('sending windows back');
+                    sendResponse(getWindows(results));
+                });
+        } else if(request.action == 'listtabs') {
+            db.tab.get(request.condition,function(tx, results){
+                    console.log('sending tabs back');
+                    sendResponse(getTabs(results));
+                });
+        }
     }
 );
+
+function getWindows(results) {
+    var warr = [];
+    for(var i=0; i < results.rows.length; i++) {
+        var w = results.rows.item(i);
+        warr.push({
+            wid : w.wid,
+            title : w.title
+        });
+    }
+    return warr;
+}
+
+function getTabs(results) {
+    var tarr = [];
+    for(var i=0; i < results.rows.length; i++) {
+        var t = results.rows.item(i);
+        tarr.push({
+            tid : t.tid,
+            wid : t.wid,
+            title : t.title,
+            url : t.url,
+            faviconurl : t.faviconurl,
+            index : t.index,
+            parent : t.parent,
+            depth : t.depth
+        });
+    }
+    return tarr;
+}
 
 /*
  * Create initial data structure
@@ -35,11 +77,22 @@ function processTabs(tabs) {
     var tl = tabs.length;
     for(var i=0; i < tl; i++) {
         var t = tabs[i];
+        t.favIconUrl = sanitizeFavIcon(t.favIconUrl);
         db.put(new db.tab(t.id, t.title, t.url, t.favIconUrl, 
                             t.index, t.windowId));
     }
 }
+fallbackIcon = chrome.extension.getURL('images/icon28.png');
+function sanitizeFavIcon(fi) {
+    if(fi == undefined || fi == null || fi.length == 0) {
+        return fallbackIcon;
+    } else {
+        return fi;
+    }
+}
 
+
+var currentTab = null;
 /*
  * Tab Event listeners
  */
@@ -47,12 +100,11 @@ function processTabs(tabs) {
 chrome.tabs.onUpdated.addListener(
     // Update tab entry in our data model
     function(tid, changeInfo, tab) {
-        console.log('Updating '+tab.favIconUrl);
+        tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
         db.tab.update('url = ?, status =  ?, title = ?, faviconurl = ? ', 
                     'WHERE tid = ?',
                     [tab.url, tab.status, tab.title, tab.favIconUrl, tid]); 
         if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
-            console.log('trigger UI refresh');
             triggerUIRefresh();
         }
     }
@@ -62,6 +114,7 @@ chrome.tabs.onSelectionChanged.addListener(
     function(tid, selectInfo) {
         // Update the current selected tab. 
         // This will be the parent tab of newly created tabs
+        currentTab = tid;
     }
 );
 
@@ -71,16 +124,25 @@ chrome.tabs.onCreated.addListener(
         // Is this a new tab or has a URL already?
         // If it's a new tab: its depth is zero (root tab)
         // else: it's a child of currently (or previously) selected tab
-        db.put(new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
-                            tab.index, tab.windowId));
+        if(tab.url == 'chrome://newtab/') {
+            var t = new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
+                            tab.index, tab.windowId, 0, 0);
+        } else {
+            var t = new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
+                            tab.index, tab.windowId, currentTab, 1); // TODO
+        }
+        db.put(t, function(tx, r) {console.log('tab put done');});
         if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
+            console.debug('CREATE: trigger UI refresh '+tab.url);
             triggerUIRefresh();
         }
     }
 );
 chrome.tabs.onRemoved.addListener(
     function(tid) {
-        db.tab.del('WHERE tid = '+tid);
+        db.tab.del('WHERE tid = '+tid,
+            function(tx, r) {console.log('tab del done');});
+        console.debug('REMOVE: trigger UI refresh '+tid);
         triggerUIRefresh();
     }
 );
