@@ -13,7 +13,7 @@ function getColumnHeight(colNum) {
 }
 
 function layout_windows() {
-    windowList.sort(function(a,b) { return (b.numTabs-a.numTabs); });
+    windowMap.sort(function(a,b) { return (b.numTabs-a.numTabs); });
     for(var i=0; i<NUMCOL; i++) {winColumns[i]=[];}
 
     function columnNumber(counter) {
@@ -24,25 +24,31 @@ function layout_windows() {
 
 
     var colCount = 0;
-    for(var i=0; i < windowList.length; i++) {
+    for(i in windowMap) {
 
         colCount = columnNumber(i);
 
-        var wh = windowList[i].elem.height();
+        var wh = windowMap[i].elem.height();
 
         if(!winColumns[colCount]) winColumns[colCount] = [];
 
-        windowList[i].setLocation(
+        windowMap[i].setLocation(
             getColumnHeight(colCount),
-            (colCount*windowList[i].elem.width()+(colCount+0.5) * HMARGIN));
+            (colCount*windowMap[i].elem.width()+(colCount+0.5) * HMARGIN));
 
-        winColumns[colCount].push(windowList[i]);
+        winColumns[colCount].push(windowMap[i]);
     }
 }
 
 function get_column(x) {
-    return parseInt((x - 0.5*HMARGIN)/windowList[0].elem.width());
+    var width;
+    for(i in windowMap) {
+        width = windowMap[i].elem.width();
+        break;
+    }
+    return parseInt((x - 0.5*HMARGIN)/width);
 }
+
 function relayout_column(colnum) {
     var column = winColumns[colnum];
     var wl = column.splice(0); // copy array and empty it
@@ -60,7 +66,6 @@ var winColumns = new Array(NUMCOL);
 
 var tabMap = [];
 var windowMap = [];
-var windowList = [];
 var doneWindows = 0;
 var dw, dh, winw;
 var HMARGIN = 30;
@@ -68,14 +73,16 @@ var VMARGIN = 20;
 var NUMCOL = 3;
 var CEILING = 50;
 
+var total_window = 0;
+
 function setup_windows() {
     chrome.extension.sendRequest( {action:'listwindows'}, 
         function(results) { 
-            for(var i=0; i < results.length; i++) {
+            total_windows = results.length;
+            for(var i=0; i < total_windows; i++) {
                 var w = results[i];
                 var wf = new WinFrame(w);
                 windowMap[w.wid] = wf;
-                windowList[i] = wf;
                 $('body').append(wf.elem);
                 chrome.extension.sendRequest(
                     { action:'listtabs', condition:'WHERE wid = '+w.wid }, 
@@ -89,7 +96,7 @@ function setup_windows() {
                         windowMap[t.wid].refreshStyle();
 
                         doneWindows++;
-                        if(doneWindows == windowList.length) {
+                        if(doneWindows == total_windows) {
                             layout_windows();
                         }
                     }
@@ -193,7 +200,6 @@ function bagEntryClicked(ev) {
         function(win) {
             var wf = new WinFrame(win, saved.title);
             windowMap[win.id] = wf;
-            windowList.push(wf);
             $('body').append(wf.elem);
 
             var totalTabs = saved.tabs.length;
@@ -240,9 +246,8 @@ function position_infopanel() {
 
 function blur_all_tabs(yes)
 {
-    var wl = windowList.length;
-    for(var i=0; i < wl; i++) {
-        var win = windowList[i];
+    for(i in windowMap) {
+        var win = windowMap[i];
         (yes ? win.blurTabs : win.unblurTabs)();
     }
 }
@@ -256,9 +261,8 @@ function run_query(query)
             var tabTitle = tabMap[i].title;
             if(tabTitle && tabTitle.toLowerCase().indexOf(query) >= 0) {
                 tab_selector = 'tab_'+tabMap[i].tid;
-                var wl = windowList.length;
-                for(var j=0; j < wl; j++) {
-                    $('#'+tab_selector, windowList[j].elem).css({
+                for(j in windowMap) {
+                    $('#'+tab_selector, windowMap[j].elem).css({
                         'color':'#000'
                     });
                 }
