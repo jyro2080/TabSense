@@ -2,34 +2,6 @@ var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.p
 var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
 
-
-/*
-function processTabs(realtabs) {
-    var tl = realtabs.length;
-    var wid;
-    for(var j=0; j < tl; j++) {
-        var rtab = realtabs[j];
-        wid = rtab.windowId;
-
-        tabMap[rtab.id] = rtab;
-
-        mtab = new Tab(rtab);
-
-        windowMap[wid].addTab(mtab);
-    }
-
-    windowMap[wid].refreshStyle();
-
-    doneWindows++;
-
-    if(doneWindows == windowList.length) {
-        layout_windows();
-    }
-}
-*/
-
-var tabOnMove = null;
-
 function getColumnHeight(colNum) {
     var h = CEILING;
     for(var i=0; i < winColumns[colNum].length; i++) {
@@ -131,27 +103,6 @@ $(document).ready(function(){
     dh = $(document).height();
 
     winw = parseInt(dw/NUMCOL);
-
-    /*
-    chrome.windows.getAll(null, 
-        function(windows) {
-
-            var wl = windows.length;
-            for(var i=0; i < wl; i++) {
-
-                var mwin = new WinFrame(windows[i]);
-
-                windowMap[windows[i].id] = mwin;
-                windowList[i] = mwin;
-
-                $('body').append(mwin.elem);
-
-                chrome.tabs.getAllInWindow(windows[i].id, processTabs);
-            }
-        }
-    );
-    db.open();
-    */
 
     setup_windows();
 
