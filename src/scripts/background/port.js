@@ -24,6 +24,11 @@ chrome.extension.onConnect.addListener(
                             port.postMessage({ name:'listtabs',
                                     tabs:getTabs(results) });
                         });
+                } else if(op.name == 'tabmove') {
+                    ignoreTabAttach = op.tid;
+                    ignoreTabDetach = op.tid;
+                    chrome.tabs.move(op.tid, { windowId:op.wid, index:100 });
+                    db.tab.update('wid = ? ','WHERE tid = ?',[op.wid, op.tid]); 
                 }
             }
         );

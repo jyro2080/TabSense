@@ -145,8 +145,8 @@ Tab.prototype = {
             if(win.contains(ev.clientX, ev.clientY)) {
                 win.addTab(this);
                 win.refreshStyle();
-                chrome.extension.sendRequest({
-                    action : 'tabmove',
+                port.postMessage({
+                    name : 'tabmove',
                     tid : this.tabdb.tid,
                     wid : win.windb.wid
                 });
