@@ -16,7 +16,7 @@
   },
   "content_scripts":[{
     "matches" : ["http://*/*","https://*/*","ftp://*/*"],
-    "js" : ["scripts/register_key_shortcut.js"],
+    "js" : ["scripts/background/register_key_shortcut.js"],
     "run_at" : "document_start"
   }],
   "permissions": [
