@@ -100,15 +100,17 @@ Tab.mouseleave = function(ev) {
 
 Tab.prototype = {
     pick : function(ev) {
+        UI.detach_tab(this);
+        UI.relayout_column(UI.get_column(ev.clientX));
+    },
+
+    detach : function(top, left) {
         this.elem.css({
             'position':'absolute',
-            'top' : (ev.clientY - 15)+'px',
-            'left' : (ev.clientX - winw/2)+'px',
+            'top' : top+'px',
+            'left' : left+'px',
             '-webkit-box-shadow' : 'rgba(20,20,20,1) 1px 1px 5px'
             });
-        this.parent.removeTab(this);
-        this.parent.refreshStyle();
-        relayout_column(get_column(ev.clientX));
         this.inTransit = true;
     },
 
@@ -116,14 +118,12 @@ Tab.prototype = {
         if(this.inTransit) {
             this.elem.css({
                 'top' : (ev.clientY - 15)+'px',
-                'left' : (ev.clientX - winw/2)+'px'
+                'left' : (ev.clientX - UI.winw/2)+'px'
             });
         }
     },
 
-    drop : function(ev) {
-        if(!this.inTransit) return;
-
+    attach : function() {
         this.inTransit = false;
 
         this.elem.css({
@@ -132,21 +132,27 @@ Tab.prototype = {
             'top':'0px',
             'left':'0px'
             });
+    },
+
+    drop : function(ev) {
+        if(!this.inTransit) return;
+
+        this.attach();
 
         // Check on which window are we dropping
-        var wl = windowList.length;
-        for(var i=0; i < wl; i++) {
-            var win = windowList[i];
+        for(i in UI.wMap) {
+            var win = UI.wMap[i];
             if(win.contains(ev.clientX, ev.clientY)) {
                 win.addTab(this);
                 win.refreshStyle();
-                chrome.tabs.move(this.tabdb.tid, 
-                    { windowId : win.windb.wid, index:100 });
-                relayout_column(get_column(ev.clientX));
+                //chrome.tabs.move(this.tabdb.tid, 
+                //    { windowId : win.windb.wid, index:100 });
+                UI.relayout_column(UI.get_column(ev.clientX));
                 return;
             }
         }
 
+        /*
         // Not dropped on a window, create a new one
         var thistab = this;
         var dropcol = get_column(ev.clientX);
@@ -181,6 +187,7 @@ Tab.prototype = {
                     });
             }
         );
+        */
     },
 }
 
