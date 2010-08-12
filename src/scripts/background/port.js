@@ -1,5 +1,6 @@
 
-var uiports = {};
+var uitab = -1;
+var uiport = null;
 
 chrome.extension.onConnect.addListener(
     function(port) {
@@ -7,9 +8,12 @@ chrome.extension.onConnect.addListener(
         port.onMessage.addListener(
             function(op) {
                 if(op.name == 'register') {
-                    console.log(op.tabid+' registered successfully');
-                    uiports[op.tabid] = 
-                        chrome.tabs.connect(op.tabid, { name:'bg2ui' });
+                    if(uitab >= 0) {
+                        // close previously registered ui tab
+                        chrome.tabs.remove(uitab);
+                    }
+                    uitab = op.tabid;
+                    uiport = chrome.tabs.connect(uitab, { name:'bg2ui' });
                 } else if(op.name == 'listwindows') {
                     db.window.get('',function(tx, results){
                             port.postMessage({ name:'listwindows',
