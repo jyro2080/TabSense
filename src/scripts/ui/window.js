@@ -51,7 +51,7 @@ WinFrame.saveWindow = function(ev) {
 WinFrame.createTitle = function(title) {
     return $('<div></div>').attr('class','text').text(title)
         .click(WinFrame.editTitle)
-        .css('width',(winw-150)+'px');
+        .css('width',(UI.winw-150)+'px');
 }
 
 WinFrame.createTitleInput = function() {

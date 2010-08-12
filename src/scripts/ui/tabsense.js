@@ -2,16 +2,8 @@ var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.p
 var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
 
-function getColumnHeight(colNum) {
-    var h = CEILING;
-    for(var i=0; i < winColumns[colNum].length; i++) {
-        var w = winColumns[colNum][i];
-        var height = w.elem.height() + VMARGIN;
-        h += height;
-    }
-    return h;
-}
 
+/*
 function layout_windows() {
     windowMap.sort(function(a,b) { return (b.numTabs-a.numTabs); });
     for(var i=0; i<NUMCOL; i++) {winColumns[i]=[];}
@@ -39,6 +31,7 @@ function layout_windows() {
         winColumns[colCount].push(windowMap[i]);
     }
 }
+*/
 
 function get_column(x) {
     var width;
@@ -78,26 +71,26 @@ var total_window = 0;
 function setup_windows() {
     chrome.extension.sendRequest( {action:'listwindows'}, 
         function(results) { 
-            total_windows = results.length;
-            for(var i=0; i < total_windows; i++) {
+            UI.totalWindows = results.length;
+            for(var i=0; i < UI.totalWindows; i++) {
                 var w = results[i];
-                var wf = new WinFrame(w);
-                windowMap[w.wid] = wf;
-                $('body').append(wf.elem);
+                UI.add_window(new WinFrame(w));
+
                 chrome.extension.sendRequest(
                     { action:'listtabs', condition:'WHERE wid = '+w.wid }, 
                     function(results) {
-                        var t;
+                        var t = null;
                         for(var i=0; i < results.length; i++) {
                             t = results[i];
-                            tabMap[t.tid] = t;
-                            windowMap[t.wid].addTab(new Tab(t));
+                            UI.attach_tab(new Tab(t));
                         }
-                        windowMap[t.wid].refreshStyle();
+                        if(t) {
+                            UI.wMap[t.wid].refreshStyle();
+                        }
 
                         doneWindows++;
-                        if(doneWindows == total_windows) {
-                            layout_windows();
+                        if(doneWindows == UI.totalWindows) {
+                            UI.layout_windows();
                         }
                     }
                 );
@@ -105,11 +98,10 @@ function setup_windows() {
         }
     );
 }
+var ui;
 $(document).ready(function(){
-    dw = $(document).width();
-    dh = $(document).height();
 
-    winw = parseInt(dw/NUMCOL);
+    ui = UI(); 
 
     setup_windows();
 
@@ -126,8 +118,8 @@ $(document).ready(function(){
         run_query($(this).val());
     });
 
-    $('#creator').css('top',(dh-40)+'px');
-    $('#creator').css('left',(dw-120)+'px');
+    $('#creator').css('top',(UI.dh-40)+'px');
+    $('#creator').css('left',(UI.dw-120)+'px');
 
     $('#topbar #info').click(function(ev) {
         if($.trim($('#infopanel').html()) === '') {
@@ -156,8 +148,8 @@ $(document).ready(function(){
     position_infopanel();
 
     $('#bagbar').css({
-        'top' : (dh-40)+'px',
-        'width' : (dw-140)+'px'
+        'top' : (UI.dh-40)+'px',
+        'width' : (UI.dw-140)+'px'
     })
 
     load_bag();
@@ -236,8 +228,8 @@ function bagEntryClicked(ev) {
 function position_infopanel() {
     var ipw = 550;
     var iph = 600;
-    var left = (dw - ipw)/2;
-    var top = (dh - iph)/2;
+    var left = (UI.dw - ipw)/2;
+    var top = (UI.dh - iph)/2;
     $('#infopanel').css({
         'left' : left+'px',
         'top' : top+'px'

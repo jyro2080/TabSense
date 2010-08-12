@@ -49,13 +49,13 @@ function Tab(tabdb, title, favIconUrl) {
     var STEP = 20;
     this.elem.css({
         'margin-left' : (STEP*tabdb.depth)+'px',
-        'width' : (winw-50-STEP*tabdb.depth)+'px'
+        'width' : (UI.winw-50-STEP*tabdb.depth)+'px'
     });
     $('div', this.elem).css({
-        'width' : (winw-140-STEP*tabdb.depth)+'px'
+        'width' : (UI.winw-140-STEP*tabdb.depth)+'px'
     });
-        //$('.mtab', this.elem).css({'width': (winw-50)+'px'})
-        //$('.mtab > div', this.elem).css({'width': (winw-140)+'px'})
+        //$('.mtab', this.elem).css({'width': (UI.winw-50)+'px'})
+        //$('.mtab > div', this.elem).css({'width': (UI.winw-140)+'px'})
 }
 
 Tab.fallbackIcon = chrome.extension.getURL('images/icon28.png');
