@@ -68,7 +68,33 @@ var CEILING = 50;
 
 var total_window = 0;
 
+function process_windows(windows) {
+    UI.totalWindows = windows.length;
+    for(var i=0; i < UI.totalWindows; i++) {
+        var w = windows[i];
+        UI.add_window(new WinFrame(w));
+
+        port.postMessage({ name:'listtabs',condition:'WHERE wid = '+w.wid });
+    }
+}
+
+function process_tabs(tabs) {
+    var t = null;
+    for(var i=0; i < tabs.length; i++) {
+        t = tabs[i];
+        UI.attach_tab(new Tab(t));
+    }
+    if(t) { UI.wMap[t.wid].refreshStyle(); }
+
+    doneWindows++;
+    if(doneWindows == UI.totalWindows) {
+        UI.layout_windows();
+    }
+}
+
 function setup_windows() {
+    port.postMessage({ name:'listwindows' });
+    /*
     chrome.extension.sendRequest( {action:'listwindows'}, 
         function(results) { 
             UI.totalWindows = results.length;
@@ -97,6 +123,7 @@ function setup_windows() {
             }
         }
     );
+    */
 }
 var ui;
 $(document).ready(function(){
