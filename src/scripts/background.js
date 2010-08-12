@@ -8,8 +8,8 @@ chrome.browserAction.onClicked.addListener(
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
         if(request.action == 'openui') {
-        chrome.tabs.create({url:
-            chrome.extension.getURL('newtab.html')});
+            chrome.tabs.create({url:
+                chrome.extension.getURL('newtab.html')});
         } else if(request.action == 'listwindows') {
             db.window.get('',function(tx, results){
                     console.log('sending windows back');
