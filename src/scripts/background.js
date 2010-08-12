@@ -51,7 +51,21 @@ function getTabs(results) {
             depth : t.depth
         });
     }
-    return tarr;
+    tarr.sort(function(a,b) {return (a.depth-b.depth)});
+    var tree = [];
+    for(var i=0; i<tarr.length; i++) {
+        if(tarr[i].depth == 0) {
+            tree.push(tarr[i]);
+        } else {
+            for(var j=0; j < tree.length; j++) {
+                if(tree[j].tid == tarr[i].parent) {
+                    tree.splice(j+1, 0, tarr[i]); // insert into tree at j+1
+                    break;
+                }
+            }
+        }
+    }
+    return tree;
 }
 
 /*

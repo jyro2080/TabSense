@@ -126,8 +126,8 @@ WinFrame.prototype = {
         $('.mtab:even',this.elem).css('background','#eeeeee');
         $('.mtab:odd',this.elem).css('background','#e0e0e0');
 
-        $('.mtab', this.elem).css({'width': (winw-50)+'px'})
-        $('.mtab > div', this.elem).css({'width': (winw-140)+'px'})
+        //$('.mtab', this.elem).css({'width': (winw-50)+'px'})
+        //$('.mtab > div', this.elem).css({'width': (winw-140)+'px'})
 
         $('.mtab:not(:last)', this.elem).css({
             '-webkit-border-bottom-left-radius':null,
