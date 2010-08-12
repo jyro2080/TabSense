@@ -145,8 +145,11 @@ Tab.prototype = {
             if(win.contains(ev.clientX, ev.clientY)) {
                 win.addTab(this);
                 win.refreshStyle();
-                //chrome.tabs.move(this.tabdb.tid, 
-                //    { windowId : win.windb.wid, index:100 });
+                chrome.extension.sendRequest({
+                    action : 'tabmove',
+                    tid : this.tabdb.tid,
+                    wid : win.windb.wid
+                });
                 UI.relayout_column(UI.get_column(ev.clientX));
                 return;
             }

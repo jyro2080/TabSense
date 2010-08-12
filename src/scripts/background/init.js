@@ -12,17 +12,25 @@ chrome.extension.onRequest.addListener(
                 chrome.extension.getURL('newtab.html')});
         } else if(request.action == 'listwindows') {
             db.window.get('',function(tx, results){
-                    console.log('sending windows back');
                     sendResponse(getWindows(results));
                 });
         } else if(request.action == 'listtabs') {
             db.tab.get(request.condition,function(tx, results){
-                    console.log('sending tabs back');
                     sendResponse(getTabs(results));
                 });
+        } else if(request.action == 'tabmove') {
+            ignoreTabAttach = request.tid;
+            ignoreTabDetach = request.tid;
+            chrome.tabs.move(request.tid, 
+                { windowId : request.wid, index:100 });
+            db.tab.update('wid = ? ', 'WHERE tid = ?',
+                    [request.wid, request.tid]); 
         }
     }
 );
+
+var ignoreTabAttach = -1;
+var ignoreTabDetach = -1;
 
 function getWindows(results) {
     var warr = [];
@@ -192,15 +200,24 @@ function triggerUIRefresh() {
 
 chrome.tabs.onAttached.addListener(
     function(tid, attachInfo) {
+        if(tid == ignoreTabAttach) {
+            console.log('ATTACH: ignoring '+tid);
+            ignoreTabAttach = -1;
+            return;
+        }
         // Update our data model
         db.tab.update('wid = ?', 'WHERE tid = ?', 
             [attachInfo.newWindowId, tid]); 
-        console.debug('ATTACHED: trigger UI refresh '+tid);
         triggerUIRefresh();
     }
 );
 chrome.tabs.onDetached.addListener(
     function(tid, detachInfo) {
+        if(tid == ignoreTabDetach) {
+            console.log('DETACH: ignoring '+tid);
+            ignoreTabDetach = -1;
+            return;
+        }
         // Update our data model
     }
 );
@@ -223,8 +240,8 @@ chrome.windows.onRemoved.addListener(
 );
 chrome.windows.onCreated.addListener(
     function(win) {
-        db.put(new db.window(win.id, null));
-        console.debug('WINCREATE: trigger UI refresh '+win.id);
-        triggerUIRefresh();
+        //db.put(new db.window(win.id, null));
+        console.debug('WINCREATE: DISABLED '+win.id);
+        //triggerUIRefresh();
     }
 );
