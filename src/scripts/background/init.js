@@ -5,6 +5,7 @@ chrome.browserAction.onClicked.addListener(
             chrome.extension.getURL('newtab.html')});
     }
 );
+/*
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
         if(request.action == 'openui') {
@@ -25,9 +26,28 @@ chrome.extension.onRequest.addListener(
                 { windowId : request.wid, index:100 });
             db.tab.update('wid = ? ', 'WHERE tid = ?',
                     [request.wid, request.tid]); 
+        } else if(request.action == 'newwindowwithtab') {
+            chrome.windows.create({url:chrome.extension.getURL('dummy.html')}, 
+                function(win) {
+                    chrome.tabs.move(request.tid,{ windowId:win.id, index:0 },
+                        function() {
+                            chrome.tabs.getAllInWindow(win.id, removeDummyTab);
+                        }
+                    );
+                }
+            );
         }
     }
 );
+*/
+
+function removeDummyTab(tabs) {
+    for(var i=0; i < tabs.length; i++) {
+        if(/dummy.html/.test(tabs[i].url)) {
+            chrome.tabs.remove(tabs[i].id);
+        }
+    }
+}
 
 var ignoreTabAttach = -1;
 var ignoreTabDetach = -1;
@@ -127,7 +147,7 @@ chrome.tabs.onUpdated.addListener(
                     'WHERE tid = ?',
                     [tab.url, tab.status, tab.title, tab.favIconUrl, tid]); 
         if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
-            triggerUIRefresh();
+            //triggerUIRefresh();
         }
     }
 );
@@ -138,7 +158,7 @@ chrome.tabs.onSelectionChanged.addListener(
         // This will be the parent tab of newly created tabs
         db.tab.get('WHERE tid = '+tid, function(tx, r) {
                 if(r.rows.length != 1) {
-                    console.error('How many tabs u want? '+r.rows.length);
+                    console.warn('Got '+r.rows.length+' tabs for '+tid);
                     return;
                 }
                 var t = r.rows.item(0);
@@ -156,13 +176,30 @@ chrome.tabs.onSelectionChanged.addListener(
     }
 );
 
+function is_tabsense(tab) {
+    return /chrome-extension:\/\/.*\/newtab.html/.test(tab.url);
+}
+
+function is_devtools(tab) {
+    return /chrome:\/\/devtools\/devtools.html/.test(tab.url);
+}
+function is_newtab(tab) {
+    return (tab.url == 'chrome://newtab/');
+}
 
 chrome.tabs.onCreated.addListener(
     function(tab) {
+        if(is_tabsense(tab) || is_devtools(tab)) {
+            console.debug('Ignoring create:'+tab.url);
+            return;
+        }
+
+        console.debug('Creating new tab : '+tab.url+' currentTab '+currentTab);
+
         // Is this a new tab or has a URL already?
         // If it's a new tab: its depth is zero (root tab)
         // else: it's a child of currently (or previously) selected tab
-        if(tab.url == 'chrome://newtab/') {
+        if(is_newtab(tab)) {
             var t = new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
                             tab.index, tab.windowId, 0, 0);
         } else {
@@ -170,22 +207,56 @@ chrome.tabs.onCreated.addListener(
                             tab.index, tab.windowId, 
                             currentTab.tid, currentTab.depth+1); 
         }
-        db.put(t, function(tx, r) {console.log('tab put done');});
-        if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
-            console.debug('CREATE: trigger UI refresh '+tab.url);
-            triggerUIRefresh();
-        }
+        db.put(t, function(tx, r) { console.debug('Tab put DB: '+tab.url); });
+
+        uiport.postMessage({
+            name : 'addtab',
+
+            tab : {
+                tid : t.tid,
+                title : t.title,
+                url : t.url,
+                faviconurl : t.faviconurl,
+                index : t.index,
+                wid : t.wid,
+                parent : t.parent,
+                depth : t.depth
+            }
+        });
     }
 );
 chrome.tabs.onRemoved.addListener(
     function(tid) {
-        db.tab.del('WHERE tid = '+tid,
-            function(tx, r) {console.log('tab del done');});
-        console.debug('REMOVE: trigger UI refresh '+tid);
-        triggerUIRefresh();
+
+        db.tab.get('WHERE tid = '+tid,
+            function(tx, r) {
+                if(r.rows.length == 0) {
+                    console.error('No tab in DB for '+tid);
+                    return;
+                }
+                var tab = r.rows.item(0);
+                uiport.postMessage({
+                    name : 'removetab',
+                    tab : {
+                        tid : tab.tid,
+                        wid : tab.wid,
+                        title : tab.title,
+                        url : tab.url,
+                        faviconurl : tab.faviconurl,
+                        index : tab.index,
+                        parent : tab.parent,
+                        depth : tab.depth
+                    }
+                });
+
+                db.tab.del('WHERE tid = '+tid,
+                    function(tx, r) { console.log('Tab del : '+tid); });
+            }
+        );
     }
 );
 
+/*
 function triggerUIRefresh() {
     db.tab.get('WHERE url LIKE \'chrome-extension://%/newtab.html\'',
         function(tx, r) {
@@ -196,6 +267,7 @@ function triggerUIRefresh() {
         }
     );
 }
+*/
 
 
 chrome.tabs.onAttached.addListener(
@@ -208,7 +280,28 @@ chrome.tabs.onAttached.addListener(
         // Update our data model
         db.tab.update('wid = ?', 'WHERE tid = ?', 
             [attachInfo.newWindowId, tid]); 
-        triggerUIRefresh();
+
+        // Send UI update message
+        db.tab.get('tid = '+tid, function(tx, results){
+            if(results.rows.length < 1) {
+                console.error('Tab not found');
+                return;
+            }
+            tab = results.rows.item(0);
+            uiport.postMessage({
+                name : 'addtab',
+                tab : {
+                    tid : t.tid,
+                    wid : t.wid,
+                    title : t.title,
+                    url : t.url,
+                    faviconurl : t.faviconurl,
+                    index : t.index,
+                    parent : t.parent,
+                    depth : t.depth
+                }
+            });
+        });
     }
 );
 chrome.tabs.onDetached.addListener(
@@ -234,14 +327,25 @@ chrome.windows.onRemoved.addListener(
     function(wid) {
         db.window.del('WHERE wid = '+wid);
         db.tab.del('WHERE wid = '+wid);
-        console.debug('WINREMOVE: trigger UI refresh '+wid);
-        triggerUIRefresh();
+
+        uiport.postMessage({
+            name : 'removewindow',
+            win : { wid:win.id }
+        });
     }
 );
 chrome.windows.onCreated.addListener(
     function(win) {
-        //db.put(new db.window(win.id, null));
-        console.debug('WINCREATE: DISABLED '+win.id);
-        //triggerUIRefresh();
+        if(win.type == 'app') {
+            console.debug('Ignoring app window');
+            return;
+        }
+
+        db.put(new db.window(win.id, null));
+
+        uiport.postMessage({
+            name : 'addwindow',
+            win : { wid:win.id }
+        });
     }
 );

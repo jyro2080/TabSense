@@ -8,7 +8,7 @@ chrome.extension.onConnect.addListener(
         port.onMessage.addListener(
             function(op) {
                 if(op.name == 'register') {
-                    if(uitab >= 0) {
+                    if(uitab >= 0 && uitab != op.tabid) {
                         // close previously registered ui tab
                         chrome.tabs.remove(uitab);
                     }
@@ -19,9 +19,9 @@ chrome.extension.onConnect.addListener(
                             port.postMessage({ name:'listwindows',
                                     windows:getWindows(results) });
                         });
-                } else if(op.name == 'listtabs') {
+                } else if(op.name == 'listtabs' || op.name == 'relisttabs') {
                     db.tab.get(op.condition, function(tx, results){
-                            port.postMessage({ name:'listtabs',
+                            port.postMessage({ name: op.name,
                                     tabs:getTabs(results) });
                         });
                 } else if(op.name == 'tabmove') {
@@ -29,6 +29,19 @@ chrome.extension.onConnect.addListener(
                     ignoreTabDetach = op.tid;
                     chrome.tabs.move(op.tid, { windowId:op.wid, index:100 });
                     db.tab.update('wid = ? ','WHERE tid = ?',[op.wid, op.tid]); 
+                } else if(op.name == 'tabmovenew') {
+                    chrome.windows.create(
+                        { url:chrome.extension.getURL('dummy.html') }, 
+                        function(win) {
+                            chrome.tabs.move(request.tid,
+                                { windowId:win.id, index:0 },
+                                function() {
+                                    chrome.tabs.getAllInWindow(
+                                        win.id, removeDummyTab);
+                                }
+                            );
+                        }
+                    );
                 }
             }
         );

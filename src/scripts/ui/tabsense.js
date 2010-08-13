@@ -72,9 +72,9 @@ function process_windows(windows) {
     UI.totalWindows = windows.length;
     for(var i=0; i < UI.totalWindows; i++) {
         var w = windows[i];
-        UI.add_window(new WinFrame(w));
+        UI.add_window(w);
 
-        port.postMessage({ name:'listtabs',condition:'WHERE wid = '+w.wid });
+        bgport.postMessage({ name:'listtabs',condition:'WHERE wid = '+w.wid });
     }
 }
 
@@ -82,55 +82,28 @@ function process_tabs(tabs) {
     var t = null;
     for(var i=0; i < tabs.length; i++) {
         t = tabs[i];
-        UI.attach_tab(new Tab(t));
+        UI.add_tab(t);
     }
-    if(t) { UI.wMap[t.wid].refreshStyle(); }
+    if(t) { UI.restyle_window(t.wid); }
+    else { console.warn('No tab for window restyle'); }
 
-    doneWindows++;
-    if(doneWindows == UI.totalWindows) {
-        UI.layout_windows();
-    }
 }
 
-function setup_windows() {
-    port.postMessage({ name:'listwindows' });
-    /*
-    chrome.extension.sendRequest( {action:'listwindows'}, 
-        function(results) { 
-            UI.totalWindows = results.length;
-            for(var i=0; i < UI.totalWindows; i++) {
-                var w = results[i];
-                UI.add_window(new WinFrame(w));
-
-                chrome.extension.sendRequest(
-                    { action:'listtabs', condition:'WHERE wid = '+w.wid }, 
-                    function(results) {
-                        var t = null;
-                        for(var i=0; i < results.length; i++) {
-                            t = results[i];
-                            UI.attach_tab(new Tab(t));
-                        }
-                        if(t) {
-                            UI.wMap[t.wid].refreshStyle();
-                        }
-
-                        doneWindows++;
-                        if(doneWindows == UI.totalWindows) {
-                            UI.layout_windows();
-                        }
-                    }
-                );
-            }
-        }
-    );
-    */
+function reprocess_tabs(tabs) {
+    if(tabs.length == 0) {
+        console.warn('No tabs to reprocess'); return;
+    }
+    var wframe = UI.wMap[tabs[0].wid];
+    $('.mtab', wframe.elem).remove();
+    process_tabs(tabs);
 }
+
 var ui;
 $(document).ready(function(){
 
     ui = UI(); 
 
-    setup_windows();
+    bgport.postMessage({ name:'listwindows' }); // trigger setup windows
 
     refresh_favorites();
     

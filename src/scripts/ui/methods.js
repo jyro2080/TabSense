@@ -12,29 +12,59 @@ function UI()
 UI.wMap = [];
 UI.tMap = [];
 
-UI.add_window = function(wframe) {
-    UI.wMap[wframe.windb.wid] = wframe;
+UI.add_window = function(windb) {
+    var wframe = new WinFrame(windb);
+    UI.wMap[windb.wid] = wframe;
     $('body').append(wframe.elem);
 }
 
-UI.remove_window = function(wframe) {
+UI.remove_window = function(windb) {
+    var wframe = UI.wMap[windb.wid];
+    if(!wframe) { console.error('No UI window for '+windb.wid); return; }
+    wframe.destroy();
+    UI.wMap[windb.wid] = undefined;
 }
 
-UI.attach_tab = function(tab) {
-    UI.tMap[tab.tabdb.tid] = tab;
-    UI.wMap[tab.tabdb.wid].addTab(tab);
+UI.restyle_window = function(wid) {
+    UI.wMap[wid].refreshStyle();
 }
 
-UI.detach_tab = function(tab, ev) {
+UI.attach_tab = function(wid, tabdb) {
+    var tab = UI.tMap[tabdb.tid];
+    if(!tab) { console.error('No UI tab for '+tabdb.tid); return; }
+    var wframe = UI.wMap[wid];
+    if(!wframe) { console.error('No UI window for '+wid); return; }
+    wframe.addTab(tab);
+    wframe.refreshStyle();
+}
+
+UI.add_tab = function(tabdb) {
+    var tab = new Tab(tabdb);
+    UI.tMap[tabdb.tid] = tab;
+    UI.attach_tab(tabdb.wid, tabdb);
+}
+
+UI.detach_tab = function(tabdb, ev) {
+    var tab = UI.tMap[tabdb.tid];
+    if(!tab) { console.error('No UI tab for '+tabdb.tid); return; }
     if(ev) {
         tab.detach(ev.clientY-15, ev.clientX - UI.winw/2);
     } else {
         tab.detach(0,0);
     }
-    var wframe = UI.wMap[tab.tabdb.wid];
+    var wframe = UI.wMap[tabdb.wid];
     wframe.removeTab(tab);
     wframe.refreshStyle();
 }
+
+UI.remove_tab = function(tabdb) {
+    var tab = UI.tMap[tabdb.tid];
+    UI.detach_tab(tabdb);
+    tab.elem.remove();
+    UI.tMap[tabdb.tid] = undefined;
+}
+
+
 
 UI.update_tab = function(tab) {
 }

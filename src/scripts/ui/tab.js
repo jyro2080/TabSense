@@ -143,18 +143,23 @@ Tab.prototype = {
         for(i in UI.wMap) {
             var win = UI.wMap[i];
             if(win.contains(ev.clientX, ev.clientY)) {
-                win.addTab(this);
-                win.refreshStyle();
-                port.postMessage({
+
+                UI.attach_tab(win.windb.wid, this.tabdb);
+                UI.relayout_column(UI.get_column(ev.clientX));
+
+                bgport.postMessage({
                     name : 'tabmove',
                     tid : this.tabdb.tid,
                     wid : win.windb.wid
                 });
-                UI.relayout_column(UI.get_column(ev.clientX));
                 return;
             }
         }
 
+        bgport.postMessage({
+            action : 'tabmovenew',
+            tid : this.tabdb.tid,
+        });
         /*
         // Not dropped on a window, create a new one
         var thistab = this;
@@ -168,7 +173,9 @@ Tab.prototype = {
             }
              
         }
+        */
 
+        /*
         chrome.windows.create(null, 
             function(win) {
 
