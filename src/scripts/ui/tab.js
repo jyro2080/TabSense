@@ -100,7 +100,7 @@ Tab.mouseleave = function(ev) {
 
 Tab.prototype = {
     pick : function(ev) {
-        UI.detach_tab(this);
+        UI.detach_tab(this.tabdb, ev);
         UI.relayout_column(UI.get_column(ev.clientX));
     },
 
@@ -155,8 +155,11 @@ Tab.prototype = {
             }
         }
 
+        this.inTransit = false;
+        this.elem.remove();
+
         bgport.postMessage({
-            action : 'tabmovenew',
+            name : 'tabmovenew',
             tid : this.tabdb.tid,
         });
         /*

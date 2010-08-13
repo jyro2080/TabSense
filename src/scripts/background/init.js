@@ -144,7 +144,8 @@ var rotateFavIcon = chrome.extension.getURL('images/rotate.png');
 chrome.tabs.onUpdated.addListener(
     // Update tab entry in our data model
     function(tid, changeInfo, tab) {
-        if(is_newtab(tab) || is_devtools(tab) || is_tabsense(tab)) return;
+        if(is_newtab(tab) || is_devtools(tab) || 
+            is_tabsense(tab) || is_dummy(tab)) return;
 
         if(tab.status == 'loading') {
             tab.favIconUrl = rotateFavIcon;
@@ -208,6 +209,9 @@ chrome.tabs.onSelectionChanged.addListener(
 function is_tabsense(tab) {
     return /chrome-extension:\/\/.*\/newtab.html/.test(tab.url);
 }
+function is_dummy(tab) {
+    return /chrome-extension:\/\/.*\/dummy.html/.test(tab.url);
+}
 
 function is_devtools(tab) {
     return /chrome:\/\/devtools\/devtools.html/.test(tab.url);
@@ -218,8 +222,8 @@ function is_newtab(tab) {
 
 chrome.tabs.onCreated.addListener(
     function(tab) {
-        if(is_tabsense(tab) || is_devtools(tab)) {
-            console.debug('Ignoring create:'+tab.url);
+        console.debug('onCreate');
+        if(is_tabsense(tab) || is_devtools(tab) || is_dummy(tab)) {
             return;
         }
 
@@ -236,7 +240,7 @@ chrome.tabs.onCreated.addListener(
                             tab.index, tab.windowId, 
                             currentTab.tid, currentTab.depth+1); 
         }
-        db.put(t, function(tx, r) { console.debug('Tab put DB: '+tab.url); });
+        db.put(t, function(tx, r) { console.debug('Tab put DB: '+tab.url+','+tab.id); });
 
         uiport.postMessage({
             name : 'addtab',
@@ -264,6 +268,11 @@ chrome.tabs.onRemoved.addListener(
                     return;
                 }
                 var tab = r.rows.item(0);
+
+                if(is_tabsense(tab) || is_devtools(tab) || is_dummy(tab)) {
+                    console.debug('Ignoring remove:'+tab.url+', '+tab.id);
+                    return;
+                }
                 uiport.postMessage({
                     name : 'removetab',
                     tab : {
@@ -316,7 +325,8 @@ chrome.tabs.onAttached.addListener(
                 console.error('after attach tabs found '+results.rows.length);
                 return;
             }
-            tab = results.rows.item(0);
+            var tab = results.rows.item(0);
+            console.debug('sending UI addtab for '+tab.tid);
             uiport.postMessage({
                 name : 'addtab',
                 tab : {
@@ -335,6 +345,7 @@ chrome.tabs.onAttached.addListener(
 );
 chrome.tabs.onDetached.addListener(
     function(tid, detachInfo) {
+        console.debug('Got detach for '+tid);
         if(tid == ignoreTabDetach) {
             console.log('DETACH: ignoring '+tid);
             ignoreTabDetach = -1;
@@ -350,7 +361,7 @@ chrome.tabs.onDetached.addListener(
                 console.error('after attach tabs found '+results.rows.length);
                 return;
             }
-            tab = results.rows.item(0);
+            var tab = results.rows.item(0);
             uiport.postMessage({
                 name : 'removetab',
                 tab : {
@@ -395,6 +406,7 @@ chrome.windows.onCreated.addListener(
         }
 
         db.put(new db.window(win.id, null));
+
 
         uiport.postMessage({
             name : 'addwindow',
