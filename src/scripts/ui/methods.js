@@ -66,7 +66,11 @@ UI.remove_tab = function(tabdb) {
 
 
 
-UI.update_tab = function(tab) {
+UI.update_tab = function(tabdb) {
+    var tab = UI.tMap[tabdb.tid]; 
+    $('.favicon', tab.elem).attr('src', tabdb.faviconurl);
+    $('.title', tab.elem).text(tabdb.title);
+    tab.tabdb = tabdb;
 }
 
 
@@ -90,7 +94,7 @@ UI.getColumnHeight = function(colNum)
 UI.layout_windows = function() {
     wMapCopy = UI.wMap.slice(0);
     wMapCopy.sort(function(a,b) { return (b.numTabs-a.numTabs); });
-    for(var i=0; i<NUMCOL; i++) {UI.columns[i]=[];}
+    for(var i=0; i<NUMCOL; i++) { UI.columns[i]=[]; }
 
     var colCount = 0;
     for(i in wMapCopy) {

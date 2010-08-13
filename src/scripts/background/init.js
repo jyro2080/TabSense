@@ -142,13 +142,36 @@ var currentTab = null;
 chrome.tabs.onUpdated.addListener(
     // Update tab entry in our data model
     function(tid, changeInfo, tab) {
+        if(is_newtab(tab) || is_devtools(tab) || is_tabsense(tab)) return;
+
         tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
+
         db.tab.update('url = ?, status =  ?, title = ?, faviconurl = ? ', 
                     'WHERE tid = ?',
                     [tab.url, tab.status, tab.title, tab.favIconUrl, tid]); 
-        if(!/chrome-extension:\/\/.*\/newtab.html/.test(tab.url)) {
-            //triggerUIRefresh();
-        }
+
+        db.tab.get('WHERE tid = '+tid,
+            function(tx, r) {
+                if(r.rows.length == 0) {
+                    console.error('No tab in DB for '+tid);
+                    return;
+                }
+                var tab = r.rows.item(0);
+                uiport.postMessage({
+                    name : 'updatetab',
+                    tab : {
+                        tid : tab.tid,
+                        wid : tab.wid,
+                        title : tab.title,
+                        url : tab.url,
+                        faviconurl : tab.faviconurl,
+                        index : tab.index,
+                        parent : tab.parent,
+                        depth : tab.depth
+                    }
+                });
+            }
+        );
     }
 );
 
@@ -199,7 +222,7 @@ chrome.tabs.onCreated.addListener(
         // Is this a new tab or has a URL already?
         // If it's a new tab: its depth is zero (root tab)
         // else: it's a child of currently (or previously) selected tab
-        if(is_newtab(tab)) {
+        if(is_newtab(tab) || !currentTab) {
             var t = new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
                             tab.index, tab.windowId, 0, 0);
         } else {

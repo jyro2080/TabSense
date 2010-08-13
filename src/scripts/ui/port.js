@@ -44,6 +44,8 @@ chrome.extension.onConnect.addListener(
                     UI.attach_tab(op.tab);
                 } else if(op.name == 'detachtab') {
                     UI.detach_tab(op.tab);
+                } else if(op.name == 'updatetab') {
+                    UI.update_tab(op.tab);
                 } else if(op.name == 'addwindow') {
                     UI.add_window(op.win);
                 } else if(op.name == 'removewindow') {
