@@ -282,23 +282,23 @@ chrome.tabs.onAttached.addListener(
             [attachInfo.newWindowId, tid]); 
 
         // Send UI update message
-        db.tab.get('tid = '+tid, function(tx, results){
-            if(results.rows.length < 1) {
-                console.error('Tab not found');
+        db.tab.get('WHERE tid = '+tid, function(tx, results){
+            if(results.rows.length != 1) {
+                console.error('after attach tabs found '+results.rows.length);
                 return;
             }
             tab = results.rows.item(0);
             uiport.postMessage({
                 name : 'addtab',
                 tab : {
-                    tid : t.tid,
-                    wid : t.wid,
-                    title : t.title,
-                    url : t.url,
-                    faviconurl : t.faviconurl,
-                    index : t.index,
-                    parent : t.parent,
-                    depth : t.depth
+                    tid : tab.tid,
+                    wid : tab.wid,
+                    title : tab.title,
+                    url : tab.url,
+                    faviconurl : tab.faviconurl,
+                    index : tab.index,
+                    parent : tab.parent,
+                    depth : tab.depth
                 }
             });
         });
@@ -312,6 +312,30 @@ chrome.tabs.onDetached.addListener(
             return;
         }
         // Update our data model
+        db.tab.update('wid = ?', 'WHERE tid = ?', 
+            [-1, tid]); 
+
+        // Send UI update message
+        db.tab.get('WHERE tid = '+tid, function(tx, results){
+            if(results.rows.length != 1) {
+                console.error('after attach tabs found '+results.rows.length);
+                return;
+            }
+            tab = results.rows.item(0);
+            uiport.postMessage({
+                name : 'removetab',
+                tab : {
+                    tid : tab.tid,
+                    wid : detachInfo.oldWindowId,
+                    title : tab.title,
+                    url : tab.url,
+                    faviconurl : tab.faviconurl,
+                    index : tab.index,
+                    parent : tab.parent,
+                    depth : tab.depth
+                }
+            });
+        });
     }
 );
 chrome.tabs.onMoved.addListener(
