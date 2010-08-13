@@ -142,6 +142,7 @@ Tab.prototype = {
         // Check on which window are we dropping
         for(i in UI.wMap) {
             var win = UI.wMap[i];
+            if(!win) continue; // for removed windows
             if(win.contains(ev.clientX, ev.clientY)) {
 
                 UI.attach_tab(win.windb.wid, this.tabdb);

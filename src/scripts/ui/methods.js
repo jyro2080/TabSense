@@ -100,6 +100,8 @@ UI.layout_windows = function() {
 
         colCount = UI.columnNumber(i);
 
+        if(!wMapCopy[i]) continue;
+
         var wh = wMapCopy[i].elem.height();
 
         if(!UI.columns[colCount]) UI.columns[colCount] = [];
