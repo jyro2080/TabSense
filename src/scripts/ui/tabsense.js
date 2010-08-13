@@ -43,10 +43,11 @@ function get_column(x) {
 }
 
 function relayout_column(colnum) {
-    var column = winColumns[colnum];
+    var column = UI.columns[colnum];
     var wl = column.splice(0); // copy array and empty it
     for(var i=0; i < wl.length; i++) {
         var win = wl[i];
+        if(!win) console.error('FLAG 2');
         win.setLocation(
             getColumnHeight(colnum),
             colnum * win.elem.width() + (colnum+0.5) * HMARGIN);
@@ -55,7 +56,7 @@ function relayout_column(colnum) {
     
 }
 
-var winColumns = new Array(NUMCOL);
+//var winColumns = new Array(NUMCOL);
 
 var tabMap = [];
 var windowMap = [];
