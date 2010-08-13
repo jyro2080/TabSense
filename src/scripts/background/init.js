@@ -139,12 +139,18 @@ var currentTab = null;
  * Tab Event listeners
  */
 
+var rotateFavIcon = chrome.extension.getURL('images/rotate.png');
+
 chrome.tabs.onUpdated.addListener(
     // Update tab entry in our data model
     function(tid, changeInfo, tab) {
         if(is_newtab(tab) || is_devtools(tab) || is_tabsense(tab)) return;
 
-        tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
+        if(tab.status == 'loading') {
+            tab.favIconUrl = rotateFavIcon;
+        } else {
+            tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
+        }
 
         db.tab.update('url = ?, status =  ?, title = ?, faviconurl = ? ', 
                     'WHERE tid = ?',
