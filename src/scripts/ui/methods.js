@@ -34,6 +34,7 @@ UI.attach_tab = function(wid, tabdb) {
     if(!tab) { console.error('No UI tab for '+tabdb.tid); return; }
     var wframe = UI.wMap[wid];
     if(!wframe) { console.error('No UI window for '+wid); return; }
+    tab.attach();
     wframe.addTab(tab);
     wframe.refreshStyle();
 }

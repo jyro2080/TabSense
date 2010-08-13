@@ -137,8 +137,6 @@ Tab.prototype = {
     drop : function(ev) {
         if(!this.inTransit) return;
 
-        this.attach();
-
         // Check on which window are we dropping
         for(i in UI.wMap) {
             var win = UI.wMap[i];
