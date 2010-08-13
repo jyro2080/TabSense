@@ -33,7 +33,7 @@ chrome.extension.onConnect.addListener(
                     chrome.windows.create(
                         { url:chrome.extension.getURL('dummy.html') }, 
                         function(win) {
-                            chrome.tabs.move(request.tid,
+                            chrome.tabs.move(op.tid,
                                 { windowId:win.id, index:0 },
                                 function() {
                                     chrome.tabs.getAllInWindow(
