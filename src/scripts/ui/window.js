@@ -111,10 +111,10 @@ WinFrame.prototype = {
         this.elem.detach();
         windowMap[this.windb.wid] = undefined;
 
-        for(var i=0; i < winColumns.length; i++) {
-            var tmp = winColumns[i].indexOf(this);
+        for(var i=0; i < UI.columns.length; i++) {
+            var tmp = UI.columns[i].indexOf(this);
             if(tmp >= 0) {
-                winColumns[i].splice(tmp, 1);
+                UI.columns[i].splice(tmp, 1);
                 break;
             }
         }
