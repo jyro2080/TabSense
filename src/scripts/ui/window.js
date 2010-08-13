@@ -109,9 +109,7 @@ WinFrame.prototype = {
 
     destroy : function() {
         this.elem.detach();
-        windowMap[this.windb.wid] = null;
-        var idx = windowList.indexOf(this);
-        windowList.splice(idx, 1);
+        windowMap[this.windb.wid] = undefined;
 
         for(var i=0; i < winColumns.length; i++) {
             var tmp = winColumns[i].indexOf(this);

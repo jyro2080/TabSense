@@ -383,7 +383,7 @@ chrome.windows.onRemoved.addListener(
 
         uiport.postMessage({
             name : 'removewindow',
-            win : { wid:win.id }
+            win : { wid:wid }
         });
     }
 );
