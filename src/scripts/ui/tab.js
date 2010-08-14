@@ -100,6 +100,7 @@ Tab.mouseleave = function(ev) {
 
 Tab.prototype = {
     pick : function(ev) {
+        this.reset_depth();
         UI.detach_tab(this.tabdb, ev);
         UI.relayout_column(UI.get_column(ev.clientX));
     },
@@ -132,6 +133,16 @@ Tab.prototype = {
             'top':'0px',
             'left':'0px'
             });
+    },
+
+    reset_depth : function() {
+        this.elem.css({
+            'margin-left' : '0px',
+            'width' : (UI.winw-50)+'px'
+        });
+        $('div', this.elem).css({
+            'width' : (UI.winw-140)+'px'
+        });
     },
 
     drop : function(ev) {
