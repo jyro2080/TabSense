@@ -42,10 +42,12 @@ WinFrame.saveWindow = function(ev) {
     var wid = $(this).parent().parent().attr('id');
     var title = window.localStorage.getItem('window_title_'+wid);
     var win = UI.wMap[wid];
-    Bag.save(win, title);
+    bgport.postMessage({
+        name : 'savewindow',
+        wid : wid,
+    });
     win.destroy();
     chrome.windows.remove(win.windb.wid);
-    load_bag();
 }
 
 WinFrame.createTitle = function(title) {
@@ -79,8 +81,15 @@ WinFrame.editTitle = function() {
         }
         var wtitle = WinFrame.createTitle(newtitle);
         var wid = p.parent().attr('id');
+        bgport.postMessage({ 
+            name : 'savewindowtitle',
+            wid : wid,
+            title : newtitle
+        });
+        /*
         window.localStorage.setItem(
             'window_title_'+wid, newtitle);
+            */
         p.append(wtitle);
     });
 }
@@ -109,7 +118,7 @@ WinFrame.prototype = {
 
     destroy : function() {
         this.elem.detach();
-        windowMap[this.windb.wid] = undefined;
+        UI.wMap[this.windb.wid] = undefined;
 
         for(var i=0; i < UI.columns.length; i++) {
             var tmp = UI.columns[i].indexOf(this);

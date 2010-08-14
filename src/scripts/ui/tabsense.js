@@ -153,7 +153,7 @@ $(document).ready(function(){
         'width' : (UI.dw-140)+'px'
     })
 
-    load_bag();
+    bgport.postMessage({ name:'listsavedwindows' });
 
     chrome.extension.onRequest.addListener(
         function(request, sender, sendResponse) {
@@ -167,18 +167,22 @@ $(document).ready(function(){
     );
 });
 
-function load_bag() {
-    var bagWinList = Bag.list();
+function load_bag(windows) {
     $('#bagbar').empty();
+    /*
+    var bagWinList = Bag.list();
     var bagl = bagWinList.length;
+    */
+    var bagl = windows.length;
     if(bagl > 0) {
         $('#bagbar').append($('<img/>').attr('src', WinFrame.saveIcon));
     }
     for(var i=0; i < bagl; i++) {
-        var w = bagWinList[i];
+        var w = windows[i];
+        if(!w.title) w.title = 'NoName';
         var entry = $('<div></div>')
                 .attr('class','winentry')
-                .attr('id', w.id)
+                .attr('id', w.wid)
                 .text(w.title)
                 .click(bagEntryClicked);
         $('#bagbar').append(entry);
@@ -186,9 +190,12 @@ function load_bag() {
 }
 
 function bagEntryClicked(ev) {
-    var id = $(this).attr('id');
-    var saved = Bag.remove(id); 
+    var wid = $(this).attr('id');
 
+    bgport.postMessage({ name:'unsavewindow', wid:wid });
+}
+
+function openSavedWindow(win) {
     chrome.windows.create(null,
         function(win) {
             var wf = new WinFrame(win, saved.title);

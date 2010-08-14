@@ -20,6 +20,13 @@ bgport.onMessage.addListener(
         } else if(reply.name == 'relisttabs') {
             reprocess_tabs(reply.tabs);
             UI.layout_windows();
+        } else if(reply.name == 'listsavedwindows') {
+            console.debug('listsavedwindows gets '+reply.windows);
+            load_bag(reply.windows);
+        } else if(reply.name == 'unsavewindow') {
+            openSavedWindow(reply.window);
+        } else if(reply.name == 'savewindow') {
+            bgport.postMessage({ name:'listsavedwindows' });
         }
     }
 );

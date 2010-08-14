@@ -54,6 +54,7 @@ var ignoreTabDetach = -1;
 
 function getWindows(results) {
     var warr = [];
+    console.debug('getWindows: '+results.rows.length);
     for(var i=0; i < results.rows.length; i++) {
         var w = results.rows.item(i);
         warr.push({

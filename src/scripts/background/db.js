@@ -5,7 +5,8 @@ db.open = function() {
     this.DB = openDatabase('TabSense', '1.0', 'TabSense', 5*1024*1024);
     this.DB.transaction(function(tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS '+
-            'Window(id INTEGER PRIMARY KEY ASC, wid INTEGER, title TEXT)',
+            'Window(id INTEGER PRIMARY KEY ASC, '+
+            'wid INTEGER, title TEXT, saved INTEGER)',
             [], db.onSuccess, db.onError);
     });
     this.DB.transaction(function(tx) {
@@ -40,8 +41,9 @@ db.put = function(obj, successCb) {
     if(obj.constructor == db.window) {
         var win = obj;
         this.DB.transaction(function(tx) {
-            tx.executeSql('INSERT INTO Window(wid, title) VALUES (?,?)',
-                [win.wid, win.title],
+            tx.executeSql(
+                'INSERT INTO Window(wid, title, saved) VALUES (?,?,?)',
+                [win.wid, win.title, 0],
                 onSuccess,
                 db.onError);
         });
@@ -75,6 +77,13 @@ db.window.get = function(condition, onSuccess) {
 db.window.del = function(condition, onSuccess) {
     db.DB.transaction(function(tx) {
         tx.executeSql('DELETE FROM Window '+condition, [],
+            onSuccess, db.onError);
+    });
+}
+
+db.window.update = function(set, condition, data, onSuccess) {
+    db.DB.transaction(function(tx) {
+        tx.executeSql('UPDATE Window SET '+set+condition, data,
             onSuccess, db.onError);
     });
 }
