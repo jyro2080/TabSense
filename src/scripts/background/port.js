@@ -28,7 +28,7 @@ chrome.extension.onConnect.addListener(
                     ignoreTabAttach = op.tid;
                     ignoreTabDetach = op.tid;
                     chrome.tabs.move(op.tid, { windowId:op.wid, index:100 });
-                    db.tab.update('wid = ? ','WHERE tid = ?',[op.wid, op.tid]); 
+                    db.tab.update('wid = ?, parent = ?, depth = ? ','WHERE tid = ?', [op.wid, 0, 0, op.tid]); 
                 } else if(op.name == 'tabmovenew') {
                     chrome.windows.create(
                         { url:chrome.extension.getURL('dummy.html') }, 

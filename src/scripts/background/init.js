@@ -373,8 +373,8 @@ chrome.tabs.onDetached.addListener(
             return;
         }
         // Update our data model
-        db.tab.update('wid = ?', 'WHERE tid = ?', 
-            [-1, tid]); 
+        db.tab.update('wid = ?, parent = ?, depth = ? ', 'WHERE tid = ?', 
+                        [-1, 0, 0, tid]); 
 
         // Send UI update message
         db.tab.get('WHERE tid = '+tid, function(tx, results){
