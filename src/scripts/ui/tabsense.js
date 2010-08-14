@@ -31,12 +31,11 @@ function layout_windows() {
         winColumns[colCount].push(windowMap[i]);
     }
 }
-*/
 
 function get_column(x) {
     var width;
-    for(i in windowMap) {
-        width = windowMap[i].elem.width();
+    for(i in UI.wMap) {
+        width = UI.wMap[i].elem.width();
         break;
     }
     return parseInt((x - 0.5*HMARGIN)/width);
@@ -55,11 +54,12 @@ function relayout_column(colnum) {
     }
     
 }
-
-//var winColumns = new Array(NUMCOL);
-
 var tabMap = [];
 var windowMap = [];
+
+var winColumns = new Array(NUMCOL);
+*/
+
 var doneWindows = 0;
 var dw, dh, winw;
 var HMARGIN = 30;
@@ -192,7 +192,7 @@ function bagEntryClicked(ev) {
     chrome.windows.create(null,
         function(win) {
             var wf = new WinFrame(win, saved.title);
-            windowMap[win.id] = wf;
+            UI.wMap[win.id] = wf;
             $('body').append(wf.elem);
 
             var totalTabs = saved.tabs.length;
@@ -239,8 +239,8 @@ function position_infopanel() {
 
 function blur_all_tabs(yes)
 {
-    for(i in windowMap) {
-        var win = windowMap[i];
+    for(i in UI.wMap) {
+        var win = UI.wMap[i];
         (yes ? win.blurTabs : win.unblurTabs)();
     }
 }
@@ -250,12 +250,12 @@ function run_query(query)
     blur_all_tabs(true);
     if($.trim(query) != '') {
         query = query.toLowerCase();
-        for (i in tabMap) {
-            var tabTitle = tabMap[i].title;
+        for (i in UI.tMap) {
+            var tabTitle = UI.tMap[i].tabdb.title;
             if(tabTitle && tabTitle.toLowerCase().indexOf(query) >= 0) {
-                tab_selector = 'tab_'+tabMap[i].tid;
-                for(j in windowMap) {
-                    $('#'+tab_selector, windowMap[j].elem).css({
+                tab_selector = 'tab_'+UI.tMap[i].tabdb.tid;
+                for(j in UI.wMap) {
+                    $('#'+tab_selector, UI.wMap[j].elem).css({
                         'color':'#000'
                     });
                 }

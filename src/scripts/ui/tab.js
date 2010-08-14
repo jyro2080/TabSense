@@ -74,7 +74,7 @@ Tab.toggleFav = function() {
     var p = $(this).parent();
     var match = /tab_(\d+)/.exec(p.attr('id'));
     if(match && match[1]) {
-        var tab = tabMap[parseInt(match[1])];
+        var tab = UI.tMap[parseInt(match[1])];
         if(Fav.is(tab.url)) {
             Fav.remove(tab.url);
             $(this).attr('src', Tab.starOff);

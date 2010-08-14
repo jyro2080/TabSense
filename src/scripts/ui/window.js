@@ -41,7 +41,7 @@ WinFrame.emailIcon = chrome.extension.getURL('images/email.png');
 WinFrame.saveWindow = function(ev) {
     var wid = $(this).parent().parent().attr('id');
     var title = window.localStorage.getItem('window_title_'+wid);
-    var win = windowMap[wid];
+    var win = UI.wMap[wid];
     Bag.save(win, title);
     win.destroy();
     chrome.windows.remove(win.windb.wid);
