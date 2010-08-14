@@ -164,19 +164,21 @@ chrome.tabs.onUpdated.addListener(
                     return;
                 }
                 var tab = r.rows.item(0);
-                uiport.postMessage({
-                    name : 'updatetab',
-                    tab : {
-                        tid : tab.tid,
-                        wid : tab.wid,
-                        title : tab.title,
-                        url : tab.url,
-                        faviconurl : tab.faviconurl,
-                        index : tab.index,
-                        parent : tab.parent,
-                        depth : tab.depth
-                    }
-                });
+                if(uiport) {
+                    uiport.postMessage({
+                        name : 'updatetab',
+                        tab : {
+                            tid : tab.tid,
+                            wid : tab.wid,
+                            title : tab.title,
+                            url : tab.url,
+                            faviconurl : tab.faviconurl,
+                            index : tab.index,
+                            parent : tab.parent,
+                            depth : tab.depth
+                        }
+                    });
+                }
             }
         );
     }
@@ -242,20 +244,22 @@ chrome.tabs.onCreated.addListener(
         }
         db.put(t, function(tx, r) { console.debug('Tab put DB: '+tab.url+','+tab.id); });
 
-        uiport.postMessage({
-            name : 'addtab',
+        if(uiport) {
+            uiport.postMessage({
+                name : 'addtab',
 
-            tab : {
-                tid : t.tid,
-                title : t.title,
-                url : t.url,
-                faviconurl : t.faviconurl,
-                index : t.index,
-                wid : t.wid,
-                parent : t.parent,
-                depth : t.depth
-            }
-        });
+                tab : {
+                    tid : t.tid,
+                    title : t.title,
+                    url : t.url,
+                    faviconurl : t.faviconurl,
+                    index : t.index,
+                    wid : t.wid,
+                    parent : t.parent,
+                    depth : t.depth
+                }
+            });
+        }
     }
 );
 chrome.tabs.onRemoved.addListener(
@@ -273,19 +277,21 @@ chrome.tabs.onRemoved.addListener(
                     console.debug('Ignoring remove:'+tab.url+', '+tab.id);
                     return;
                 }
-                uiport.postMessage({
-                    name : 'removetab',
-                    tab : {
-                        tid : tab.tid,
-                        wid : tab.wid,
-                        title : tab.title,
-                        url : tab.url,
-                        faviconurl : tab.faviconurl,
-                        index : tab.index,
-                        parent : tab.parent,
-                        depth : tab.depth
-                    }
-                });
+                if(uiport) {
+                    uiport.postMessage({
+                        name : 'removetab',
+                        tab : {
+                            tid : tab.tid,
+                            wid : tab.wid,
+                            title : tab.title,
+                            url : tab.url,
+                            faviconurl : tab.faviconurl,
+                            index : tab.index,
+                            parent : tab.parent,
+                            depth : tab.depth
+                        }
+                    });
+                }
 
                 db.tab.del('WHERE tid = '+tid,
                     function(tx, r) { console.log('Tab del : '+tid); });
@@ -327,19 +333,21 @@ chrome.tabs.onAttached.addListener(
             }
             var tab = results.rows.item(0);
             console.debug('sending UI addtab for '+tab.tid);
-            uiport.postMessage({
-                name : 'addtab',
-                tab : {
-                    tid : tab.tid,
-                    wid : tab.wid,
-                    title : tab.title,
-                    url : tab.url,
-                    faviconurl : tab.faviconurl,
-                    index : tab.index,
-                    parent : tab.parent,
-                    depth : tab.depth
-                }
-            });
+            if(uiport) {
+                uiport.postMessage({
+                    name : 'addtab',
+                    tab : {
+                        tid : tab.tid,
+                        wid : tab.wid,
+                        title : tab.title,
+                        url : tab.url,
+                        faviconurl : tab.faviconurl,
+                        index : tab.index,
+                        parent : tab.parent,
+                        depth : tab.depth
+                    }
+                });
+            }
         });
     }
 );
@@ -362,19 +370,21 @@ chrome.tabs.onDetached.addListener(
                 return;
             }
             var tab = results.rows.item(0);
-            uiport.postMessage({
-                name : 'removetab',
-                tab : {
-                    tid : tab.tid,
-                    wid : detachInfo.oldWindowId,
-                    title : tab.title,
-                    url : tab.url,
-                    faviconurl : tab.faviconurl,
-                    index : tab.index,
-                    parent : tab.parent,
-                    depth : tab.depth
-                }
-            });
+            if(uiport) {
+                uiport.postMessage({
+                    name : 'removetab',
+                    tab : {
+                        tid : tab.tid,
+                        wid : detachInfo.oldWindowId,
+                        title : tab.title,
+                        url : tab.url,
+                        faviconurl : tab.faviconurl,
+                        index : tab.index,
+                        parent : tab.parent,
+                        depth : tab.depth
+                    }
+                });
+            }
         });
     }
 );
@@ -392,10 +402,12 @@ chrome.windows.onRemoved.addListener(
         db.window.del('WHERE wid = '+wid);
         db.tab.del('WHERE wid = '+wid);
 
-        uiport.postMessage({
-            name : 'removewindow',
-            win : { wid:wid }
-        });
+        if(uiport) {
+            uiport.postMessage({
+                name : 'removewindow',
+                win : { wid:wid }
+            });
+        }
     }
 );
 chrome.windows.onCreated.addListener(
@@ -408,9 +420,11 @@ chrome.windows.onCreated.addListener(
         db.put(new db.window(win.id, null));
 
 
-        uiport.postMessage({
-            name : 'addwindow',
-            win : { wid:win.id }
-        });
+        if(uiport) {
+            uiport.postMessage({
+                name : 'addwindow',
+                win : { wid:win.id }
+            });
+        }
     }
 );
