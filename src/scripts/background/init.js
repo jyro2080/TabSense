@@ -139,7 +139,7 @@ var currentTab = null;
  * Tab Event listeners
  */
 
-var rotateFavIcon = chrome.extension.getURL('images/rotate.png');
+var rotateFavIcon = chrome.extension.getURL('images/rotate.gif');
 
 chrome.tabs.onUpdated.addListener(
     // Update tab entry in our data model
