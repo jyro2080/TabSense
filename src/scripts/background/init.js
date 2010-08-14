@@ -273,6 +273,8 @@ chrome.tabs.onRemoved.addListener(
                 }
                 var tab = r.rows.item(0);
 
+                unparent_children(tab);
+
                 if(is_tabsense(tab) || is_devtools(tab) || is_dummy(tab)) {
                     console.debug('Ignoring remove:'+tab.url+', '+tab.id);
                     return;
@@ -299,6 +301,17 @@ chrome.tabs.onRemoved.addListener(
         );
     }
 );
+
+function unparent_children(parnt) {
+    db.tab.get('WHERE parent = '+parnt.tid,
+        function(tx, r) {
+            for(var i=0; i < r.rows.length; i++)  {
+                unparent_children(r.rows.item(i));
+            }
+        }
+    );
+    db.tab.update('depth = depth-1 ', 'WHERE parent = ?', [parnt.tid]);
+}
 
 /*
 function triggerUIRefresh() {
