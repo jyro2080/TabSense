@@ -20,10 +20,10 @@ db.open = function() {
 
 db.clear = function() {
     this.DB.transaction(function(tx) {
-        tx.executeSql('DELETE FROM Window', [], db.onSuccess, db.onError);
+        tx.executeSql('DELETE FROM Window WHERE saved = 0', [], db.onSuccess, db.onError);
     });
     this.DB.transaction(function(tx) {
-        tx.executeSql('DELETE FROM Tab', [], db.onSuccess, db.onError);
+        tx.executeSql('DELETE FROM Tab WHERE saved = 0', [], db.onSuccess, db.onError);
     });
 }
 
