@@ -99,7 +99,7 @@ $(document).ready(function(){
 
     bgport.postMessage({ name:'listsavedwindows' });
 
-    // open saved windows in legacy versions
+    // open saved windows in legacy versions <1.6
     var oldwindows = Bag.list();
     if(oldwindows.length > 0) {
         alert(BAG_LEGACY_MSG);
@@ -125,6 +125,7 @@ $(document).ready(function(){
                     url : win.tabs[j].url
                 });
             }
+            Bag.remove(win.id);
         }
     }
 
