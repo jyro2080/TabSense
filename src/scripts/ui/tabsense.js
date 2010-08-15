@@ -172,6 +172,7 @@ function blur_all_tabs(yes)
 {
     for(i in UI.wMap) {
         var win = UI.wMap[i];
+        if(!win) continue;
         (yes ? win.blurTabs : win.unblurTabs)();
     }
 }
