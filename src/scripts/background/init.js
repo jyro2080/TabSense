@@ -192,9 +192,16 @@ chrome.tabs.onSelectionChanged.addListener(
         db.tab.get('WHERE tid = '+tid, function(tx, r) {
                 if(r.rows.length != 1) {
                     console.warn('Got '+r.rows.length+' tabs for '+tid);
+                    currentTab = null;
+                    console.debug('setting currentTab to null');
                     return;
                 }
                 var t = r.rows.item(0);
+                if(is_newtab(t) || is_tabsense(t) || is_devtools(t)) {
+                    currentTab = null;
+                    console.debug('setting currentTab to null');
+                    return;
+                }
                 currentTab = {
                     tid : t.tid,
                     title : t.title,
@@ -204,7 +211,8 @@ chrome.tabs.onSelectionChanged.addListener(
                     wid : t.wid,
                     parent : t.parent,
                     depth : t.depth
-                }
+                };
+                console.debug('setting currentTab to '+t.tid+','+t.url);
             });
     }
 );
