@@ -21,7 +21,6 @@ bgport.onMessage.addListener(
             reprocess_tabs(reply.tabs);
             UI.layout_windows();
         } else if(reply.name == 'listsavedwindows') {
-            console.debug('listsavedwindows gets '+reply.windows);
             load_bag(reply.windows);
         } else if(reply.name == 'unsavewindow') {
             openSavedWindow(reply.saved);
@@ -39,7 +38,6 @@ chrome.extension.onConnect.addListener(
         console.assert(port.name == 'bg2ui');
         port.onMessage.addListener(
             function(op) {
-                console.debug('UI op : '+op.name);
                 if(op.name == 'addtab') {
                     var wframe = UI.wMap[op.tab.wid];
                     bgport.postMessage(

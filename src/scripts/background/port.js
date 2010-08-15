@@ -51,13 +51,10 @@ chrome.extension.onConnect.addListener(
                     db.window.update('title = ? ', 'WHERE wid = ?', 
                                         [op.title, op.wid]);
                 } else if(op.name == 'unsavewindow') {
-                    console.debug('unsavewindow '+op.wid);
                     db.window.get('WHERE wid='+op.wid,
                         function(tx, results){
-                            console.log('++>>'+results.rows);
                             if(results.rows.length != 1) {
-                                console.error('Found '+results.rows.length+
-                                    ' saved windows');
+                                console.error('unsavewindow '+results.rows.length);
                             }
                             // this window is the one with old wid
                             db.window.del('WHERE wid = '+op.wid);
@@ -78,12 +75,10 @@ chrome.extension.onConnect.addListener(
                         }
                     );
                 } else if(op.name == 'savewindow') {
-                    console.debug('Save window '+op.wid);
                     db.tab.update('saved = 1 ', 'WHERE wid = ?', [op.wid],
                         function(tx, r) {
                             db.window.update('saved = 1 ', 'WHERE wid = ?', [op.wid],
                                 function(tx, r) {
-                                    console.debug('savewindow returning');
 
                                     ignoreWindowRemove = op.wid;
                                     port.postMessage({ 
@@ -95,10 +90,8 @@ chrome.extension.onConnect.addListener(
                         }
                     );
                 } else if(op.name == 'listsavedwindows') {
-                    console.debug('Listing saved windows');
                     db.window.get('WHERE saved=1 ',
                         function(tx, results){
-                            console.debug('Found saved windows '+results);
                             port.postMessage({ name:'listsavedwindows',
                                     windows:getWindows(results) });
                         }

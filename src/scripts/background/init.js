@@ -56,7 +56,6 @@ var nextNewWindowTitle = null;
 
 function getWindows(results) {
     var warr = [];
-    console.debug('getWindows: '+results.rows.length);
     for(var i=0; i < results.rows.length; i++) {
         var w = results.rows.item(i);
         warr.push({
@@ -162,8 +161,8 @@ chrome.tabs.onUpdated.addListener(
 
         db.tab.get('WHERE tid = '+tid,
             function(tx, r) {
-                if(r.rows.length == 0) {
-                    console.error('No tab in DB for '+tid);
+                if(r.rows.length != 1) {
+                    console.error('onUpdated '+r.rows.length);
                     return;
                 }
                 var tab = r.rows.item(0);
@@ -193,15 +192,12 @@ chrome.tabs.onSelectionChanged.addListener(
         // This will be the parent tab of newly created tabs
         db.tab.get('WHERE tid = '+tid, function(tx, r) {
                 if(r.rows.length != 1) {
-                    console.warn('Got '+r.rows.length+' tabs for '+tid);
                     currentTab = null;
-                    console.debug('setting currentTab to null');
                     return;
                 }
                 var t = r.rows.item(0);
                 if(is_newtab(t) || is_tabsense(t) || is_devtools(t)) {
                     currentTab = null;
-                    console.debug('setting currentTab to null');
                     return;
                 }
                 currentTab = {
@@ -214,7 +210,6 @@ chrome.tabs.onSelectionChanged.addListener(
                     parent : t.parent,
                     depth : t.depth
                 };
-                console.debug('setting currentTab to '+t.tid+','+t.url);
             });
     }
 );
@@ -235,13 +230,9 @@ function is_newtab(tab) {
 
 chrome.tabs.onCreated.addListener(
     function(tab) {
-        console.debug('onCreate');
         if(is_tabsense(tab) || is_devtools(tab) || is_dummy(tab)) {
             return;
         }
-
-        console.debug('Creating new tab : '+tab.url+' with currentTab '+currentTab);
-        if(currentTab) console.debug(currentTab.url);
 
         if(is_newtab(tab) || 
             !currentTab || 
@@ -256,7 +247,7 @@ chrome.tabs.onCreated.addListener(
                 tab.index, tab.windowId, 
                 currentTab.tid, currentTab.depth+1); 
         }
-        db.put(t, function(tx, r) { console.debug('Tab put DB: '+tab.url+','+tab.id); });
+        db.put(t);
 
         if(uiport) {
             uiport.postMessage({
@@ -282,7 +273,6 @@ chrome.tabs.onRemoved.addListener(
         db.tab.get('WHERE tid = '+tid,
             function(tx, r) {
                 if(r.rows.length == 0) {
-                    console.error('No tab in DB for '+tid);
                     return;
                 }
                 var tab = r.rows.item(0);
@@ -291,13 +281,10 @@ chrome.tabs.onRemoved.addListener(
                 unparent_children(tab);
 
                 if(is_tabsense(tab) || is_devtools(tab) || is_dummy(tab)) {
-                    console.debug('Ignoring remove:'+tab.url+', '+tab.id);
                     return;
                 }
 
-                console.debug('removing tab from db '+tid);
-                db.tab.del('WHERE saved = 0 AND tid = '+tid,
-                    function(tx, r) { console.log('Tab del : '+tid); });
+                db.tab.del('WHERE saved = 0 AND tid = '+tid);
 
                 if(uiport) {
                     uiport.postMessage({
@@ -353,7 +340,6 @@ function triggerUIRefresh() {
 chrome.tabs.onAttached.addListener(
     function(tid, attachInfo) {
         if(tid == ignoreTabAttach) {
-            console.log('ATTACH: ignoring '+tid);
             ignoreTabAttach = -1;
             return;
         }
@@ -364,11 +350,10 @@ chrome.tabs.onAttached.addListener(
         // Send UI update message
         db.tab.get('WHERE tid = '+tid, function(tx, results){
             if(results.rows.length != 1) {
-                console.error('after attach tabs found '+results.rows.length);
+                console.error('onAttached: '+results.rows.length);
                 return;
             }
             var tab = results.rows.item(0);
-            console.debug('sending UI addtab for '+tab.tid);
             if(uiport) {
                 uiport.postMessage({
                     name : 'addtab',
@@ -389,9 +374,7 @@ chrome.tabs.onAttached.addListener(
 );
 chrome.tabs.onDetached.addListener(
     function(tid, detachInfo) {
-        console.debug('Got detach for '+tid);
         if(tid == ignoreTabDetach) {
-            console.log('DETACH: ignoring '+tid);
             ignoreTabDetach = -1;
             return;
         }
@@ -402,7 +385,7 @@ chrome.tabs.onDetached.addListener(
         // Send UI update message
         db.tab.get('WHERE tid = '+tid, function(tx, results){
             if(results.rows.length != 1) {
-                console.error('after attach tabs found '+results.rows.length);
+                console.error('onDetached : '+results.rows.length);
                 return;
             }
             var tab = results.rows.item(0);
@@ -436,7 +419,6 @@ chrome.tabs.onMoved.addListener(
 chrome.windows.onRemoved.addListener(
     function(wid) {
         if(wid == ignoreWindowRemove) {
-            console.debug('Ignoring window removal');
             ignoreWindowRemove = -1;
             return;
         }
@@ -455,11 +437,9 @@ chrome.windows.onRemoved.addListener(
 chrome.windows.onCreated.addListener(
     function(win) {
         if(win.type == 'app') {
-            console.debug('Ignoring app window');
             return;
         }
 
-        console.debug('Creating window in db '+win.id);
         db.put(new db.window(win.id, null));
 
 
@@ -478,21 +458,16 @@ chrome.windows.onCreated.addListener(
 );
 chrome.windows.onFocusChanged.addListener(
     function(wid) {
-        console.debug('Window Focus changed to '+wid);
         chrome.tabs.getSelected(null, 
             function(tab) {
                 db.tab.get('WHERE tid = '+tab.id, function(tx, r) {
                     if(r.rows.length != 1) {
-                        console.warn('Got '+r.rows.length+
-                            ' tabs for '+tab.id);
                         currentTab = null;
-                        console.debug('setting currentTab to null');
                         return;
                     }
                     var t = r.rows.item(0);
                     if(is_newtab(t) || is_tabsense(t) || is_devtools(t)) {
                         currentTab = null;
-                        console.debug('setting currentTab to null');
                         return;
                     }
                     currentTab = {
@@ -505,7 +480,6 @@ chrome.windows.onFocusChanged.addListener(
                         parent : t.parent,
                         depth : t.depth
                     }
-                    console.debug('setting currentTab to '+t.tid+','+t.url);
                 });
             }
         );

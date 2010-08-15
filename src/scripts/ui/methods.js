@@ -67,7 +67,7 @@ UI.remove_tab = function(tabdb) {
 
 UI.update_tab = function(tabdb) {
     var tab = UI.tMap[tabdb.tid]; 
-    if(!tab) { console.error('No tab in UI for '+tabdb.tid); return; }
+    if(!tab) { console.error('No UI tab for '+tabdb.tid); return; }
     $('.favicon', tab.elem).attr('src', tabdb.faviconurl);
     $('.title', tab.elem).text(tabdb.title);
     tab.tabdb = tabdb;
