@@ -442,3 +442,38 @@ chrome.windows.onCreated.addListener(
         }
     }
 );
+chrome.windows.onFocusChanged.addListener(
+    function(wid) {
+        console.debug('Window Focus changed to '+wid);
+        chrome.tabs.getSelected(null, 
+            function(tab) {
+                db.tab.get('WHERE tid = '+tab.id, function(tx, r) {
+                    if(r.rows.length != 1) {
+                        console.warn('Got '+r.rows.length+
+                            ' tabs for '+tab.id);
+                        currentTab = null;
+                        console.debug('setting currentTab to null');
+                        return;
+                    }
+                    var t = r.rows.item(0);
+                    if(is_newtab(t) || is_tabsense(t) || is_devtools(t)) {
+                        currentTab = null;
+                        console.debug('setting currentTab to null');
+                        return;
+                    }
+                    currentTab = {
+                        tid : t.tid,
+                        title : t.title,
+                        url : t.url,
+                        faviconurl : t.faviconurl,
+                        index : t.index,
+                        wid : t.wid,
+                        parent : t.parent,
+                        depth : t.depth
+                    }
+                    console.debug('setting currentTab to '+t.tid+','+t.url);
+                });
+            }
+        );
+    }
+);
