@@ -75,12 +75,12 @@ Tab.toggleFav = function() {
     var match = /tab_(\d+)/.exec(p.attr('id'));
     if(match && match[1]) {
         var tab = UI.tMap[parseInt(match[1])];
-        if(Fav.is(tab.url)) {
-            Fav.remove(tab.url);
+        if(Fav.is(tab.tabdb.url)) {
+            Fav.remove(tab.tabdb.url);
             $(this).attr('src', Tab.starOff);
         } else {
             var fi = $(this).siblings('.favicon');
-            Fav.add(tab.url, fi.attr('src'));
+            Fav.add(tab.tabdb.url, fi.attr('src'));
             $(this).attr('src', Tab.starOn);
         }
         refresh_favorites();
