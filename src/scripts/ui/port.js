@@ -46,7 +46,8 @@ chrome.extension.onConnect.addListener(
                     var wframe = UI.wMap[op.tab.wid];
                     bgport.postMessage(
                         { name:'relisttabs',
-                            condition:'WHERE wid = '+op.tab.wid });
+                        condition:'WHERE wid = '+op.tab.wid+
+                        ' and saved = 0 '});
                 } else if(op.name == 'attachtab') {
                     UI.attach_tab(op.tab);
                 } else if(op.name == 'detachtab') {
