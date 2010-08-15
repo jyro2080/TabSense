@@ -6,14 +6,14 @@ db.open = function() {
     this.DB.transaction(function(tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS '+
             'Window(id INTEGER PRIMARY KEY ASC, '+
-            'wid INTEGER, title TEXT, saved INTEGER)',
+            'wid INTEGER, title TEXT, saved INTEGER DEFAULT 0)',
             [], db.onSuccess, db.onError);
     });
     this.DB.transaction(function(tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS '+
             'Tab(id INTEGER PRIMARY KEY ASC, tid INTEGER, title TEXT, '+
-            'url TEXT, faviconurl TEXT, wid INTEGER, parent INTEGER, '+
-            'idx INTEGER, depth INTEGER, status TEXT)',
+            'url TEXT, faviconurl TEXT, wid INTEGER, parent INTEGER DEFAULT 0, '+
+            'idx INTEGER, depth INTEGER DEFAULT 0, status TEXT, saved INTEGER DEFAULT 0)',
             [], db.onSuccess, db.onError);
     });
 }
@@ -95,7 +95,7 @@ db.tab = function(tid, title, url, faviconurl, index, wid, parent, depth) {
     this.faviconurl = faviconurl;
     this.index = index;
     this.wid = wid;
-    this.parent = parent || -1;
+    this.parent = parent || 0;
     this.depth = depth || 0;
 }
 
