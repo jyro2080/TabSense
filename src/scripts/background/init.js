@@ -282,6 +282,7 @@ chrome.tabs.onRemoved.addListener(
                 }
                 var tab = r.rows.item(0);
 
+                bubble_up_children(tab);
                 unparent_children(tab);
 
                 if(is_tabsense(tab) || is_devtools(tab) || is_dummy(tab)) {
@@ -312,10 +313,15 @@ chrome.tabs.onRemoved.addListener(
 );
 
 function unparent_children(parnt) {
+    db.tab.update('parent = ? ', 
+        'WHERE parent = ?', [parnt.parent, parnt.tid]);
+}
+
+function bubble_up_children(parnt) {
     db.tab.get('WHERE parent = '+parnt.tid,
         function(tx, r) {
             for(var i=0; i < r.rows.length; i++)  {
-                unparent_children(r.rows.item(i));
+                bubble_up_children(r.rows.item(i));
             }
         }
     );
