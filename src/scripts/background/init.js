@@ -129,7 +129,7 @@ function processTabs(tabs) {
 }
 fallbackIcon = chrome.extension.getURL('images/icon28.png');
 function sanitizeFavIcon(fi) {
-    if(fi == undefined || fi == null || fi.length == 0) {
+    if(fi === undefined || fi === null || fi.length == 0) {
         return fallbackIcon;
     } else {
         return fi;
