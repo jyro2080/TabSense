@@ -2,64 +2,6 @@ var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.p
 var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
 
-
-/*
-function layout_windows() {
-    windowMap.sort(function(a,b) { return (b.numTabs-a.numTabs); });
-    for(var i=0; i<NUMCOL; i++) {winColumns[i]=[];}
-
-    function columnNumber(counter) {
-        var r = parseInt(counter / NUMCOL);
-        var c = counter % NUMCOL;
-        return ( ((r % 2) == 0) ? c : (NUMCOL-1-c) );
-    }
-
-
-    var colCount = 0;
-    for(i in windowMap) {
-
-        colCount = columnNumber(i);
-
-        var wh = windowMap[i].elem.height();
-
-        if(!winColumns[colCount]) winColumns[colCount] = [];
-
-        windowMap[i].setLocation(
-            getColumnHeight(colCount),
-            (colCount*windowMap[i].elem.width()+(colCount+0.5) * HMARGIN));
-
-        winColumns[colCount].push(windowMap[i]);
-    }
-}
-
-function get_column(x) {
-    var width;
-    for(i in UI.wMap) {
-        width = UI.wMap[i].elem.width();
-        break;
-    }
-    return parseInt((x - 0.5*HMARGIN)/width);
-}
-
-function relayout_column(colnum) {
-    var column = UI.columns[colnum];
-    var wl = column.splice(0); // copy array and empty it
-    for(var i=0; i < wl.length; i++) {
-        var win = wl[i];
-        if(!win) console.error('FLAG 2');
-        win.setLocation(
-            getColumnHeight(colnum),
-            colnum * win.elem.width() + (colnum+0.5) * HMARGIN);
-        column.push(wl[i]);
-    }
-    
-}
-var tabMap = [];
-var windowMap = [];
-
-var winColumns = new Array(NUMCOL);
-*/
-
 var doneWindows = 0;
 var dw, dh, winw;
 var HMARGIN = 30;
@@ -155,30 +97,11 @@ $(document).ready(function(){
 
     bgport.postMessage({ name:'listsavedwindows' });
 
-    /*
-    chrome.extension.onRequest.addListener(
-        function(request, sender, sendResponse) {
-            console.log(sender.tab ?
-                        "from a content script:" + sender.tab.url :
-                        "from the extension");
-            if (request.msg == "RELOAD") {
-                window.location.reload();
-            }
-        }
-    );
-    */
 });
 
 function load_bag(windows) {
     $('#bagbar').empty();
-    /*
-    var bagWinList = Bag.list();
-    var bagl = bagWinList.length;
-    */
-    if(!windows) {
-        console.debug('load_bag no windows');
-        return;
-    }
+    if(!windows) return;
     var bagl = windows.length;
     if(bagl > 0) {
         $('#bagbar').append($('<img/>').attr('src', WinFrame.saveIcon));
@@ -202,19 +125,8 @@ function bagEntryClicked(ev) {
 }
 
 function openSavedWindow(saved) {
-    console.debug('openSavedWindow ');
     chrome.windows.create(null,
         function(win) {
-            /*
-            var wf = new WinFrame(win, saved.title);
-            UI.wMap[win.id] = wf;
-            $('body').append(wf.elem);
-            UI.add_window(saved); 
-
-            var tabTitleMap = {};
-            var tabFavIconMap = {};
-            */
-            console.log('saved.tabs  = '+saved.tabs);
             var totalTabs = saved.tabs.length;
 
             for(var i=0; i<totalTabs; i++) {
