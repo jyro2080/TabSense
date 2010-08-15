@@ -1,6 +1,8 @@
 var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.php?id=139713996058999&amp;width=500&amp;connections=10&amp;stream=true&amp;header=false&amp;height=555" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:555px;" allowTransparency="true"></iframe>';
 var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
+var BAG_LEGACY_MSG = 'Thanks for being early adopter of TabSense.\n'+
+                    'New v1.6 uses new format to save data. You have saved windows from old version. They will now be opened. You can save them again, so that they get saved in new format.'
 
 var doneWindows = 0;
 var dw, dh, winw;
@@ -100,7 +102,7 @@ $(document).ready(function(){
     // open saved windows in legacy versions
     var oldwindows = Bag.list();
     if(oldwindows.length > 0) {
-        alert('msg');
+        alert(BAG_LEGACY_MSG);
 
         var winidArr = [];
         for(var i=0; i < oldwindows.length; i++) {
@@ -118,7 +120,7 @@ $(document).ready(function(){
             var win = oldwindows[i];
             var winid = winidArr[i];
             for(var j=0; j < win.tabs.length; j++) {
-                chrome.tab.create({
+                chrome.tabs.create({
                     windowId : winid,
                     url : win.tabs[j].url
                 });
