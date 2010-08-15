@@ -155,6 +155,7 @@ $(document).ready(function(){
 
     bgport.postMessage({ name:'listsavedwindows' });
 
+    /*
     chrome.extension.onRequest.addListener(
         function(request, sender, sendResponse) {
             console.log(sender.tab ?
@@ -165,6 +166,7 @@ $(document).ready(function(){
             }
         }
     );
+    */
 });
 
 function load_bag(windows) {
@@ -173,6 +175,10 @@ function load_bag(windows) {
     var bagWinList = Bag.list();
     var bagl = bagWinList.length;
     */
+    if(!windows) {
+        console.debug('load_bag no windows');
+        return;
+    }
     var bagl = windows.length;
     if(bagl > 0) {
         $('#bagbar').append($('<img/>').attr('src', WinFrame.saveIcon));
@@ -195,21 +201,26 @@ function bagEntryClicked(ev) {
     bgport.postMessage({ name:'unsavewindow', wid:wid });
 }
 
-function openSavedWindow(win) {
+function openSavedWindow(saved) {
+    console.debug('openSavedWindow ');
     chrome.windows.create(null,
         function(win) {
+            /*
             var wf = new WinFrame(win, saved.title);
             UI.wMap[win.id] = wf;
             $('body').append(wf.elem);
+            UI.add_window(saved); 
 
-            var totalTabs = saved.tabs.length;
             var tabTitleMap = {};
             var tabFavIconMap = {};
+            */
+            console.log('saved.tabs  = '+saved.tabs);
+            var totalTabs = saved.tabs.length;
 
             for(var i=0; i<totalTabs; i++) {
                 var t = saved.tabs[i];
-                tabTitleMap[t.url] = t.title;
-                tabFavIconMap[t.url] = t.favIconUrl;
+                //tabTitleMap[t.url] = t.title;
+                //tabFavIconMap[t.url] = t.favIconUrl;
                 chrome.tabs.create({
                     windowId : win.id,
                     index : t.index,
@@ -217,6 +228,7 @@ function openSavedWindow(win) {
                     selected : t.selected
                 }, 
                 function(tab) {
+                    /*
                     var title = tabTitleMap[tab.url];
                     var favIconUrl = tabFavIconMap[tab.url];
                     wf.addTab(new Tab(tab, title, favIconUrl));
@@ -224,9 +236,9 @@ function openSavedWindow(win) {
                         wf.refreshStyle();
                         layout_windows();
                     }
+                    */
                 });
             }
-
         }
     );
 

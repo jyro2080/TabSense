@@ -6,9 +6,7 @@ function WinFrame(windb, title_str) {
     this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+windb.wid);
 
     if(!title_str) {
-        title_str = window.localStorage.getItem('window_title_'+windb.wid);
-    } else {
-        window.localStorage.setItem('window_title_'+windb.wid, title_str);
+        title_str = windb.title
     }
     if(title_str) {
         var text = WinFrame.createTitle(title_str);
@@ -40,14 +38,10 @@ WinFrame.emailIcon = chrome.extension.getURL('images/email.png');
 
 WinFrame.saveWindow = function(ev) {
     var wid = $(this).parent().parent().attr('id');
-    var title = window.localStorage.getItem('window_title_'+wid);
-    var win = UI.wMap[wid];
     bgport.postMessage({
         name : 'savewindow',
         wid : wid,
     });
-    win.destroy();
-    chrome.windows.remove(win.windb.wid);
 }
 
 WinFrame.createTitle = function(title) {

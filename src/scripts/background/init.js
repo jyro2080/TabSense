@@ -49,6 +49,7 @@ function removeDummyTab(tabs) {
     }
 }
 
+var ignoreWindowRemove = -1;
 var ignoreTabAttach = -1;
 var ignoreTabDetach = -1;
 var nextNewWindowTitle = null;
@@ -239,18 +240,21 @@ chrome.tabs.onCreated.addListener(
             return;
         }
 
-        console.debug('Creating new tab : '+tab.url+' currentTab '+currentTab);
+        console.debug('Creating new tab : '+tab.url+' with currentTab '+currentTab);
+        if(currentTab) console.debug(currentTab.url);
 
-        // Is this a new tab or has a URL already?
-        // If it's a new tab: its depth is zero (root tab)
-        // else: it's a child of currently (or previously) selected tab
-        if(is_newtab(tab) || !currentTab) {
-            var t = new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
-                            tab.index, tab.windowId, 0, 0);
+        if(is_newtab(tab) || 
+            !currentTab || 
+            currentTab.wid != tab.windowId) 
+        {
+            var t = new db.tab(
+                tab.id, tab.title, tab.url, tab.favIconUrl, 
+                tab.index, tab.windowId, 0, 0);
         } else {
-            var t = new db.tab(tab.id, tab.title, tab.url, tab.favIconUrl, 
-                            tab.index, tab.windowId, 
-                            currentTab.tid, currentTab.depth+1); 
+            var t = new db.tab(
+                tab.id, tab.title, tab.url, tab.favIconUrl, 
+                tab.index, tab.windowId, 
+                currentTab.tid, currentTab.depth+1); 
         }
         db.put(t, function(tx, r) { console.debug('Tab put DB: '+tab.url+','+tab.id); });
 
@@ -290,6 +294,11 @@ chrome.tabs.onRemoved.addListener(
                     console.debug('Ignoring remove:'+tab.url+', '+tab.id);
                     return;
                 }
+
+                console.debug('removing tab from db '+tid);
+                db.tab.del('WHERE saved = 0 AND tid = '+tid,
+                    function(tx, r) { console.log('Tab del : '+tid); });
+
                 if(uiport) {
                     uiport.postMessage({
                         name : 'removetab',
@@ -306,8 +315,6 @@ chrome.tabs.onRemoved.addListener(
                     });
                 }
 
-                db.tab.del('WHERE tid = '+tid,
-                    function(tx, r) { console.log('Tab del : '+tid); });
             }
         );
     }
@@ -428,6 +435,12 @@ chrome.tabs.onMoved.addListener(
  */
 chrome.windows.onRemoved.addListener(
     function(wid) {
+        if(wid == ignoreWindowRemove) {
+            console.debug('Ignoring window removal');
+            ignoreWindowRemove = -1;
+            return;
+        }
+
         db.window.del('WHERE wid = '+wid);
         db.tab.del('WHERE wid = '+wid);
 
@@ -446,6 +459,7 @@ chrome.windows.onCreated.addListener(
             return;
         }
 
+        console.debug('Creating window in db '+win.id);
         db.put(new db.window(win.id, null));
 
 

@@ -24,8 +24,11 @@ bgport.onMessage.addListener(
             console.debug('listsavedwindows gets '+reply.windows);
             load_bag(reply.windows);
         } else if(reply.name == 'unsavewindow') {
-            openSavedWindow(reply.window);
+            openSavedWindow(reply.saved);
         } else if(reply.name == 'savewindow') {
+            var win = UI.wMap[reply.wid];
+            UI.remove_window(win.windb);
+            chrome.windows.remove(win.windb.wid);
             bgport.postMessage({ name:'listsavedwindows' });
         }
     }
@@ -41,7 +44,7 @@ chrome.extension.onConnect.addListener(
                     var wframe = UI.wMap[op.tab.wid];
                     bgport.postMessage(
                         { name:'relisttabs',
-                            condition:'WHERE wid = '+op.tab.wid });
+                        condition:'WHERE wid = '+op.tab.wid });
                 } else if(op.name == 'removetab') {
                     var wframe = UI.wMap[op.tab.wid];
                     bgport.postMessage(

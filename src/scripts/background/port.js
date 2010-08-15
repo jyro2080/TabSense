@@ -15,21 +15,25 @@ chrome.extension.onConnect.addListener(
                     uitab = op.tabid;
                     uiport = chrome.tabs.connect(uitab, { name:'bg2ui' });
                 } else if(op.name == 'listwindows') {
-                    db.window.get('WHERE saved=0 ',function(tx, results){
+                    db.window.get('WHERE saved != 1 ',
+                        function(tx, results){
                             port.postMessage({ name:'listwindows',
                                     windows:getWindows(results) });
                         });
-                } else if(op.name == 'listtabs' || op.name == 'relisttabs') {
-                    db.tab.get(op.condition, function(tx, results){
+                } else if(op.name == 'listtabs' || op.name == 'relisttabs') 
+                {
+                    db.tab.get(op.condition, 
+                        function(tx, results){
                             port.postMessage({ name: op.name,
                                     tabs:getTabs(results) });
                         });
                 } else if(op.name == 'tabmove') {
                     ignoreTabAttach = op.tid;
                     ignoreTabDetach = op.tid;
-                    chrome.tabs.move(op.tid, { windowId:op.wid, index:100 });
+                    chrome.tabs.move(op.tid, 
+                        { windowId:op.wid, index:100 });
                     db.tab.update('wid = ?, parent = ?, depth = ? ',
-                                'WHERE tid = ?', [op.wid, 0, 0, op.tid]); 
+                        'WHERE tid = ?', [op.wid, 0, 0, op.tid]); 
                 } else if(op.name == 'tabmovenew') {
                     chrome.windows.create(
                         { url:chrome.extension.getURL('dummy.html') }, 
@@ -43,43 +47,62 @@ chrome.extension.onConnect.addListener(
                             );
                         }
                     );
+                } else if(op.name == 'savewindowtitle') {
+                    db.window.update('title = ? ', 'WHERE wid = ?', 
+                                        [op.title, op.wid]);
                 } else if(op.name == 'unsavewindow') {
                     console.debug('unsavewindow '+op.wid);
-                    db.window.update('saved = 0 ', 'WHERE wid = ?', [op.wid]);
-                    db.window.get('WHERE wid='+op.wid,function(tx, results){
+                    db.window.get('WHERE wid='+op.wid,
+                        function(tx, results){
+                            console.log('++>>'+results.rows);
                             if(results.rows.length != 1) {
                                 console.error('Found '+results.rows.length+
                                     ' saved windows');
                             }
+                            // this window is the one with old wid
+                            db.window.del('WHERE wid = '+op.wid);
                             var w = results.rows.item(0);
-                            var win = {
-                                wid : w.wid,
-                                title : w.title,
-                            };
-                            db.tab.get(op.condition, function(tx, results){
-                                port.postMessage({ name:'unsavewindow',
-                                    window : win,
-                                    tabs : getTabs(results)
-                                });
-                            });
-                        });
-                } else if(op.name == 'savewindowtitle') {
-                    db.window.update('title = ? ', 'WHERE wid = ?', 
-                                        [op.title, op.wid]);
+                            var win = { };
+                            nextNewWindowTitle = w.title;
+                            db.tab.get('WHERE wid='+op.wid, 
+                                function(tx, results) {
+                                    win.tabs = getTabs(results);
+                                    // delete these tabs
+                                    db.tab.del('WHERE wid='+op.wid); 
+                                    port.postMessage({ 
+                                        name:'unsavewindow',
+                                        saved : win
+                                    });
+                                }
+                            );
+                        }
+                    );
                 } else if(op.name == 'savewindow') {
                     console.debug('Save window '+op.wid);
-                    db.window.update('saved = 1 ', 'WHERE wid = ?', [op.wid],
+                    db.tab.update('saved = 1 ', 'WHERE wid = ?', [op.wid],
                         function(tx, r) {
-                            console.debug('savewindow returning');
-                            port.postMessage({ name:'savewindow' });
-                        });
+                            db.window.update('saved = 1 ', 'WHERE wid = ?', [op.wid],
+                                function(tx, r) {
+                                    console.debug('savewindow returning');
+
+                                    ignoreWindowRemove = op.wid;
+                                    port.postMessage({ 
+                                        name:'savewindow',
+                                        wid : op.wid
+                                    });
+                                }
+                            );
+                        }
+                    );
                 } else if(op.name == 'listsavedwindows') {
                     console.debug('Listing saved windows');
-                    db.window.get('WHERE saved=1 ',function(tx, results){
+                    db.window.get('WHERE saved=1 ',
+                        function(tx, results){
                             console.debug('Found saved windows '+results);
                             port.postMessage({ name:'listsavedwindows',
                                     windows:getWindows(results) });
-                        });
+                        }
+                    );
                 }
             }
         );
