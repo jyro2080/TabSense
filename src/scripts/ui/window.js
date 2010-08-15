@@ -190,5 +190,25 @@ WinFrame.prototype = {
         $('.mailtolink', this.elem).attr('href', 
             'mailto:?subject='+encodeURIComponent(subject)+
             '&body='+encodeURIComponent(body));
+    },
+
+    updateGMailLink : function() {
+        var title = this.windb.title;
+        if(!title) {
+            var subject = 'TabSense Summary';
+            var body = 'TabSense Summary\n\n';
+        } else {
+            var subject = '[TabSense] '+title;
+            var body = 'TabSense Summary of "'+title+'"\n\n';
+        }
+        for(var i=0; i<this.numTabs; i++) {
+            var tabdb = this.tabArray[i].tabdb;
+            body += tabdb.title+'\n[ '+tabdb.url+' ]\n\n';
+        }
+
+        $('.mailtolink', this.elem).attr('href', 
+            'https://mail.google.com/?view=cm&fs=1&tf=1&'+
+            'source=mailto&su='+encodeURIComponent(subject)+
+            '&body='+encodeURIComponent(body));
     }
 }
