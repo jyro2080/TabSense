@@ -97,6 +97,35 @@ $(document).ready(function(){
 
     bgport.postMessage({ name:'listsavedwindows' });
 
+    // open saved windows in legacy versions
+    var oldwindows = Bag.list();
+    if(oldwindows.length > 0) {
+        alert('msg');
+
+        var winidArr = [];
+        for(var i=0; i < oldwindows.length; i++) {
+            chrome.windows.create(null, function(win) {
+                winidArr.push(win.id);
+                if(winidArr.length == oldwindows.length) {
+                    open_old_tabs();
+                }
+            });
+        }
+    }
+
+    function open_old_tabs() {
+        for(var i=0; i < oldwindows.length; i++) {
+            var win = oldwindows[i];
+            var winid = winidArr[i];
+            for(var j=0; j < win.tabs.length; j++) {
+                chrome.tab.create({
+                    windowId : winid,
+                    url : win.tabs[j].url
+                });
+            }
+        }
+    }
+
 });
 
 function load_bag(windows) {
