@@ -51,6 +51,7 @@ function removeDummyTab(tabs) {
 
 var ignoreTabAttach = -1;
 var ignoreTabDetach = -1;
+var nextNewWindowTitle = null;
 
 function getWindows(results) {
     var warr = [];
@@ -448,10 +449,15 @@ chrome.windows.onCreated.addListener(
         db.put(new db.window(win.id, null));
 
 
+        var w = { wid : win.id };
+        if(nextNewWindowTitle) {
+            w.title = nextNewWindowTitle;
+            nextNewWindowTitle = null;
+        }
         if(uiport) {
             uiport.postMessage({
                 name : 'addwindow',
-                win : { wid:win.id }
+                win : w
             });
         }
     }
