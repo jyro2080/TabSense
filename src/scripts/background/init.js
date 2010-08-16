@@ -31,20 +31,26 @@ function getWindows(results) {
     return warr;
 }
 
+function makeTabDb(t) {
+    return {
+        tid : t.tid,
+        wid : t.wid,
+        title : t.title,
+        url : t.url,
+        faviconurl : t.faviconurl,
+        index : t.index,
+        parent : t.parent,
+        depth : t.depth,
+        collapsed : t.collapsed,
+        hidden : t.hidden
+    };
+}
+
 function getTabs(results) {
     var tarr = [];
     for(var i=0; i < results.rows.length; i++) {
         var t = results.rows.item(i);
-        tarr.push({
-            tid : t.tid,
-            wid : t.wid,
-            title : t.title,
-            url : t.url,
-            faviconurl : t.faviconurl,
-            index : t.index,
-            parent : t.parent,
-            depth : t.depth
-        });
+        tarr.push(makeTabDb(t));
     }
     tarr.sort(function(a,b) {return (a.depth-b.depth)});
     var tree = [];
@@ -134,16 +140,7 @@ chrome.tabs.onUpdated.addListener(
                 if(uiport) {
                     uiport.postMessage({
                         name : 'updatetab',
-                        tab : {
-                            tid : tab.tid,
-                            wid : tab.wid,
-                            title : tab.title,
-                            url : tab.url,
-                            faviconurl : tab.faviconurl,
-                            index : tab.index,
-                            parent : tab.parent,
-                            depth : tab.depth
-                        }
+                        tab : makeTabDb(tab)
                     });
                 }
             }
@@ -165,16 +162,7 @@ chrome.tabs.onSelectionChanged.addListener(
                     currentTab = null;
                     return;
                 }
-                currentTab = {
-                    tid : t.tid,
-                    title : t.title,
-                    url : t.url,
-                    faviconurl : t.faviconurl,
-                    index : t.index,
-                    wid : t.wid,
-                    parent : t.parent,
-                    depth : t.depth
-                };
+                currentTab = makeTabDb(t);
             });
     }
 );
@@ -217,17 +205,7 @@ chrome.tabs.onCreated.addListener(
         if(uiport) {
             uiport.postMessage({
                 name : 'addtab',
-
-                tab : {
-                    tid : t.tid,
-                    title : t.title,
-                    url : t.url,
-                    faviconurl : t.faviconurl,
-                    index : t.index,
-                    wid : t.wid,
-                    parent : t.parent,
-                    depth : t.depth
-                }
+                tab : makeTabDb(t) 
             });
         }
     }
@@ -254,16 +232,7 @@ chrome.tabs.onRemoved.addListener(
                 if(uiport) {
                     uiport.postMessage({
                         name : 'removetab',
-                        tab : {
-                            tid : tab.tid,
-                            wid : tab.wid,
-                            title : tab.title,
-                            url : tab.url,
-                            faviconurl : tab.faviconurl,
-                            index : tab.index,
-                            parent : tab.parent,
-                            depth : tab.depth
-                        }
+                        tab : makeTabDb(tab) 
                     });
                 }
 
@@ -322,16 +291,7 @@ chrome.tabs.onAttached.addListener(
             if(uiport) {
                 uiport.postMessage({
                     name : 'addtab',
-                    tab : {
-                        tid : tab.tid,
-                        wid : tab.wid,
-                        title : tab.title,
-                        url : tab.url,
-                        faviconurl : tab.faviconurl,
-                        index : tab.index,
-                        parent : tab.parent,
-                        depth : tab.depth
-                    }
+                    tab : makeTabDb(tab)
                 });
             }
         });
@@ -357,16 +317,7 @@ chrome.tabs.onDetached.addListener(
             if(uiport) {
                 uiport.postMessage({
                     name : 'removetab',
-                    tab : {
-                        tid : tab.tid,
-                        wid : detachInfo.oldWindowId,
-                        title : tab.title,
-                        url : tab.url,
-                        faviconurl : tab.faviconurl,
-                        index : tab.index,
-                        parent : tab.parent,
-                        depth : tab.depth
-                    }
+                    tab : makeTabDb(tab)
                 });
             }
         });
@@ -435,16 +386,7 @@ chrome.windows.onFocusChanged.addListener(
                         currentTab = null;
                         return;
                     }
-                    currentTab = {
-                        tid : t.tid,
-                        title : t.title,
-                        url : t.url,
-                        faviconurl : t.faviconurl,
-                        index : t.index,
-                        wid : t.wid,
-                        parent : t.parent,
-                        depth : t.depth
-                    }
+                    currentTab = makeTabDb(t);
                 });
             }
         );
