@@ -5,41 +5,6 @@ chrome.browserAction.onClicked.addListener(
             chrome.extension.getURL('newtab.html')});
     }
 );
-/*
-chrome.extension.onRequest.addListener(
-    function(request, sender, sendResponse) {
-        if(request.action == 'openui') {
-            chrome.tabs.create({url:
-                chrome.extension.getURL('newtab.html')});
-        } else if(request.action == 'listwindows') {
-            db.window.get('',function(tx, results){
-                    sendResponse(getWindows(results));
-                });
-        } else if(request.action == 'listtabs') {
-            db.tab.get(request.condition,function(tx, results){
-                    sendResponse(getTabs(results));
-                });
-        } else if(request.action == 'tabmove') {
-            ignoreTabAttach = request.tid;
-            ignoreTabDetach = request.tid;
-            chrome.tabs.move(request.tid, 
-                { windowId : request.wid, index:100 });
-            db.tab.update('wid = ? ', 'WHERE tid = ?',
-                    [request.wid, request.tid]); 
-        } else if(request.action == 'newwindowwithtab') {
-            chrome.windows.create({url:chrome.extension.getURL('dummy.html')}, 
-                function(win) {
-                    chrome.tabs.move(request.tid,{ windowId:win.id, index:0 },
-                        function() {
-                            chrome.tabs.getAllInWindow(win.id, removeDummyTab);
-                        }
-                    );
-                }
-            );
-        }
-    }
-);
-*/
 
 function removeDummyTab(tabs) {
     for(var i=0; i < tabs.length; i++) {
