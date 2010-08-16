@@ -1,21 +1,46 @@
 
+curDBVersion = '2.0'
+
 function db() { }
 
 db.open = function() {
-    this.DB = openDatabase('TabSense', '1.0', 'TabSense', 5*1024*1024);
-    this.DB.transaction(function(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS '+
-            'Window(id INTEGER PRIMARY KEY ASC, '+
-            'wid INTEGER, title TEXT, saved INTEGER DEFAULT 0)',
-            [], db.onSuccess, db.onError);
-    });
-    this.DB.transaction(function(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS '+
-            'Tab(id INTEGER PRIMARY KEY ASC, tid INTEGER, title TEXT, '+
-            'url TEXT, faviconurl TEXT, wid INTEGER, parent INTEGER DEFAULT 0, '+
-            'idx INTEGER, depth INTEGER DEFAULT 0, status TEXT, saved INTEGER DEFAULT 0)',
-            [], db.onSuccess, db.onError);
-    });
+    this.DB = openDatabase('TabSense', '', 'TabSense', 5*1024*1024);
+    if(this.DB.version != curDBVersion) {
+        db.update(this.DB);
+    }
+}
+
+db.update = function(DB) {
+    console.debug('Updating '+DB.version+' -> '+curDBVersion);
+    if(DB.version == '' && curDBVersion == '2.0') {
+        DB.changeVersion('','2.0',db.create_new,
+            db.onUpdateError, db.onUpdateSuccess);
+    } else if(DB.version == '1.0' && curDBVersion == '2.0') {
+        DB.changeVersion('1.0','2.0',db.update_1_to_2,
+            db.onUpdateError, db.onUpdateSuccess);
+    } else {
+        
+    }
+}
+
+db.create_new = function(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS '+
+        'Window(id INTEGER PRIMARY KEY ASC, '+
+        'wid INTEGER, title TEXT, saved INTEGER DEFAULT 0)',
+        [], db.onSuccess, db.onError);
+    tx.executeSql('CREATE TABLE IF NOT EXISTS '+
+        'Tab(id INTEGER PRIMARY KEY ASC, tid INTEGER, title TEXT, '+
+        'url TEXT, faviconurl TEXT, wid INTEGER, parent INTEGER DEFAULT 0, '+
+        'idx INTEGER, depth INTEGER DEFAULT 0, status TEXT, '+
+        'saved INTEGER DEFAULT 0, collapsed INTEGER DEFAULT 0, '+
+        'hidden INTEGER DEFAULT 0)',
+        [], db.onSuccess, db.onError);
+}
+db.update_1_to_2 = function(tx) {
+    tx.executeSql(
+        'ALTER TABLE Tab ADD COLUMN collapsed INTEGER DEFAULT 0, '+
+        'hidden INTEGER DEFAULT 0', [], db.onSuccess, db.onError
+    );
 }
 
 db.clear = function() {
@@ -25,6 +50,14 @@ db.clear = function() {
     this.DB.transaction(function(tx) {
         tx.executeSql('DELETE FROM Tab WHERE saved = 0', [], db.onSuccess, db.onError);
     });
+}
+
+db.onUpdateError = function(e) {
+    console.error('DB Update failed: '+e.message);
+}
+
+db.onUpdateSuccess = function() {
+    console.debug('DB Update successful');
 }
 
 db.onError = function(tx, e) {
