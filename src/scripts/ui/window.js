@@ -108,6 +108,7 @@ WinFrame.prototype = {
         this.elem.append(tab.elem);
         this.tabArray.push(tab);
         tab.parent = this;
+        tab.tabdb.wid = this.windb.wid;
         this.numTabs++;
         this.updateMailToLink();
     },
