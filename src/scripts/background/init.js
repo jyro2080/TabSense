@@ -85,7 +85,6 @@ function processWindows(windows) {
         if(w.type == 'app') continue;
 
         db.put(new db.window(w.id, null));
-
         chrome.tabs.getAllInWindow(w.id, processTabs);
     }
 }
@@ -190,6 +189,7 @@ chrome.tabs.onCreated.addListener(
             return;
         }
 
+        tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
         if(is_newtab(tab) || 
             !currentTab || 
             currentTab.wid != tab.windowId) 
