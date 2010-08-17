@@ -12,6 +12,7 @@ function UI()
 UI.wMap = [];
 UI.tMap = [];
 
+/*
 UI.add_window = function(windb) {
     var wframe = new WinFrame(windb);
     UI.wMap[windb.wid] = wframe;
@@ -44,7 +45,9 @@ UI.add_tab = function(tabdb) {
     UI.tMap[tabdb.tid] = tab;
     UI.attach_tab(tabdb.wid, tabdb);
 }
+*/
 
+/*
 UI.detach_tab = function(tabdb, ev) {
     var tab = UI.tMap[tabdb.tid];
     if(!tab) { console.error('No UI tab for '+tabdb.tid); return; }
@@ -72,6 +75,7 @@ UI.update_tab = function(tabdb) {
     $('.title', tab.elem).text(tabdb.title);
     tab.tabdb = tabdb;
 }
+*/
 
 
 UI.columnNumber = function(counter) {

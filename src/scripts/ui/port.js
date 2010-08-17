@@ -42,8 +42,9 @@ bgport.onMessage.addListener(
         } else if(reply.name == 'unsavewindow') {
             openSavedWindow(reply.saved);
         } else if(reply.name == 'savewindow') {
-            var win = UI.wMap[reply.wid];
-            UI.remove_window(win.windb);
+            var wframe = UI.wMap[reply.wid]; console.assert(wframe);
+            wframe.destroy();
+
             chrome.windows.remove(win.windb.wid);
             bgport.postMessage({ name:'listsavedwindows' });
         }
@@ -59,23 +60,29 @@ chrome.extension.onConnect.addListener(
                     var wframe = UI.wMap[op.tab.wid];
                     bgport.postMessage(
                         { name:'relisttabs',
-                        condition:'WHERE wid = '+op.tab.wid });
+                            wid : op.tab.wid });
                 } else if(op.name == 'removetab') {
                     var wframe = UI.wMap[op.tab.wid];
                     bgport.postMessage(
                         { name:'relisttabs',
-                        condition:'WHERE wid = '+op.tab.wid+
-                        ' and saved = 0 '});
-                } else if(op.name == 'attachtab') {
-                    UI.attach_tab(op.tab);
-                } else if(op.name == 'detachtab') {
-                    UI.detach_tab(op.tab);
+                            wid : op.tab.wid });
                 } else if(op.name == 'updatetab') {
-                    UI.update_tab(op.tab);
+
+                    var tab = UI.tMap[op.tab.tid]; console.assert(tab);
+                    $('.favicon', tab.elem)
+                        .attr('src', op.tab.faviconurl);
+                    $('.title', tab.elem)
+                        .text(op.tab.title);
+                    tab.tabdb = op.tab;
+
                 } else if(op.name == 'addwindow') {
-                    UI.add_window(op.win);
+                    var wframe = new WinFrame(op.win);
+                    UI.wMap[op.win.wid] = wframe;
                 } else if(op.name == 'removewindow') {
-                    UI.remove_window(op.win);
+                    var wframe = UI.wMap[op.win.wid]; 
+                    if(wframe) wframe.destroy();
+                } else {
+                    console.error('Unknown command : '+op.name);
                 }
             }
         );

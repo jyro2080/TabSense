@@ -22,10 +22,14 @@ chrome.extension.onConnect.addListener(
                         });
                 } else if(op.name == 'listtabs' || op.name == 'relisttabs') 
                 {
-                    db.tab.get(op.condition, 
+                    var condition = 'WHERE wid = '+op.wid;
+                    db.tab.get(condition, 
                         function(tx, results){
-                            port.postMessage({ name: op.name,
-                                    tabs:getTabs(results) });
+                            port.postMessage({ 
+                                name: op.name,
+                                wid: op.wid,
+                                tabs:getTabs(results) 
+                            });
                         });
                 } else if(op.name == 'tabmove') {
                     ignoreTabAttach = op.tid;

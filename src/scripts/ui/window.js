@@ -31,6 +31,8 @@ function WinFrame(windb, title_str) {
     wtitle.append(save_icon);
     wtitle.append(text);
     this.elem.append(wtitle);
+
+    $('body').append(this.elem);
 }
 
 WinFrame.saveIcon = chrome.extension.getURL('images/save.png');
@@ -89,6 +91,18 @@ WinFrame.editTitle = function() {
 }
 
 WinFrame.prototype = {
+
+    addTabs : function(tabdbarr) {
+        for(var i=0; i<tabdbarr.length; i++) {
+            var t = new Tab(tabdbarr[i]);
+
+            UI.tMap[t.tabdb.tid] = t;
+            t.attach();
+            this.addTab(t);
+
+        }
+        this.refreshStyle();
+    },
     
     addTab : function(tab) {
         this.elem.append(tab.elem);
@@ -108,6 +122,12 @@ WinFrame.prototype = {
         } else {
             this.updateMailToLink();
         }
+    },
+
+    empty : function() {
+        $('.mtab', this.elem).remove();
+        this.tabArray.splice(0);
+        this.numTabs = 0;
     },
 
     destroy : function() {

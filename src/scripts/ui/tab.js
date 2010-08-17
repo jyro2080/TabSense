@@ -101,7 +101,12 @@ Tab.mouseleave = function(ev) {
 Tab.prototype = {
     pick : function(ev) {
         this.reset_depth();
-        UI.detach_tab(this.tabdb, ev);
+
+        this.detach(ev.clientY-15, ev.clientX - UI.winw/2);
+        var wframe = this.parent;
+        wframe.removeTab(this);
+        wframe.refreshStyle();
+
         UI.relayout_column(UI.get_column(ev.clientX));
     },
 
@@ -154,7 +159,12 @@ Tab.prototype = {
             if(!win) continue; // for removed windows
             if(win.contains(ev.clientX, ev.clientY)) {
 
-                UI.attach_tab(win.windb.wid, this.tabdb);
+                //var tab = UI.tMap[tabdb.tid]; console.assert(tab);
+                this.attach();
+                win.addTab(this);
+
+                win.refreshStyle();
+
                 UI.relayout_column(UI.get_column(ev.clientX));
 
                 bgport.postMessage({
