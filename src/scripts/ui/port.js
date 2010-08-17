@@ -10,16 +10,33 @@ chrome.tabs.getSelected(null, function(me) {
 bgport.onMessage.addListener(
     function(reply) {
         if(reply.name == 'listwindows') {
-            process_windows(reply.windows);
+
+            UI.totalWindows = reply.windows.length;
+            for(var i=0; i < UI.totalWindows; i++) {
+                var windb = reply.windows[i];
+                var wframe = new WinFrame(windb);
+                UI.wMap[windb.wid] = wframe;
+
+                bgport.postMessage({ name:'listtabs', 
+                    wid:windb.wid });
+            }
+
         } else if(reply.name == 'listtabs') {
-            process_tabs(reply.tabs);
+
+            var wframe = UI.wMap[reply.wid];
+            wframe.addTabs(reply.tabs);
             doneWindows++;
             if(doneWindows == UI.totalWindows) {
                 UI.layout_windows();
             }
+
         } else if(reply.name == 'relisttabs') {
-            reprocess_tabs(reply.tabs);
+
+            var wframe = UI.wMap[reply.wid]; console.assert(wframe);
+            wframe.empty();
+            wframe.addTabs(reply.tabs);
             UI.layout_windows();
+
         } else if(reply.name == 'listsavedwindows') {
             load_bag(reply.windows);
         } else if(reply.name == 'unsavewindow') {

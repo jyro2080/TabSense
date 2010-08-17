@@ -11,6 +11,7 @@ var VMARGIN = 20;
 var NUMCOL = 3;
 var CEILING = 50;
 
+/*
 var total_window = 0;
 
 function process_windows(windows) {
@@ -19,7 +20,7 @@ function process_windows(windows) {
         var w = windows[i];
         UI.add_window(w);
 
-        bgport.postMessage({ name:'listtabs',condition:'WHERE wid = '+w.wid });
+        bgport.postMessage({ name:'listtabs', wid:w.wid });
     }
 }
 
@@ -39,9 +40,10 @@ function reprocess_tabs(tabs) {
         console.warn('No tabs to reprocess'); return;
     }
     var wframe = UI.wMap[tabs[0].wid];
-    $('.mtab', wframe.elem).remove();
+    wframe.empty();
     process_tabs(tabs);
 }
+*/
 
 var ui;
 $(document).ready(function(){
