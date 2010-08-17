@@ -38,6 +38,7 @@ chrome.extension.onConnect.addListener(
                     chrome.windows.create(
                         { url:chrome.extension.getURL('dummy.html') }, 
                         function(win) {
+                            ignoreTabDetach = op.tid;
                             chrome.tabs.move(op.tid,
                                 { windowId:win.id, index:0 },
                                 function() {
