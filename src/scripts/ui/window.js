@@ -113,6 +113,47 @@ WinFrame.prototype = {
         this.updateMailToLink();
     },
 
+    collapseTab : function(tab) {
+        var idx = this.tabArray.indexOf(tab);
+        var numCollapse = this.tabArray.length-idx-1;
+        var wframe = this;
+        tab.elem.css({
+                'zIndex' : 1
+        });
+        for(var i=idx+1; i < this.tabArray.length; i++) {
+            var t = this.tabArray[i];
+            if(t.tabdb.depth <= tab.tabdb.depth) break;
+
+            t.elem.hide();
+            this.removeTab(t);
+            
+            /*
+            var distance = 45*(i-idx);
+            var time = 100*(i-idx);
+            t.elem.css({
+                'zIndex' : 0
+            });
+            t.elem.animate({
+                'top' : '-'+distance+'px'
+            }, 
+            {
+                duration : time,
+                complete : function() {
+                    wframe.removeTab(t); 
+                    t.elem.hide()
+                    numCollapse--;
+                    console.log('numCollapse '+numCollapse);
+
+                    if(numCollapse == 0) {
+                        wframe.refreshStyle();
+                    }
+                }
+            });
+            */
+        }
+        this.refreshStyle();
+    },
+
     removeTab : function(tab) {
         tab.elem.detach();
         $('body').append(tab.elem);
