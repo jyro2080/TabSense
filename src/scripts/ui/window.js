@@ -113,6 +113,24 @@ WinFrame.prototype = {
         this.updateMailToLink();
     },
 
+    toggleTree : function(tab) {
+        tab.tabdb.collapsed ? this.expandTab(tab) : this.collapseTab(tab); 
+    },
+
+    expandTab : function(tab) {
+        var idx = this.tabArray.indexOf(tab);
+        var last = tab;
+        for(var i=idx+1; i < this.tabArray.length; i++) {
+            var t = this.tabArray[i];
+            if(t.tabdb.depth <= tab.tabdb.depth) break;
+            t.elem.insertAfter(last.elem);
+            t.elem.show();
+            last = t;
+        }
+        this.refreshStyle();
+        tab.tabdb.collapsed = 0;
+    },
+
     collapseTab : function(tab) {
         var idx = this.tabArray.indexOf(tab);
         var numCollapse = this.tabArray.length-idx-1;
@@ -125,7 +143,8 @@ WinFrame.prototype = {
             if(t.tabdb.depth <= tab.tabdb.depth) break;
 
             t.elem.hide();
-            this.removeTab(t);
+            t.elem.detach();
+            //this.removeTab(t);
             
             /*
             var distance = 45*(i-idx);
@@ -152,6 +171,7 @@ WinFrame.prototype = {
             */
         }
         this.refreshStyle();
+        tab.tabdb.collapsed = 1;
     },
 
     removeTab : function(tab) {
