@@ -136,6 +136,7 @@ function process_new_windows()
     for(var i in windows) {
       var win = windows[i];
       if(win.type == 'app') continue;
+      if(!realData[win.id]) continue; // already exists in DB
       db.put(new db.window(win.id, null));
       chrome.tabs.getAllInWindow(win.id, function(tabs) {
         for(var i=0; i<tabs.length; i++) {
