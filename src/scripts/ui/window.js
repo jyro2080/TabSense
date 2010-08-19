@@ -114,36 +114,48 @@ WinFrame.prototype = {
   },
 
   toggleTree : function(tab) {
-    tab.tabdb.collapsed ? this.expandTab(tab) : this.collapseTab(tab); 
+    tab.tabdb.collapsed ? this.expandTab(tab) : this.collapseTab(tab);
   },
 
   expandTab : function(tab) {
     var idx = this.tabArray.indexOf(tab);
     var last = tab;
+    var children = [];
     for(var i=idx+1; i < this.tabArray.length; i++) {
       var t = this.tabArray[i];
       if(t.tabdb.depth <= tab.tabdb.depth) break;
       t.elem.insertAfter(last.elem);
       t.elem.show();
       last = t;
+      children.push(t.tabdb.tid);
     }
     this.refreshStyle();
     tab.tabdb.collapsed = 0;
+
+    bgport.postMessage({
+      name : 'expandtab',
+      tid : tab.tabdb.tid,
+      children : children
+    });
   },
 
   collapseTab : function(tab) {
     var idx = this.tabArray.indexOf(tab);
     var numCollapse = this.tabArray.length-idx-1;
     var wframe = this;
+    var children = [];
+    /*
     tab.elem.css({
         'zIndex' : 1
     });
+    */
     for(var i=idx+1; i < this.tabArray.length; i++) {
       var t = this.tabArray[i];
       if(t.tabdb.depth <= tab.tabdb.depth) break;
 
       t.elem.hide();
       t.elem.detach();
+      children.push(t.tabdb.tid);
       //this.removeTab(t);
       
       /*
@@ -172,6 +184,11 @@ WinFrame.prototype = {
     }
     this.refreshStyle();
     tab.tabdb.collapsed = 1;
+    bgport.postMessage({
+      name : 'collapsetab',
+      tid : tab.tabdb.tid,
+      children : children
+    });
   },
 
   removeTab : function(tab) {
