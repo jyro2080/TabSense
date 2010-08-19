@@ -38,8 +38,9 @@ function Tab(tabdb, title, favIconUrl) {
     $(document).mousemove(function(ev) { tab.drag(ev); });
     $(document).mouseup(function(ev) { tab.drop(ev); });
 
-    $('.favicon', this.elem).click(Tab.selectTab)
-        .mousedown(consume).mouseup(consume).mousemove(consume);
+    $('.favicon', this.elem).click(function(){
+            tab.parent.toggleTree(tab);
+        }).mousedown(consume).mouseup(consume).mousemove(consume);
 
     this.elem.mouseenter(Tab.mouseenter);
     this.elem.mouseleave(Tab.mouseleave);
