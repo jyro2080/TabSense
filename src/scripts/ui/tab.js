@@ -137,7 +137,7 @@ Tab.prototype = {
             '-webkit-box-shadow' : null,
             'top':'0px',
             'left':'0px'
-            });
+        });
     },
 
     reset_depth : function() {
