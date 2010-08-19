@@ -4,88 +4,88 @@ var bgport = chrome.extension.connect({ name : 'ui2bg' });
 // This run first thing on TabSense's main tab, 
 // so the selected tab will be it
 chrome.tabs.getSelected(null, function(me) {
-    bgport.postMessage({ name:'register', tabid : me.id });
+  bgport.postMessage({ name:'register', tabid : me.id });
 });
 
 bgport.onMessage.addListener(
-    function(reply) {
-        if(reply.name == 'listwindows') {
+  function(reply) {
+    if(reply.name == 'listwindows') {
 
-            UI.totalWindows = reply.windows.length;
-            for(var i=0; i < UI.totalWindows; i++) {
-                var windb = reply.windows[i];
-                var wframe = new WinFrame(windb);
-                UI.wMap[windb.wid] = wframe;
+      UI.totalWindows = reply.windows.length;
+      for(var i=0; i < UI.totalWindows; i++) {
+        var windb = reply.windows[i];
+        var wframe = new WinFrame(windb);
+        UI.wMap[windb.wid] = wframe;
 
-                bgport.postMessage({ name:'listtabs', 
-                    wid:windb.wid });
-            }
+        bgport.postMessage({ name:'listtabs', 
+          wid:windb.wid });
+      }
 
-        } else if(reply.name == 'listtabs') {
+    } else if(reply.name == 'listtabs') {
 
-            var wframe = UI.wMap[reply.wid];
-            wframe.addTabs(reply.tabs);
-            doneWindows++;
-            if(doneWindows == UI.totalWindows) {
-                UI.layout_windows();
-            }
+      var wframe = UI.wMap[reply.wid];
+      wframe.addTabs(reply.tabs);
+      doneWindows++;
+      if(doneWindows == UI.totalWindows) {
+        UI.layout_windows();
+      }
 
-        } else if(reply.name == 'relisttabs') {
+    } else if(reply.name == 'relisttabs') {
 
-            var wframe = UI.wMap[reply.wid]; console.assert(wframe);
-            wframe.empty();
-            wframe.addTabs(reply.tabs);
-            UI.layout_windows();
+      var wframe = UI.wMap[reply.wid]; console.assert(wframe);
+      wframe.empty();
+      wframe.addTabs(reply.tabs);
+      UI.layout_windows();
 
-        } else if(reply.name == 'listsavedwindows') {
-            load_bag(reply.windows);
-        } else if(reply.name == 'unsavewindow') {
-            openSavedWindow(reply.saved);
-        } else if(reply.name == 'savewindow') {
-            var wframe = UI.wMap[reply.wid]; console.assert(wframe);
-            wframe.destroy();
+    } else if(reply.name == 'listsavedwindows') {
+      load_bag(reply.windows);
+    } else if(reply.name == 'unsavewindow') {
+      openSavedWindow(reply.saved);
+    } else if(reply.name == 'savewindow') {
+      var wframe = UI.wMap[reply.wid]; console.assert(wframe);
+      wframe.destroy();
 
-            chrome.windows.remove(win.windb.wid);
-            bgport.postMessage({ name:'listsavedwindows' });
-        }
+      chrome.windows.remove(win.windb.wid);
+      bgport.postMessage({ name:'listsavedwindows' });
     }
+  }
 );
 
 chrome.extension.onConnect.addListener(
-    function(port) {
-        console.assert(port.name == 'bg2ui');
-        port.onMessage.addListener(
-            function(op) {
-                if(op.name == 'addtab') {
-                    var wframe = UI.wMap[op.tab.wid];
-                    bgport.postMessage(
-                        { name:'relisttabs',
-                            wid : op.tab.wid });
-                } else if(op.name == 'removetab') {
-                    var wframe = UI.wMap[op.tab.wid];
-                    bgport.postMessage(
-                        { name:'relisttabs',
-                            wid : op.tab.wid });
-                } else if(op.name == 'updatetab') {
+  function(port) {
+    console.assert(port.name == 'bg2ui');
+    port.onMessage.addListener(
+      function(op) {
+        if(op.name == 'addtab') {
+          var wframe = UI.wMap[op.tab.wid];
+          bgport.postMessage(
+            { name:'relisttabs',
+              wid : op.tab.wid });
+        } else if(op.name == 'removetab') {
+          var wframe = UI.wMap[op.tab.wid];
+          bgport.postMessage(
+            { name:'relisttabs',
+              wid : op.tab.wid });
+        } else if(op.name == 'updatetab') {
 
-                    var tab = UI.tMap[op.tab.tid]; console.assert(tab);
-                    $('.favicon', tab.elem)
-                        .attr('src', op.tab.faviconurl);
-                    $('.title', tab.elem)
-                        .text(op.tab.title);
-                    tab.tabdb = op.tab;
+          var tab = UI.tMap[op.tab.tid]; console.assert(tab);
+          $('.favicon', tab.elem)
+            .attr('src', op.tab.faviconurl);
+          $('.title', tab.elem)
+            .text(op.tab.title);
+          tab.tabdb = op.tab;
 
-                } else if(op.name == 'addwindow') {
-                    var wframe = new WinFrame(op.win);
-                    UI.wMap[op.win.wid] = wframe;
-                } else if(op.name == 'removewindow') {
-                    var wframe = UI.wMap[op.win.wid]; 
-                    if(wframe) wframe.destroy();
-                } else {
-                    console.error('Unknown command : '+op.name);
-                }
-            }
-        );
-    }
+        } else if(op.name == 'addwindow') {
+          var wframe = new WinFrame(op.win);
+          UI.wMap[op.win.wid] = wframe;
+        } else if(op.name == 'removewindow') {
+          var wframe = UI.wMap[op.win.wid]; 
+          if(wframe) wframe.destroy();
+        } else {
+          console.error('Unknown command : '+op.name);
+        }
+      }
+    );
+  }
 );
 
