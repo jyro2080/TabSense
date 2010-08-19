@@ -104,7 +104,8 @@ function are_same_windows(dbtabs, realtabs) {
 }
 
 function update_db_window(_old, _new) {
-  console.log('Should update old '+_old+' to new '+_new);
+  db.window.update('wid = '+_new, ' WHERE wid = '+_old);
+  db.tab.update('wid = '+_new, ' WHERE wid = '+_old);
 }
 
 function match_db_real() {
