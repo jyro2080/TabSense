@@ -91,9 +91,14 @@ function load_real_windows(windows) {
   }
 }
 
-function are_same_windows(db, realtabs) {
+function are_same_windows(dbtabs, realtabs) {
+  if(!dbtabs) return false;
+  if(!realtabs) return false;
   for(var i in realtabs) {
-    if(db.indexOf(realtabs[i]) < 0) return false;
+    if(dbtabs.indexOf(realtabs[i]) < 0) return false;
+  }
+  for(var i in dbtabs) {
+    if(realtabs.indexOf(dbtabs[i]) < 0) return false;
   }
   return true;
 }
