@@ -32,8 +32,8 @@ chrome.extension.onConnect.addListener(
               });
             });
         } else if(op.name == 'tabmove') {
-          ignoreTabAttach = op.tid;
-          ignoreTabDetach = op.tid;
+          ignoreTabAttach.push(op.tid);
+          ignoreTabDetach.push(op.tid);
           chrome.tabs.move(op.tid, 
             { windowId:op.wid, index:100 });
           db.tab.update('wid = ?, parent = ?, depth = ? ',
@@ -42,7 +42,7 @@ chrome.extension.onConnect.addListener(
           chrome.windows.create(
             { url:chrome.extension.getURL('dummy.html') }, 
             function(win) {
-              ignoreTabDetach = op.tid;
+              ignoreTabDetach.push(op.tid);
               chrome.tabs.move(op.tid,
                 { windowId:win.id, index:0 },
                 function() {

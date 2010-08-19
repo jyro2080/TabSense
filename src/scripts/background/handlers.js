@@ -15,8 +15,8 @@ function removeDummyTab(tabs) {
 }
 
 var ignoreWindowRemove = -1;
-var ignoreTabAttach = -1;
-var ignoreTabDetach = -1;
+var ignoreTabAttach = [];
+var ignoreTabDetach = [];
 var nextNewWindowTitle = null;
 
 function getWindows(results) {
@@ -234,8 +234,9 @@ function triggerUIRefresh() {
 
 chrome.tabs.onAttached.addListener(
   function(tid, attachInfo) {
-    if(tid == ignoreTabAttach) {
-      ignoreTabAttach = -1;
+    $c.log('ignore attach = '+ignoreTabAttach);
+    if(ignoreTabAttach.indexOf(tid) >= 0) {
+      ignoreTabAttach.splice(ignoreTabAttach.indexOf(tid), 1);
       return;
     }
     // Update our data model
@@ -260,8 +261,8 @@ chrome.tabs.onAttached.addListener(
 );
 chrome.tabs.onDetached.addListener(
   function(tid, detachInfo) {
-    if(tid == ignoreTabDetach) {
-      ignoreTabDetach = -1;
+    if(ignoreTabDetach.indexOf(tid) >= 0) {
+      ignoreTabDetach.splice(ignoreTabDetach.indexOf(tid), 1);
       return;
     }
     // Update our data model
