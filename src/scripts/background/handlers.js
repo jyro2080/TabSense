@@ -15,6 +15,7 @@ function removeDummyTab(tabs) {
 }
 
 var ignoreWindowRemove = -1;
+var ignoreWindowCreate = false;
 var ignoreTabAttach = [];
 var ignoreTabDetach = [];
 var nextNewWindowTitle = null;
@@ -315,6 +316,11 @@ chrome.windows.onRemoved.addListener(
 chrome.windows.onCreated.addListener(
   function(win) {
     if(win.type == 'app') {
+      return;
+    }
+
+    if(ignoreWindowCreate) {
+      ignoreWindowCreate = false;
       return;
     }
 
