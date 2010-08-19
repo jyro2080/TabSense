@@ -11,6 +11,8 @@ var VMARGIN = 20;
 var NUMCOL = 3;
 var CEILING = 50;
 
+$c = console;
+
 /*
 var total_window = 0;
 
