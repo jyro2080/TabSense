@@ -138,15 +138,17 @@ function is_dummy(tab) {
 function is_devtools(tab) {
   return /chrome:\/\/devtools\/devtools.html/.test(tab.url);
 }
+function is_attic(tab) {
+  return /chrome-extension:\/\/.*\/attic.html/.test(tab.url);
+}
 function is_newtab(tab) {
   return (tab.url == 'chrome://newtab/');
 }
 
 chrome.tabs.onCreated.addListener(
   function(tab) {
-    if(is_tabsense(tab) || is_devtools(tab) || is_dummy(tab)) {
-      return;
-    }
+    if(is_tabsense(tab) || is_devtools(tab) || 
+          is_dummy(tab) || is_attic(tab)) return;
 
     tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
     if(is_newtab(tab) || 
@@ -350,7 +352,9 @@ chrome.windows.onFocusChanged.addListener(
             return;
           }
           var t = r.rows.item(0);
-          if(is_newtab(t) || is_tabsense(t) || is_devtools(t)) {
+          if(is_newtab(t) || is_tabsense(t) || 
+            is_devtools(t) || is_attic(t)) 
+          {
             currentTab = null;
             return;
           }
