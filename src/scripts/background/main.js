@@ -35,22 +35,26 @@ function load_database_windows() {
     db.window.get('WHERE saved=0 ',
         function(tx, results) {
             var wl = results.rows.length;
-            for(var i=0; i<results.rows.length; i++) {
-                var oldwid = results.rows.item(i).wid;
-                dbData[oldwid] = [];
-                db.tab.get('WHERE saved=0 and wid='+oldwid,
-                    function(tx, results) {
-                        for(var j=0; j<results.rows.length; j++) {
-                            var wid = results.rows.item(j).wid;
-                            var url = results.rows.item(j).url;
-                            dbData[wid].push(url);
+            if(wl) {
+                for(var i=0; i<results.rows.length; i++) {
+                    var oldwid = results.rows.item(i).wid;
+                    dbData[oldwid] = [];
+                    db.tab.get('WHERE saved=0 and wid='+oldwid,
+                        function(tx, results) {
+                            for(var j=0; j<results.rows.length; j++) {
+                                var wid = results.rows.item(j).wid;
+                                var url = results.rows.item(j).url;
+                                dbData[wid].push(url);
+                            }
+                            donewl++;
+                            if(donewl == wl) {
+                                chrome.windows.getAll(null, load_real_windows);
+                            }
                         }
-                        donewl++;
-                        if(donewl == wl) {
-                            chrome.windows.getAll(null, load_real_windows);
-                        }
-                    }
-                );
+                    );
+                }
+            } else {
+                chrome.windows.getAll(null, load_real_windows);
             }
         }
     );
@@ -63,7 +67,7 @@ function load_real_windows(windows) {
     for(var i=0; i < wl; i++) {
         var w = windows[i];
         realData[w.id] = [];
-        if(w.type == 'app') continue;
+        if(w.type == 'app') { donewl++; continue; }
 
         chrome.tabs.getAllInWindow(w.id, function(tabs) {
             for(var i=0; i<tabs.length; i++) {
@@ -96,7 +100,39 @@ function match_db_real() {
             if(are_same_windows(dbData[j], realData[i])) {
                 update_db_window(j, i);
                 realData[i] = undefined;
+                dbData[j] = undefined;
             }
         }
     }
+    cleanup_old_windows();
+    process_new_windows();
+}
+
+function cleanup_old_windows()
+{
+    for(var i in dbData) {
+        if(dbData[i]) {
+            db.window.del('WHERE wid = '+i);
+        }
+    }
+}
+function process_new_windows()
+{
+    chrome.windows.getAll(null, function(windows) {
+        for(var i in windows) {
+            var win = windows[i];
+            if(win.type == 'app') continue;
+            db.put(new db.window(win.id, null));
+            chrome.tabs.getAllInWindow(win.id, function(tabs) {
+                for(var i=0; i<tabs.length; i++) {
+                    var t = tabs[i];
+                    if(is_tabsense(t) || is_devtools(t)) continue;
+                    t.favIconUrl = sanitizeFavIcon(t.favIconUrl);
+
+                    db.put(new db.tab(t.id, t.title, t.url, 
+                        t.favIconUrl, t.index, t.windowId));
+                }
+            });
+        }
+    });
 }
