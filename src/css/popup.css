@@ -45,6 +45,10 @@ a:hover {
     height : 35px;
     padding : 5px;
 }
+#allwin {
+    float : top;
+    text-align : center;
+}
 .mwin {
     background-color : #999;
     float : top;
