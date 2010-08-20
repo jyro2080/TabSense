@@ -33,7 +33,6 @@ function move_from_attic(tid) {
     var tab = results.rows.item(0);
     ignoreTabAttach.push(tid);
     ignoreTabDetach.push(tid);
-    $c.log('Moving out of attic '+tid+' to '+tab.wid);
     chrome.tabs.move(tid, { windowId : tab.wid, index : 100 });
   });
 }

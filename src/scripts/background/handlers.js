@@ -237,7 +237,6 @@ function triggerUIRefresh() {
 
 chrome.tabs.onAttached.addListener(
   function(tid, attachInfo) {
-    $c.log('ignore attach = '+ignoreTabAttach);
     if(ignoreTabAttach.indexOf(tid) >= 0) {
       ignoreTabAttach.splice(ignoreTabAttach.indexOf(tid), 1);
       return;
