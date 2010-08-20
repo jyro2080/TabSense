@@ -1,0 +1,90 @@
+body {
+  min-width : 400px;
+  overflow : hidden;
+}
+a {
+    color: gray;
+    text-decoration: none;
+    cursor : hand;
+}
+a:link {
+    color: gray;
+    text-decoration: none;
+}
+a:visited {
+    color: gray;
+    text-decoration: none;
+}
+a:hover {
+    color: black;
+    text-decoration: none;
+}
+.mtab > * {
+    float : left;
+}
+.mtab > div {
+    overflow : hidden;
+    padding-top : 10px;
+    white-space : nowrap;
+    cursor : move;
+}
+.mtab .favicon {
+    cursor : pointer;
+}
+.mtab img {
+    margin : 8px;
+    width : 24px;
+    height : 24px;
+}
+.mtab .star {
+    float : right;
+    cursor : pointer;
+}
+.mtab {
+    float : top;
+    height : 35px;
+    padding : 5px;
+}
+.mwin {
+    background-color : #999;
+    float : top;
+    position : absolute;
+    -webkit-border-radius : 15px;
+    -webkit-box-shadow : rgba(20,20,20,1) 1px 1px 5px;
+}
+.mwin .wtitle {
+    color : #fff;
+    height : 30px;
+    -webkit-border-top-left-radius:15px;
+    -webkit-border-top-right-radius:15px;
+    text-align:center;
+}
+.mwin .wtitle .saveicon {
+    float : right;
+    margin-right : 10px;
+    cursor : pointer;
+}
+.mwin .wtitle .emailicon {
+    float : right;
+    margin-right : 10px;
+    cursor : pointer;
+}
+.mwin .wtitle .text {
+    margin-top : 5px;
+    white-space : nowrap;
+    overflow : hidden;
+    text-align:center;
+    margin-left : 15px;
+}
+.mwin .wtitle div {
+    margin-top : 5px;
+    height : 25px;
+    text-align : center;
+}
+.mwin .wtitle div input {
+    height : 25px;
+    width : 300px;
+    text-align : center;
+    color : #eee;
+    background-color : #777;
+}

@@ -8,12 +8,27 @@ chrome.extension.onConnect.addListener(
     port.onMessage.addListener(
       function(op) {
         if(op.name == 'register') {
+
           if(uitab >= 0 && uitab != op.tabid) {
             // close previously registered ui tab
             chrome.tabs.remove(uitab);
           }
           uitab = op.tabid;
           uiport = chrome.tabs.connect(uitab, { name:'bg2ui' });
+
+        } else if(op.name == 'getcurwindow') {
+
+          chrome.windows.getCurrent(function(win) {
+            db.window.get('WHERE wid='+win.id, function(tx, r) {
+              $c.assert(r.rows.length == 1);
+              port.postMessage({
+                name : 'getcurwindow',
+                wid : win.id,
+                title : r.rows.item(0).title
+              });
+            });
+          });
+
         } else if(op.name == 'listwindows') {
           db.window.get('WHERE saved != 1 ',
             function(tx, results){

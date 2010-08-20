@@ -6,7 +6,8 @@
   "background_page": "background.html",
   "options_page" : "options.html",
   "browser_action":{
-    "default_icon" : "images/icon48.png"
+    "default_icon" : "images/icon48.png",
+    "default_popup" : "popup.html"
   },
   "icons":{
     "16" : "images/icon16.png",
