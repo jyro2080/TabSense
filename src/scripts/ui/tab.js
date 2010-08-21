@@ -65,7 +65,7 @@ function Tab(tabdb, title, favIconUrl) {
     'width' : (UI.winw-50-STEP*tabdb.depth)+'px'
   });
   $('div', this.elem).css({
-    'width' : (UI.winw-140-50-STEP*tabdb.depth)+'px'
+    'width' : (UI.winw-140-10-STEP*tabdb.depth)+'px'
   });
     //$('.mtab', this.elem).css({'width': (UI.winw-50)+'px'})
     //$('.mtab > div', this.elem).css({'width': (UI.winw-140)+'px'})
