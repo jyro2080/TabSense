@@ -15,7 +15,9 @@ var atticId = 0;
 function create_attic(callback) {
   ignoreWindowCreate = true;
   chrome.windows.create({
-    url : chrome.extension.getURL('attic.html')
+    url : chrome.extension.getURL('attic.html'),
+    width : 300,
+    height : 400
   }, function(win) { atticId = win.id; callback(); });
 }
 
