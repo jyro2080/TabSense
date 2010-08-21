@@ -142,6 +142,9 @@ function is_devtools(tab) {
 function is_attic(tab) {
   return /chrome-extension:\/\/.*\/attic.html/.test(tab.url);
 }
+function is_collapse(tab) {
+  return /chrome-extension:\/\/.*\/collapse.html/.test(tab.url);
+}
 function is_newtab(tab) {
   return (tab.url == 'chrome://newtab/');
 }
@@ -149,7 +152,7 @@ function is_newtab(tab) {
 chrome.tabs.onCreated.addListener(
   function(tab) {
     if(is_tabsense(tab) || is_devtools(tab) || 
-          is_dummy(tab) || is_attic(tab)) return;
+        is_dummy(tab) || is_attic(tab) || is_collapse(tab)) return;
 
     tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
     if(is_newtab(tab) || 

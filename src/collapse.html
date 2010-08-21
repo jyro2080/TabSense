@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>[Collapsed]</title>
+
+<script type="text/javascript">
+var tid = -1;
+function load() {
+  chrome.extension.sendRequest({
+    name : 'collapseregister'
+  }, function(resp) {
+    tid = resp.tid;
+    document.title = resp.title;
+  });
+}
+
+function expand() {
+  chrome.extension.sendRequest({
+    name : 'expandtab',
+    tid : tid
+  });
+}
+</script>
+
+<style type="text/css">
+body {
+    font-family : Sans Serif, Arial;
+    font-size : 14px;
+}
+h2 {
+  text-align : center;
+}
+</style>
+</head>
+<body onload="load();">
+<a href="#" onclick="expand();"><h2>Expand</h2></a>
+</body>
+</html>
