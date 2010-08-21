@@ -49,13 +49,20 @@ function create_expansion_tab(tid, children, callback) {
   db.tab.get('WHERE tid='+tid, function(tx, results) {
     $c.assert(results.rows.length==1);
     var tab = results.rows.item(0);
-    
-    chrome.tabs.create({
-      windowId : tab.wid,
-      url : collapseTab
-    }, function(newtab) {
-      expansionTabs[newtab.id] = { tabdb:tab, children:children };
-      callback(tid);
+
+    chrome.tabs.getAllInWindow(parseInt(tab.wid), function(tabs) {
+      if(tabs.length == 1) {
+        // this is the last tab, show collapse tab
+        chrome.tabs.create({
+          windowId : tab.wid,
+          url : collapseTab
+        }, function(newtab) {
+          expansionTabs[newtab.id] = { tabdb:tab, children:children };
+          callback(tid);
+        });
+      } else {
+        callback(tid);
+      }
     });
   });
 }
