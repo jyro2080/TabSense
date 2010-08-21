@@ -10,6 +10,7 @@ var HMARGIN = 30;
 var VMARGIN = 20;
 var NUMCOL = 3;
 var CEILING = 50;
+var inPopup = false;
 
 $c = console;
 

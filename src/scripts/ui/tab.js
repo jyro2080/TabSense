@@ -38,9 +38,14 @@ function Tab(tabdb, title, favIconUrl) {
   }
 
   var tab = this;
-  this.elem.mousedown(function(ev) { tab.pick(ev); });
-  $(document).mousemove(function(ev) { tab.drag(ev); });
-  $(document).mouseup(function(ev) { tab.drop(ev); });
+  if(inPopup) {
+    rtabtitle.mousedown(Tab.selectTab)
+      .mouseup(consume).mousemove(consume);
+  } else {
+    this.elem.mousedown(function(ev) { tab.pick(ev); });
+    $(document).mousemove(function(ev) { tab.drag(ev); });
+    $(document).mouseup(function(ev) { tab.drop(ev); });
+  }
 
   $('.node', this.elem).click(function(){
       tab.parent.toggleTree(tab);

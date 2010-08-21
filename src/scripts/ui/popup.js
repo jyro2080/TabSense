@@ -3,6 +3,7 @@ var $c = console;
 var NUMCOL = 1;
 var wframe;
 var bgport;
+var inPopup = true;
 
 function open_channel() {
   bgport = chrome.extension.connect({ name:'ui2bg' });
