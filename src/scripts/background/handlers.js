@@ -95,7 +95,7 @@ chrome.tabs.onUpdated.addListener(
     db.tab.get('WHERE tid = '+tid,
       function(tx, r) {
         if(r.rows.length != 1) {
-          console.error('onUpdated '+r.rows.length);
+          console.error('onUpdated '+r.rows.length+' for '+tid);
           return;
         }
         var tab = r.rows.item(0);
@@ -264,7 +264,7 @@ chrome.tabs.onAttached.addListener(
     // Send UI update message
     db.tab.get('WHERE tid = '+tid, function(tx, results){
       if(results.rows.length != 1) {
-        console.error('onAttached: '+results.rows.length);
+        console.error('onAttached: '+results.rows.length+' for '+tid);
         return;
       }
       var tab = results.rows.item(0);
@@ -290,7 +290,7 @@ chrome.tabs.onDetached.addListener(
     // Send UI update message
     db.tab.get('WHERE tid = '+tid, function(tx, results){
       if(results.rows.length != 1) {
-        console.error('onDetached : '+results.rows.length);
+        console.error('onDetached : '+results.rows.length+' for '+tid);
         return;
       }
       var tab = results.rows.item(0);
