@@ -41,3 +41,22 @@ function move_from_attic(tid) {
     chrome.tabs.move(tid, { windowId : tab.wid, index : 100 });
   });
 }
+function expand_tab(ptid, children) {
+  db.tab.update('collapsed=0', ' WHERE tid='+ptid);
+  for(var i=0; i<children.length; i++) {
+    var tid = children[i];
+    db.tab.update('hidden=0', ' WHERE tid='+tid);
+    move_from_attic(tid);
+  }
+  move_from_attic(ptid);
+
+  setTimeout(function() {
+    for(var i in expansionTabs) {
+      if(!expansionTabs[i]) continue;
+      if(expansionTabs[i].tabdb.tid == parseInt(ptid)) {
+        chrome.tabs.remove(parseInt(i));
+        expansionTabs[i] = null;
+      }
+    }
+  }, 1000);
+}

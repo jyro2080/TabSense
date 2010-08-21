@@ -132,13 +132,7 @@ chrome.extension.onConnect.addListener(
             create_attic(move_tabs_to_attic);
           }
         } else if(op.name == 'expandtab') {
-          db.tab.update('collapsed=0', ' WHERE tid='+op.tid);
-          for(var i=0; i<op.children.length; i++) {
-            var tid = op.children[i];
-            db.tab.update('hidden=0', ' WHERE tid='+tid);
-            move_from_attic(tid);
-          }
-          move_from_attic(op.tid);
+          expand_tab(op.tid, op.children);
         }
       }
     );
