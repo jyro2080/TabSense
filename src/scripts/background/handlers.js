@@ -1,4 +1,22 @@
 
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+    $c.assert(sender.tab);
+    var exptab = expansionTabs[sender.tab.id];
+    $c.assert(exptab);
+
+    if(request.name == 'collapseregister') {
+      sendResponse({
+        tid : exptab.tabdb.tid,
+        title : exptab.tabdb.title
+      });
+    } else if(request.name == 'expandtab') {
+      expand_tab(exptab.tabdb.tid, exptab.children);
+      sendResponse({});
+    }
+  }
+);
+
 chrome.browserAction.onClicked.addListener(
   function(tab) {
     chrome.tabs.create({url:

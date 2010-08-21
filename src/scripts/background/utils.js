@@ -41,6 +41,25 @@ function move_from_attic(tid) {
     chrome.tabs.move(tid, { windowId : tab.wid, index : 100 });
   });
 }
+
+var expansionTabs = {};
+var collapseTab = chrome.extension.getURL('collapse.html');
+
+function create_expansion_tab(tid, children, callback) {
+  db.tab.get('WHERE tid='+tid, function(tx, results) {
+    $c.assert(results.rows.length==1);
+    var tab = results.rows.item(0);
+    
+    chrome.tabs.create({
+      windowId : tab.wid,
+      url : collapseTab
+    }, function(newtab) {
+      expansionTabs[newtab.id] = { tabdb:tab, children:children };
+      callback(tid);
+    });
+  });
+}
+
 function expand_tab(ptid, children) {
   db.tab.update('collapsed=0', ' WHERE tid='+ptid);
   for(var i=0; i<children.length; i++) {

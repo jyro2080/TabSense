@@ -124,7 +124,7 @@ chrome.extension.onConnect.addListener(
               db.tab.update('hidden=1', ' WHERE tid='+tid);
               move_to_attic(tid);
             }
-            move_to_attic(op.tid);
+            create_expansion_tab(op.tid, op.children, move_to_attic);
           }
           if(atticId) {
             move_tabs_to_attic();
