@@ -28,6 +28,9 @@ a:hover {
     white-space : nowrap;
     cursor : move;
 }
+.mtab .node {
+    cursor : pointer;
+}
 .mtab .favicon {
     cursor : pointer;
 }

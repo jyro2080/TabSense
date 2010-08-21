@@ -6,24 +6,28 @@ function Tab(tabdb, title, favIconUrl) {
   this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+tabdb.tid);
   var elem = this.elem;
 
-  var favicon = $('<img/>');
+  this.nodeicon = $('<img/>').attr('class', 'node');
+  this.setNodeIcon();
+  this.elem.append(this.nodeicon);
+
+  var favicon = $('<img/>').attr('class','favicon');
   if(favIconUrl) {
-    favicon.attr('src', favIconUrl).attr('class','favicon');
+    favicon.attr('src', favIconUrl);
   } else if(tabdb.faviconurl) {
-    favicon.attr('src', tabdb.faviconurl).attr('class','favicon');
+    favicon.attr('src', tabdb.faviconurl);
   } else {
-    favicon.attr('src', Tab.fallbackIcon).attr('class','favicon');
+    favicon.attr('src', Tab.fallbackIcon);
   }
   this.elem.append(favicon);
 
-  this.staricon = $('<img/>');
+  this.staricon = $('<img/>').attr('class','star');
   if(Fav.is(tabdb.url)) {
     this.staricon.attr('src', Tab.starOn);
   } else {
     this.staricon.attr('src', Tab.starOff);
   }
-  this.staricon.attr('class','star');
   this.elem.append(this.staricon);
+
   this.staricon.hide();
   this.staricon.click(Tab.toggleFav).mousedown(consume).mouseup(consume);
 
@@ -38,9 +42,12 @@ function Tab(tabdb, title, favIconUrl) {
   $(document).mousemove(function(ev) { tab.drag(ev); });
   $(document).mouseup(function(ev) { tab.drop(ev); });
 
-  $('.favicon', this.elem).click(function(){
+  $('.node', this.elem).click(function(){
       tab.parent.toggleTree(tab);
+      tab.setNodeIcon();
     }).mousedown(consume).mouseup(consume).mousemove(consume);
+  $('.favicon', this.elem).click(Tab.selectTab)
+    .mousedown(consume).mouseup(consume).mousemove(consume);
 
   this.elem.mouseenter(Tab.mouseenter);
   this.elem.mouseleave(Tab.mouseleave);
@@ -53,7 +60,7 @@ function Tab(tabdb, title, favIconUrl) {
     'width' : (UI.winw-50-STEP*tabdb.depth)+'px'
   });
   $('div', this.elem).css({
-    'width' : (UI.winw-140-STEP*tabdb.depth)+'px'
+    'width' : (UI.winw-140-50-STEP*tabdb.depth)+'px'
   });
     //$('.mtab', this.elem).css({'width': (UI.winw-50)+'px'})
     //$('.mtab > div', this.elem).css({'width': (UI.winw-140)+'px'})
@@ -62,6 +69,9 @@ function Tab(tabdb, title, favIconUrl) {
 Tab.fallbackIcon = chrome.extension.getURL('images/icon28.png');
 Tab.starOn = chrome.extension.getURL('images/favon.png');
 Tab.starOff = chrome.extension.getURL('images/favoff.png');
+Tab.collapsedIcon = chrome.extension.getURL('images/collapsed.png');
+Tab.expandedIcon = chrome.extension.getURL('images/expanded.png');
+Tab.leafIcon = chrome.extension.getURL('images/leaf.png');
 
 Tab.selectTab = function() {
   var match = /tab_(\d+)/.exec($(this).parent().attr('id'));
@@ -100,6 +110,18 @@ Tab.mouseleave = function(ev) {
 }
 
 Tab.prototype = {
+  setNodeIcon : function() {
+    if(this.tabdb.isparent) {
+      if(this.tabdb.collapsed) {
+        this.nodeicon.attr('src', Tab.collapsedIcon);
+      } else {
+        this.nodeicon.attr('src', Tab.expandedIcon);
+      }
+    } else {
+      this.nodeicon.attr('src', Tab.leafIcon);
+    }
+  },
+
   pick : function(ev) {
     this.reset_depth();
 
