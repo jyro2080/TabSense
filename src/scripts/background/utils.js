@@ -29,7 +29,10 @@ function move_to_attic(tid) {
 }
 
 function move_from_attic(tid) {
-  $c.assert(atticId);
+  if(!atticId) {
+    alert('Attic not found');
+    return;
+  }
   db.tab.get('WHERE tid='+tid, function(tx, results) {
     $c.assert(results.rows.length==1);
     var tab = results.rows.item(0);
