@@ -122,7 +122,7 @@ chrome.extension.onConnect.addListener(
             for(var i=0; i<op.children.length; i++) {
               var tid = op.children[i];
               db.tab.update('hidden=1', ' WHERE tid='+tid);
-                move_to_attic(tid);
+              move_to_attic(tid);
             }
           }
           if(atticId) {
