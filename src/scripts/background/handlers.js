@@ -319,6 +319,10 @@ chrome.windows.onRemoved.addListener(
       return;
     }
 
+    if(wid == atticId) {
+      atticId = 0;
+    }
+
     db.window.del('WHERE wid = '+wid);
     db.tab.del('WHERE wid = '+wid);
 
