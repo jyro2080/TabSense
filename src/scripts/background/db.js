@@ -33,13 +33,14 @@ db.create_new = function(tx) {
     'url TEXT, faviconurl TEXT, wid INTEGER, parent INTEGER DEFAULT 0, '+
     'idx INTEGER, depth INTEGER DEFAULT 0, status TEXT, '+
     'saved INTEGER DEFAULT 0, collapsed INTEGER DEFAULT 0, '+
-    'hidden INTEGER DEFAULT 0)',
+    'hidden INTEGER DEFAULT 0, isparent INTEGER DEFAULT 0)',
     [], db.onSuccess, db.onError);
 }
 db.update_1_to_2 = function(tx) {
   tx.executeSql(
     'ALTER TABLE Tab ADD COLUMN collapsed INTEGER DEFAULT 0, '+
-    'hidden INTEGER DEFAULT 0', [], db.onSuccess, db.onError
+    'hidden INTEGER DEFAULT 0, isparent INTEGER DEFAULT 0', [], 
+    db.onSuccess, db.onError
   );
 }
 
@@ -148,7 +149,7 @@ db.tab.del = function(condition, onSuccess) {
 
 db.tab.update = function(set, condition, data, onSuccess) {
   db.DB.transaction(function(tx) {
-    tx.executeSql('UPDATE Tab SET '+set+condition, data,
+    tx.executeSql('UPDATE Tab SET '+set+' '+condition, data,
       onSuccess, db.onError);
   });
 }

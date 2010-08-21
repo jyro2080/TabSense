@@ -43,7 +43,8 @@ function makeTabDb(t) {
     parent : t.parent,
     depth : t.depth,
     collapsed : t.collapsed,
-    hidden : t.hidden
+    hidden : t.hidden,
+    isparent : t.isparent
   };
 }
 
@@ -163,6 +164,7 @@ chrome.tabs.onCreated.addListener(
         tab.id, tab.title, tab.url, tab.favIconUrl, 
         tab.index, tab.windowId, 
         currentTab.tid, currentTab.depth+1); 
+      db.tab.update('isparent=1','WHERE tid='+currentTab.tid);
     }
     db.put(t);
 
@@ -192,6 +194,20 @@ chrome.tabs.onRemoved.addListener(
         }
 
         db.tab.del('WHERE saved = 0 AND tid = '+tid);
+
+        // check if the parent has any other children and update its
+        // isparent flag accordingly
+        db.tab.get('WHERE parent = '+tab.parent, function(tx, r) {
+          if(r.rows.length > 0) {
+            // there are other children of this parent
+            // do nothing
+          } else {
+            // this was the last child of its parent, mark its
+            // isparent to 0
+            db.tab.update('isparent=0','WHERE tid='+tab.parent);
+          }
+        })
+          
 
         if(uiport) {
           uiport.postMessage({
