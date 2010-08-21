@@ -45,7 +45,7 @@ bgport.onMessage.addListener(
       var wframe = UI.wMap[reply.wid]; console.assert(wframe);
       wframe.destroy();
 
-      chrome.windows.remove(win.windb.wid);
+      chrome.windows.remove(parseInt(reply.wid));
       bgport.postMessage({ name:'listsavedwindows' });
     }
   }
