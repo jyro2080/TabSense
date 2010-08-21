@@ -71,7 +71,7 @@ function expand_tab(ptid, children) {
   db.tab.update('collapsed=0', ' WHERE tid='+ptid);
   for(var i=0; i<children.length; i++) {
     var tid = children[i];
-    db.tab.update('hidden=0', ' WHERE tid='+tid);
+    db.tab.update('hidden=0, collapsed=0', ' WHERE tid='+tid);
     move_from_attic(tid);
   }
   move_from_attic(ptid);

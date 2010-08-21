@@ -135,6 +135,8 @@ WinFrame.prototype = {
       t.elem.show();
       last = t;
       children.push(t.tabdb.tid);
+      t.tabdb.collapsed = 0;
+      t.setNodeIcon();
     }
     this.refreshStyle();
     tab.tabdb.collapsed = 0;
