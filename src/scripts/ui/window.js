@@ -100,6 +100,10 @@ WinFrame.prototype = {
       t.attach();
       this.addTab(t);
 
+      if(t.tabdb.hidden) {
+        t.elem.hide();
+        t.elem.detach();
+      }
     }
     this.refreshStyle();
   },
