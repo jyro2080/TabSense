@@ -34,7 +34,12 @@ a:hover {
 .mtab .favicon {
     cursor : pointer;
 }
-.mtab img {
+.mtab .node {
+    margin : 13px 4px 15px 4px;
+    width : 12px;
+    height : 12px;
+}
+.mtab .star,.favicon {
     margin : 8px;
     width : 24px;
     height : 24px;
