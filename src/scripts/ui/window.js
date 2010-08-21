@@ -14,21 +14,24 @@ function WinFrame(windb, title_str) {
     var text = WinFrame.createTitle("Name this window");
   }
 
-  var email_icon = $('<a></a>')
-          .attr('class','mailtolink')
-          .attr('href','')
-          .append(
-            $('<img/>')
-            .attr('class','emailicon')
-            .attr('src', WinFrame.emailIcon));
-
-  var save_icon = $('<img/>').attr('class','saveicon')
-        .attr('src', WinFrame.saveIcon)
-        .click(WinFrame.saveWindow);
-
   var wtitle = $('<div></div>').attr('class','wtitle');
-  wtitle.append(email_icon);
-  wtitle.append(save_icon);
+  if(!inPopup) {
+    var email_icon = $('<a></a>')
+            .attr('class','mailtolink')
+            .attr('href','')
+            .append(
+              $('<img/>')
+              .attr('class','emailicon')
+              .attr('src', WinFrame.emailIcon));
+
+    var save_icon = $('<img/>').attr('class','saveicon')
+          .attr('src', WinFrame.saveIcon)
+          .click(WinFrame.saveWindow);
+
+    wtitle.append(email_icon);
+    wtitle.append(save_icon);
+  }
+
   wtitle.append(text);
   this.elem.append(wtitle);
 
