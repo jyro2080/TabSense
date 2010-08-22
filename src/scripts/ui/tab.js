@@ -81,14 +81,13 @@ function Tab(tabdb, title, favIconUrl) {
 
   this.elem.append(rtabtitle);
 
-  var STEP = 20;
   this.elem.css({
-    'margin-left' : (STEP*tabdb.depth)+'px',
-    'width' : (UI.winw-50-STEP*tabdb.depth)+'px'
+    'margin-left' : (UI.DEPTH_STEP*tabdb.depth)+'px',
+    'width' : (UI.winw-50-UI.DEPTH_STEP*tabdb.depth)+'px'
   });
-  var wcorr = 10 + UI.scale * 10;
+  var wcorr = 30 + UI.scale * 10;
   $('div', this.elem).css({
-    'width' : (UI.winw-140-wcorr-STEP*tabdb.depth)+'px'
+    'width' : (UI.winw-140-wcorr-UI.DEPTH_STEP*tabdb.depth)+'px'
   });
     //$('.mtab', this.elem).css({'width': (UI.winw-50)+'px'})
     //$('.mtab > div', this.elem).css({'width': (UI.winw-140)+'px'})
@@ -186,8 +185,8 @@ Tab.prototype = {
     this.elem.css({
       'position':'relative',
       '-webkit-box-shadow' : null,
-      'top':'0px',
-      'left':'0px'
+      'top': null,
+      'left': null
     });
   },
 
@@ -196,8 +195,9 @@ Tab.prototype = {
       'margin-left' : '0px',
       'width' : (UI.winw-50)+'px'
     });
+    var wcorr = 30 + UI.scale * 10;
     $('div', this.elem).css({
-      'width' : (UI.winw-140)+'px'
+      'width' : (UI.winw-140-wcorr-UI.DEPTH_STEP*this.tabdb.depth)+'px'
     });
   },
 

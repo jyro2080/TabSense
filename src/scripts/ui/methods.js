@@ -13,6 +13,7 @@ function UI()
 
   UI.BAGBAR_HEIGHT = 40;
   UI.CEILING = 50;
+  UI.DEPTH_STEP = 20;
 }
 
 UI.setSize = function() {
