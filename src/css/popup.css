@@ -24,7 +24,6 @@ a:hover {
 }
 .mtab > div {
     overflow : hidden;
-    padding-top : 10px;
     white-space : nowrap;
     cursor : pointer;
 }
@@ -35,14 +34,10 @@ a:hover {
     cursor : pointer;
 }
 .mtab .node {
-    margin : 13px 4px 15px 4px;
-    width : 12px;
-    height : 12px;
+    margin-left : 4px;
+    margin-right : 4px;
 }
 .mtab .star,.favicon {
-    margin : 8px;
-    width : 24px;
-    height : 24px;
 }
 .mtab .star {
     float : right;
@@ -50,8 +45,6 @@ a:hover {
 }
 .mtab {
     float : top;
-    height : 35px;
-    padding : 5px;
 }
 #allwin {
     float : top;
@@ -59,14 +52,13 @@ a:hover {
 }
 .mwin {
     background-color : #999;
-    float : top;
     position : absolute;
+    margin-left : 10px;
     -webkit-border-radius : 15px;
     -webkit-box-shadow : rgba(20,20,20,1) 1px 1px 5px;
 }
 .mwin .wtitle {
     color : #fff;
-    height : 30px;
     -webkit-border-top-left-radius:15px;
     -webkit-border-top-right-radius:15px;
     text-align:center;
@@ -90,11 +82,9 @@ a:hover {
 }
 .mwin .wtitle div {
     margin-top : 5px;
-    height : 25px;
     text-align : center;
 }
 .mwin .wtitle div input {
-    height : 25px;
     width : 300px;
     text-align : center;
     color : #eee;
