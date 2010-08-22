@@ -348,14 +348,14 @@ chrome.windows.onCreated.addListener(
       return;
     }
 
-    db.put(new db.window(win.id, null));
-
-
     var w = { wid : win.id };
     if(nextNewWindowTitle) {
       w.title = nextNewWindowTitle;
       nextNewWindowTitle = null;
     }
+
+    db.put(new db.window(win.id, w.title));
+
     if(uiport) {
       uiport.postMessage({
         name : 'addwindow',
