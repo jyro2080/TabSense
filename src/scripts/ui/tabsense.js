@@ -2,7 +2,7 @@ var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.p
 var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
 var BAG_LEGACY_MSG = 'Thanks for being early adopter of TabSense.\n'+
-          'New v1.6 uses new format to save data. You have saved windows from old version. They will now be opened. You can save them again, so that they get saved in new format.'
+          'New versions use different format to save data. You have saved windows from old version. They will now be opened. You can save them again, so that they get saved in new format.'
 
 var doneWindows = 0;
 var dw, dh, winw;
