@@ -3,14 +3,30 @@ function consume(ev) { return false; }
 function Tab(tabdb, title, favIconUrl) {
   this.parent = null;
   this.tabdb = tabdb;
-  this.elem = $('<div></div>').attr('class','mtab').attr('id','tab_'+tabdb.tid);
+  this.elem = $('<div></div>')
+    .attr('class','mtab').attr('id','tab_'+tabdb.tid)
+    .css({
+      'height' : UI.TAB_HEIGHT+'px',
+      'padding' : UI.TAB_PADDING+'px'
+    });
   var elem = this.elem;
 
-  this.nodeicon = $('<img/>').attr('class', 'node');
+  this.nodeicon = $('<img/>').attr('class', 'node')
+                .css({
+                  'height' : UI.TAB_NODE_DIM+'px',
+                  'width' : UI.TAB_NODE_DIM+'px',
+                  'marginTop' : UI.TAB_NODE_MARGIN_TOP+'px',
+                  'marginBottom' : UI.TAB_NODE_MARGIN_BOTTOM+'px'
+                });
   this.setNodeIcon();
   this.elem.append(this.nodeicon);
 
-  var favicon = $('<img/>').attr('class','favicon');
+  var favicon = $('<img/>').attr('class','favicon')
+                .css({
+                  'height' : UI.TAB_IMG_DIM+'px',
+                  'width' : UI.TAB_IMG_DIM+'px',
+                  'margin' : UI.TAB_IMG_MARGIN+'px'
+                });
   if(favIconUrl) {
     favicon.attr('src', favIconUrl);
   } else if(tabdb.faviconurl) {
@@ -20,7 +36,12 @@ function Tab(tabdb, title, favIconUrl) {
   }
   this.elem.append(favicon);
 
-  this.staricon = $('<img/>').attr('class','star');
+  this.staricon = $('<img/>').attr('class','star')
+                .css({
+                  'height' : UI.TAB_IMG_DIM+'px',
+                  'width' : UI.TAB_IMG_DIM+'px',
+                  'margin' : UI.TAB_IMG_MARGIN+'px'
+                });
   if(Fav.is(tabdb.url)) {
     this.staricon.attr('src', Tab.starOn);
   } else {
@@ -36,6 +57,7 @@ function Tab(tabdb, title, favIconUrl) {
   } else {
     rtabtitle = $('<div></div>').attr('class','title').text(tabdb.title);
   }
+  rtabtitle.css('padding-top', UI.TAB_TITLE_PADDING_TOP+'px');
 
   var tab = this;
   if(inPopup) {
@@ -64,8 +86,9 @@ function Tab(tabdb, title, favIconUrl) {
     'margin-left' : (STEP*tabdb.depth)+'px',
     'width' : (UI.winw-50-STEP*tabdb.depth)+'px'
   });
+  var wcorr = 10 + UI.scale * 10;
   $('div', this.elem).css({
-    'width' : (UI.winw-140-10-STEP*tabdb.depth)+'px'
+    'width' : (UI.winw-140-wcorr-STEP*tabdb.depth)+'px'
   });
     //$('.mtab', this.elem).css({'width': (UI.winw-50)+'px'})
     //$('.mtab > div', this.elem).css({'width': (UI.winw-140)+'px'})

@@ -14,7 +14,10 @@ function WinFrame(windb, title_str) {
     var text = WinFrame.createTitle("Name this window");
   }
 
-  var wtitle = $('<div></div>').attr('class','wtitle');
+  var wtitle = $('<div></div>').attr('class','wtitle')
+                .css({
+                  'height' : UI.WTITLE_HEIGHT+'px'
+                });
   if(!inPopup) {
     var email_icon = $('<a></a>')
             .attr('class','mailtolink')
@@ -22,9 +25,17 @@ function WinFrame(windb, title_str) {
             .append(
               $('<img/>')
               .attr('class','emailicon')
+              .css({
+                'height' : UI.WTITLE_IMG_DIM+'px',
+                'width' : UI.WTITLE_IMG_DIM+'px'
+              })
               .attr('src', WinFrame.emailIcon));
 
     var save_icon = $('<img/>').attr('class','saveicon')
+          .css({
+            'height' : UI.WTITLE_IMG_DIM+'px',
+            'width' : UI.WTITLE_IMG_DIM+'px'
+          })
           .attr('src', WinFrame.saveIcon)
           .click(WinFrame.saveWindow);
 
@@ -52,11 +63,13 @@ WinFrame.saveWindow = function(ev) {
 WinFrame.createTitle = function(title) {
   return $('<div></div>').attr('class','text').text(title)
     .click(WinFrame.editTitle)
-    .css('width',(UI.winw-150)+'px');
+    .css('width',(UI.winw-150)+'px')
+    .css('height', UI.WTITLE_INNER_HEIGHT+'px')
 }
 
 WinFrame.createTitleInput = function() {
-  var inp = $('<input></input>');
+  var inp = $('<input></input>')
+    .css('height', UI.WTITLE_INNER_HEIGHT+'px');
   var inpw = $('<div></div>');
   inpw.append(inp);
   return { wrapper:inpw, inp:inp };

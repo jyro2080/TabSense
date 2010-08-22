@@ -11,10 +11,17 @@ bgport.onMessage.addListener(
   function(reply) {
     if(reply.name == 'listwindows') {
 
+      doneWindows = 0;
+      $('body').css('font-size', UI.FONT_SIZE+'px');
+
       UI.totalWindows = reply.windows.length;
       for(var i=0; i < UI.totalWindows; i++) {
         var windb = reply.windows[i];
         var wframe = new WinFrame(windb);
+
+        // hide all windows to avoid flashing if resize required
+        wframe.elem.hide(); 
+
         UI.wMap[windb.wid] = wframe;
 
         bgport.postMessage({ name:'listtabs', 

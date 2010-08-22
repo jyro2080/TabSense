@@ -7,6 +7,27 @@ function UI()
   UI.winw = parseInt(UI.dw/NUMCOL);
 
   UI.columns = new Array(NUMCOL);
+
+  UI.scale = 0;
+  UI.setSize();
+
+  UI.BAGBAR_HEIGHT = 40;
+  UI.CEILING = 50;
+}
+
+UI.setSize = function() {
+  UI.TAB_HEIGHT = 35 + UI.scale * 3;
+  UI.TAB_PADDING = 5 + UI.scale * 1;
+  UI.WTITLE_HEIGHT = 30 + UI.scale * 3;
+  UI.WTITLE_INNER_HEIGHT = 25 + UI.scale * 3;
+  UI.TAB_IMG_DIM = 24 + UI.scale * 3;
+  UI.TAB_IMG_MARGIN = 8 + UI.scale * 1;
+  UI.TAB_NODE_DIM = 12 + parseInt(UI.scale * 0.3);
+  UI.TAB_NODE_MARGIN_TOP = 13 + UI.scale * 2;
+  UI.TAB_NODE_MARGIN_BOTTOM = 15 + UI.scale * 2;
+  UI.FONT_SIZE = 14 + parseInt(UI.scale * 0.5);
+  UI.WTITLE_IMG_DIM = 24 + UI.scale * 3;
+  UI.TAB_TITLE_PADDING_TOP = 10 + UI.scale * 2;
 }
 
 UI.wMap = [];
@@ -20,7 +41,7 @@ UI.columnNumber = function(counter) {
 
 UI.getColumnHeight = function(colNum) 
 {
-  var h = CEILING;
+  var h = UI.CEILING;
   for(var i=0; i < UI.columns[colNum].length; i++) {
     var w = UI.columns[colNum][i];
     var height = w.elem.height() + VMARGIN;
@@ -35,7 +56,7 @@ UI.layout_windows = function() {
   for(var i=0; i<NUMCOL; i++) { UI.columns[i]=[]; }
 
   var colCount = 0;
-  for(i in wMapCopy) {
+  for(var i in wMapCopy) {
 
     colCount = UI.columnNumber(i);
 
@@ -50,6 +71,28 @@ UI.layout_windows = function() {
       (colCount*wMapCopy[i].elem.width()+(colCount+0.5) * HMARGIN));
 
     UI.columns[colCount].push(wMapCopy[i]);
+  }
+
+  for(var i=0; i<NUMCOL; i++) {
+    var ch = UI.getColumnHeight(i);
+    if(ch > (UI.dh - UI.BAGBAR_HEIGHT)) {
+      UI.scale--;
+      UI.setSize();
+      // remove all windows
+      for(var j in UI.wMap) {
+        if(UI.wMap[j]) UI.wMap[j].destroy();
+      }
+
+      // trigger setup windows
+      bgport.postMessage({ name:'listwindows' }); 
+
+      break;
+    }
+  }
+
+  // Show all windows
+  for(var i in UI.wMap) {
+    if(UI.wMap[i]) UI.wMap[i].elem.show();
   }
 }
 
