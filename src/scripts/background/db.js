@@ -39,15 +39,15 @@ db.create_new = function(tx) {
 
 db.update_1_to_2 = function(tx) {
   tx.executeSql(
-    'ALTER TABLE Tab ADD COLUMN collapsed INTEGER DEFAULT 0', []
+    'ALTER TABLE Tab ADD COLUMN collapsed INTEGER DEFAULT 0', [],
     db.onSuccess, db.onError
   );
   tx.executeSql(
-    'ALTER TABLE Tab ADD COLUMN hidden INTEGER DEFAULT 0', []
+    'ALTER TABLE Tab ADD COLUMN hidden INTEGER DEFAULT 0', [],
     db.onSuccess, db.onError
   );
   tx.executeSql(
-    'ALTER TABLE Tab ADD COLUMN isparent INTEGER DEFAULT 0', []
+    'ALTER TABLE Tab ADD COLUMN isparent INTEGER DEFAULT 0', [],
     db.onSuccess, db.onError
   );
 }
