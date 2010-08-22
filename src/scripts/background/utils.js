@@ -42,47 +42,16 @@ function move_from_attic(tid) {
   });
 }
 
-var expansionTabs = {};
-var collapseTab = chrome.extension.getURL('collapse.html');
-
-function create_expansion_tab(tid, children, callback) {
-  db.tab.get('WHERE tid='+tid, function(tx, results) {
-    $c.assert(results.rows.length==1);
-    var tab = results.rows.item(0);
-
-    chrome.tabs.getAllInWindow(parseInt(tab.wid), function(tabs) {
-      if(tabs.length == 1) {
-        // this is the last tab, show collapse tab
-        chrome.tabs.create({
-          windowId : tab.wid,
-          url : collapseTab
-        }, function(newtab) {
-          expansionTabs[newtab.id] = { tabdb:tab, children:children };
-          callback(tid);
-        });
-      } else {
-        callback(tid);
-      }
-    });
-  });
-}
+var collapsedChildren = {};
 
 function expand_tab(ptid, children) {
   db.tab.update('collapsed=0', ' WHERE tid='+ptid);
+  if(!children) {
+    children = collapsedChildren[ptid];
+  }
   for(var i=0; i<children.length; i++) {
     var tid = children[i];
     db.tab.update('hidden=0, collapsed=0', ' WHERE tid='+tid);
     move_from_attic(tid);
   }
-  move_from_attic(ptid);
-
-  setTimeout(function() {
-    for(var i in expansionTabs) {
-      if(!expansionTabs[i]) continue;
-      if(expansionTabs[i].tabdb.tid == parseInt(ptid)) {
-        chrome.tabs.remove(parseInt(i));
-        expansionTabs[i] = null;
-      }
-    }
-  }, 1000);
 }

@@ -1,22 +1,4 @@
 
-chrome.extension.onRequest.addListener(
-  function(request, sender, sendResponse) {
-    $c.assert(sender.tab);
-    var exptab = expansionTabs[sender.tab.id];
-    $c.assert(exptab);
-
-    if(request.name == 'collapseregister') {
-      sendResponse({
-        tid : exptab.tabdb.tid,
-        title : exptab.tabdb.title
-      });
-    } else if(request.name == 'expandtab') {
-      expand_tab(exptab.tabdb.tid, exptab.children);
-      sendResponse({});
-    }
-  }
-);
-
 chrome.browserAction.onClicked.addListener(
   function(tab) {
     chrome.tabs.create({url:
@@ -160,9 +142,6 @@ function is_devtools(tab) {
 function is_attic(tab) {
   return /chrome-extension:\/\/.*\/attic.html/.test(tab.url);
 }
-function is_collapse(tab) {
-  return /chrome-extension:\/\/.*\/collapse.html/.test(tab.url);
-}
 function is_newtab(tab) {
   return (tab.url == 'chrome://newtab/');
 }
@@ -170,7 +149,7 @@ function is_newtab(tab) {
 chrome.tabs.onCreated.addListener(
   function(tab) {
     if(is_tabsense(tab) || is_devtools(tab) || 
-        is_dummy(tab) || is_attic(tab) || is_collapse(tab)) return;
+        is_dummy(tab) || is_attic(tab)) return;
 
     tab.favIconUrl = sanitizeFavIcon(tab.favIconUrl);
     if(is_newtab(tab) || 
@@ -186,6 +165,9 @@ chrome.tabs.onCreated.addListener(
         tab.index, tab.windowId, 
         currentTab.tid, currentTab.depth+1); 
       db.tab.update('isparent=1','WHERE tid='+currentTab.tid);
+      if(currentTab.collapsed) {
+        expand_tab(currentTab.tid);
+      }
     }
     db.put(t);
 

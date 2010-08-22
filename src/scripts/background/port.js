@@ -118,13 +118,13 @@ chrome.extension.onConnect.addListener(
           );
         } else if(op.name == 'collapsetab') {
           db.tab.update('collapsed=1', ' WHERE tid='+op.tid);
+          collapsedChildren[op.tid] = op.children;
           function move_tabs_to_attic() {
             for(var i=0; i<op.children.length; i++) {
               var tid = op.children[i];
               db.tab.update('hidden=1', ' WHERE tid='+tid);
               move_to_attic(tid);
             }
-            create_expansion_tab(op.tid, op.children, move_to_attic);
           }
           if(atticId) {
             move_tabs_to_attic();
