@@ -1,4 +1,9 @@
 #!/bin/bash
 
 version=`awk -F : '/version/ {printf $2}' src/manifest.json | sed 's/^[^"]"//g' | sed 's/".*$//g'`
-zip release/tabsense_$version.zip src/* src/{scripts/ui,scripts/background,scripts/libs,images,css}/*
+zip release/tabsense_$version.zip \
+  src/* \
+  src/{scripts/ui,scripts/background,scripts/libs,images,css}/*
+
+echo "---------------------------------"
+echo "Built v$version successfully"
