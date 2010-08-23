@@ -116,12 +116,10 @@ chrome.tabs.onSelectionChanged.addListener(
     // This will be the parent tab of newly created tabs
     db.tab.get('WHERE tid = '+tid, function(tx, r) {
         if(r.rows.length != 1) {
-          currentTab = null;
           return;
         }
         var t = r.rows.item(0);
         if(is_tabsense(t) || is_devtools(t)) {
-          currentTab = null;
           return;
         }
         currentTab = makeTabDb(t);
@@ -159,6 +157,7 @@ chrome.tabs.onCreated.addListener(
       var t = new db.tab(
         tab.id, tab.title, tab.url, tab.favIconUrl, 
         tab.index, tab.windowId, 0, 0);
+      currentTab = t;
     } else {
       var t = new db.tab(
         tab.id, tab.title, tab.url, tab.favIconUrl, 
@@ -370,14 +369,12 @@ chrome.windows.onFocusChanged.addListener(
       function(tab) {
         db.tab.get('WHERE tid = '+tab.id, function(tx, r) {
           if(r.rows.length != 1) {
-            currentTab = null;
             return;
           }
           var t = r.rows.item(0);
           if(is_newtab(t) || is_tabsense(t) || 
             is_devtools(t) || is_attic(t)) 
           {
-            currentTab = null;
             return;
           }
           currentTab = makeTabDb(t);
