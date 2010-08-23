@@ -69,19 +69,30 @@ chrome.extension.onConnect.addListener(
 
         } else if(op.name == 'tabmovenew') {
 
+          ignoreWindowCreate = true;
           chrome.windows.create(
             { url:chrome.extension.getURL('dummy.html') }, 
             function(win) {
-              ignoreTabDetach.push(op.tid);
-              chrome.tabs.move(op.tid,
-                { windowId:win.id, index:0 },
-                function() {
-                  chrome.tabs.getAllInWindow(
-                    win.id, removeDummyTab);
-                }
-              );
+              for(var i=0; i < op.tabdblist.length; i++) {
+
+                var tabdb = op.tabdblist[i];
+                ignoreTabAttach.push(tabdb.tid);
+                ignoreTabDetach.push(tabdb.tid);
+
+                chrome.tabs.move(tabdb.tid,
+                  { windowId:win.id, index:0 });
+                db.tab.update('wid = ?, parent = ?, depth = ?',
+                  'WHERE tid = ?', 
+                  [win.id, tabdb.parent, tabdb.depth, tabdb.tid]); 
+              }
+              port.postMessage({
+                name : 'tabmovenew',
+                wid : win.id
+              });
+              chrome.tabs.getAllInWindow(win.id, removeDummyTab);
             }
           );
+
 
         } else if(op.name == 'savewindowtitle') {
 

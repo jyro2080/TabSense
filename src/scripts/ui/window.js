@@ -3,10 +3,11 @@ function WinFrame(windb, title_str) {
   this.tabArray = [];
   this.numTabs = 0;
   this.windb = windb;
-  this.elem = $('<div></div>').attr('class','mwin').attr('id', ''+windb.wid);
+  this.elem = $('<div></div>').attr('class','mwin');
+  if(this.windb) this.elem.attr('id', ''+windb.wid);
 
-  if(!title_str) {
-    title_str = windb.title
+  if(!title_str && windb) {
+    title_str = windb.title;
   }
   if(title_str) {
     var text = WinFrame.createTitle(title_str);
@@ -235,7 +236,7 @@ WinFrame.prototype = {
       this.elem.append(t.elem);
       this.tabArray.push(t);
       t.parent = this;
-      t.tabdb.wid = this.windb.wid;
+      if(this.windb) t.tabdb.wid = this.windb.wid;
       this.numTabs++;
       idlist.push(t.tabdb);
     }
@@ -348,7 +349,7 @@ WinFrame.prototype = {
   },
 
   updateMailToLink : function() {
-    var title = this.windb.title;
+    if(this.windb) var title = this.windb.title;
     if(!title) {
       var subject = 'TabSense Summary';
       var body = 'TabSense Summary\n\n';
@@ -366,7 +367,7 @@ WinFrame.prototype = {
   },
 
   updateGMailLink : function() {
-    var title = this.windb.title;
+    if(this.windb) var title = this.windb.title;
     if(!title) {
       var subject = 'TabSense Summary';
       var body = 'TabSense Summary\n\n';

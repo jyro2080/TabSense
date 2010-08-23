@@ -54,7 +54,16 @@ bgport.onMessage.addListener(
 
       chrome.windows.remove(parseInt(reply.wid));
       bgport.postMessage({ name:'listsavedwindows' });
-    }
+    } else if(reply.name == 'tabmovenew') {
+      $c.assert(UI.pendingWin);
+      UI.pendingWin.windb = { wid : reply.wid, title : null };
+      UI.wMap[reply.wid] = UI.pendingWin;
+      for(var i in UI.pendingWin.tabArray) {
+        UI.pendingWin.tabArray[i].tabdb.wid = reply.wid;
+      }
+      UI.layout_windows();
+      UI.pendingWin = null;
+    } 
   }
 );
 

@@ -255,12 +255,21 @@ Tab.prototype = {
       }
     }
 
+    // dropped in empty space
     this.inTransit = false;
-    this.elem.remove();
 
+    var nwin = new WinFrame();
+    nwin.elem.hide();
+
+    tabdblist = nwin.addTabSubtree(this.carrier);
+    nwin.refreshStyle();
+
+    UI.pendingWin = nwin; // mark the new window pending for windb object
+
+    //this.elem.remove();
     bgport.postMessage({
       name : 'tabmovenew',
-      tid : this.tabdb.tid,
+      tabdblist : tabdblist
     });
   },
 }
