@@ -149,6 +149,7 @@ WinFrame.prototype = {
       t.elem.show();
       last = t;
       children.push(t.tabdb.tid);
+      t.tabdb.hidden = 0;
       t.tabdb.collapsed = 0;
       t.setNodeIcon();
     }
@@ -167,6 +168,7 @@ WinFrame.prototype = {
     var numCollapse = this.tabArray.length-idx-1;
     var wframe = this;
     var children = [];
+    tab.tabdb.collapsed = 1;
     /*
     tab.elem.css({
         'zIndex' : 1
@@ -178,6 +180,7 @@ WinFrame.prototype = {
 
       t.elem.hide();
       t.elem.detach();
+      t.tabdb.hidden = 1;
       children.push(t.tabdb.tid);
       //this.removeTab(t);
       

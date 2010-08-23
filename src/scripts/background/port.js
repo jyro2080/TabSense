@@ -53,8 +53,10 @@ chrome.extension.onConnect.addListener(
             var tabdb = op.tabdblist[i];
             ignoreTabAttach.push(tabdb.tid);
             ignoreTabDetach.push(tabdb.tid);
-            chrome.tabs.move(tabdb.tid, 
-              { windowId:op.wid, index:100 });
+            if(!tabdb.hidden) {
+              chrome.tabs.move(tabdb.tid, 
+                { windowId:op.wid, index:100 });
+            }
             db.tab.update('wid = ?, parent = ?, depth = ?',
               'WHERE tid = ?', [op.wid, tabdb.parent, tabdb.depth, tabdb.tid]); 
           }
@@ -71,8 +73,10 @@ chrome.extension.onConnect.addListener(
                 ignoreTabAttach.push(tabdb.tid);
                 ignoreTabDetach.push(tabdb.tid);
 
-                chrome.tabs.move(tabdb.tid,
-                  { windowId:win.id, index:0 });
+                if(!tabdb.hidden) {
+                  chrome.tabs.move(tabdb.tid,
+                    { windowId:win.id, index:0 });
+                }
                 db.tab.update('wid = ?, parent = ?, depth = ?',
                   'WHERE tid = ?', 
                   [win.id, tabdb.parent, tabdb.depth, tabdb.tid]); 
