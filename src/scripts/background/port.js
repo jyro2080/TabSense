@@ -35,8 +35,8 @@ chrome.extension.onConnect.addListener(
               port.postMessage({ name:'listwindows',
                   windows:getWindows(results) });
             });
-        } else if(op.name == 'listtabs' || op.name == 'relisttabs') 
-        {
+        } else if(op.name == 'listtabs' || op.name == 'relisttabs') {
+
           var condition = 'WHERE wid = '+op.wid;
           db.tab.get(condition, 
             function(tx, results){
@@ -46,6 +46,7 @@ chrome.extension.onConnect.addListener(
                 tabs:getTabs(results) 
               });
             });
+
         } else if(op.name == 'tabmove') {
           ignoreTabAttach.push(op.tid);
           ignoreTabDetach.push(op.tid);
@@ -54,6 +55,7 @@ chrome.extension.onConnect.addListener(
           db.tab.update('wid = ?, parent = ?, depth = ? ',
             'WHERE tid = ?', [op.wid, 0, 0, op.tid]); 
         } else if(op.name == 'tabmovenew') {
+
           chrome.windows.create(
             { url:chrome.extension.getURL('dummy.html') }, 
             function(win) {
@@ -67,9 +69,12 @@ chrome.extension.onConnect.addListener(
               );
             }
           );
+
         } else if(op.name == 'savewindowtitle') {
+
           db.window.update('title = ? ', 'WHERE wid = ?', 
                     [op.title, op.wid]);
+                    
         } else if(op.name == 'unsavewindow') {
           db.window.get('WHERE wid='+op.wid,
             function(tx, results){
