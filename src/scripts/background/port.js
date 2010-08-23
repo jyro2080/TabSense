@@ -58,14 +58,6 @@ chrome.extension.onConnect.addListener(
             db.tab.update('wid = ?, parent = ?, depth = ?',
               'WHERE tid = ?', [op.wid, tabdb.parent, tabdb.depth, tabdb.tid]); 
           }
-          /*
-          ignoreTabAttach.push(op.tid);
-          ignoreTabDetach.push(op.tid);
-          chrome.tabs.move(op.tid, 
-            { windowId:op.wid, index:100 });
-          db.tab.update('wid = ?, parent = ?, depth = ? ',
-            'WHERE tid = ?', [op.wid, 0, 0, op.tid]); 
-            */
 
         } else if(op.name == 'tabmovenew') {
 
