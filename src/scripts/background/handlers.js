@@ -120,7 +120,7 @@ chrome.tabs.onSelectionChanged.addListener(
           return;
         }
         var t = r.rows.item(0);
-        if(is_newtab(t) || is_tabsense(t) || is_devtools(t)) {
+        if(is_tabsense(t) || is_devtools(t)) {
           currentTab = null;
           return;
         }
