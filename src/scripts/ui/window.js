@@ -225,6 +225,51 @@ WinFrame.prototype = {
     }
   },
 
+  addTabSubtree : function(carrier) {
+    var subtree = carrier.data('subtree');
+
+    var idlist = [];
+
+    for(var i=0; i<subtree.length; i++) {
+      var t = subtree[i];
+      this.elem.append(t.elem);
+      this.tabArray.push(t);
+      t.parent = this;
+      t.tabdb.wid = this.windb.wid;
+      this.numTabs++;
+      idlist.push(t.tabdb.tid);
+    }
+    this.updateMailToLink();
+    return idlist;
+  },
+
+  removeTabSubtree : function(tab) {
+    var carrier = $('<div></div>').attr('class','tabcarrier');
+    var idx = this.tabArray.indexOf(tab);
+    var subtree = [];
+    var i=idx;
+    for(; i < this.tabArray.length; i++) {
+      var t = this.tabArray[i];
+      if(t.tabdb.depth <= tab.tabdb.depth && i>idx) break;
+
+      t.elem.detach();
+      carrier.append(t.elem);
+      subtree.push(t);
+      this.numTabs--;
+    }
+    carrier.css('height', ((idx-i+1)*45)+'px');
+    carrier.data('subtree', subtree);
+    $('body').append(carrier);
+
+    if(this.numTabs == 0) {
+      this.destroy();
+    } else {
+      this.updateMailToLink();
+    }
+
+    return carrier;
+  },
+
   empty : function() {
     $('.mtab', this.elem).remove();
     this.tabArray.splice(0);

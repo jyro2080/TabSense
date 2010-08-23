@@ -150,6 +150,20 @@ Tab.prototype = {
   },
 
   pick : function(ev) {
+    var wframe = this.parent;
+    this.carrier = wframe.removeTabSubtree(this);
+    wframe.refreshStyle();
+    UI.relayout_column(UI.get_column(ev.clientX));
+    this.carrier.css({
+      'position':'absolute',
+      'top' : (ev.clientY-15)+'px',
+      'left' : (ev.clientX - UI.winw/2)+'px',
+      'width' : UI.winw+'px'
+      });
+    this.inTransit = true;
+  },
+  /*
+  pick : function(ev) {
     this.reset_depth();
 
     this.detach(ev.clientY-15, ev.clientX - UI.winw/2);
@@ -159,6 +173,7 @@ Tab.prototype = {
 
     UI.relayout_column(UI.get_column(ev.clientX));
   },
+  */
 
   detach : function(top, left) {
     this.elem.css({
@@ -172,7 +187,8 @@ Tab.prototype = {
 
   drag : function(ev) {
     if(this.inTransit) {
-      this.elem.css({
+      //this.elem.css({
+      this.carrier.css({
         'top' : (ev.clientY - 15)+'px',
         'left' : (ev.clientX - UI.winw/2)+'px'
       });
@@ -210,9 +226,9 @@ Tab.prototype = {
       if(!win) continue; // for removed windows
       if(win.contains(ev.clientX, ev.clientY)) {
 
-        //var tab = UI.tMap[tabdb.tid]; console.assert(tab);
-        this.attach();
-        win.addTab(this);
+        //this.attach();
+        //win.addTab(this);
+        tidlist = win.addTabSubtree(this.carrier);
 
         win.refreshStyle();
 
@@ -220,7 +236,7 @@ Tab.prototype = {
 
         bgport.postMessage({
           name : 'tabmove',
-          tid : this.tabdb.tid,
+          tidlist : tidlist,
           wid : win.windb.wid
         });
         return;

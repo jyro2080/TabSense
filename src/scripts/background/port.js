@@ -48,12 +48,25 @@ chrome.extension.onConnect.addListener(
             });
 
         } else if(op.name == 'tabmove') {
+
+          for(var i=0; i<op.tidlist.length; i++) {
+            var tid = op.tidlist[i];
+            ignoreTabAttach.push(tid);
+            ignoreTabDetach.push(tid);
+            chrome.tabs.move(tid, 
+              { windowId:op.wid, index:100 });
+            db.tab.update('wid = ?',
+              'WHERE tid = ?', [op.wid,tid]); 
+          }
+          /*
           ignoreTabAttach.push(op.tid);
           ignoreTabDetach.push(op.tid);
           chrome.tabs.move(op.tid, 
             { windowId:op.wid, index:100 });
           db.tab.update('wid = ?, parent = ?, depth = ? ',
             'WHERE tid = ?', [op.wid, 0, 0, op.tid]); 
+            */
+
         } else if(op.name == 'tabmovenew') {
 
           chrome.windows.create(
