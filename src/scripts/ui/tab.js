@@ -217,6 +217,17 @@ Tab.prototype = {
     });
   },
 
+  refresh_depth : function() {
+    this.elem.css({
+      'margin-left' : (UI.DEPTH_STEP*this.tabdb.depth)+'px',
+      'width' : (UI.winw-50-UI.DEPTH_STEP*this.tabdb.depth)+'px'
+    });
+    var wcorr = 30 + UI.scale * 10;
+    $('div', this.elem).css({
+      'width' : (UI.winw-140-wcorr-UI.DEPTH_STEP*this.tabdb.depth)+'px'
+    });
+  },
+
   drop : function(ev) {
     if(!this.inTransit) return;
 
@@ -228,7 +239,7 @@ Tab.prototype = {
 
         //this.attach();
         //win.addTab(this);
-        tidlist = win.addTabSubtree(this.carrier);
+        tabdblist = win.addTabSubtree(this.carrier);
 
         win.refreshStyle();
 
@@ -236,9 +247,10 @@ Tab.prototype = {
 
         bgport.postMessage({
           name : 'tabmove',
-          tidlist : tidlist,
+          tabdblist : tabdblist,
           wid : win.windb.wid
         });
+        this.inTransit = false;
         return;
       }
     }

@@ -49,14 +49,14 @@ chrome.extension.onConnect.addListener(
 
         } else if(op.name == 'tabmove') {
 
-          for(var i=0; i<op.tidlist.length; i++) {
-            var tid = op.tidlist[i];
-            ignoreTabAttach.push(tid);
-            ignoreTabDetach.push(tid);
-            chrome.tabs.move(tid, 
+          for(var i=0; i<op.tabdblist.length; i++) {
+            var tabdb = op.tabdblist[i];
+            ignoreTabAttach.push(tabdb.tid);
+            ignoreTabDetach.push(tabdb.tid);
+            chrome.tabs.move(tabdb.tid, 
               { windowId:op.wid, index:100 });
-            db.tab.update('wid = ?',
-              'WHERE tid = ?', [op.wid,tid]); 
+            db.tab.update('wid = ?, parent = ?, depth = ?',
+              'WHERE tid = ?', [op.wid, tabdb.parent, tabdb.depth, tabdb.tid]); 
           }
           /*
           ignoreTabAttach.push(op.tid);

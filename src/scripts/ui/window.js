@@ -237,7 +237,7 @@ WinFrame.prototype = {
       t.parent = this;
       t.tabdb.wid = this.windb.wid;
       this.numTabs++;
-      idlist.push(t.tabdb.tid);
+      idlist.push(t.tabdb);
     }
     this.updateMailToLink();
     return idlist;
@@ -245,13 +245,20 @@ WinFrame.prototype = {
 
   removeTabSubtree : function(tab) {
     var carrier = $('<div></div>').attr('class','tabcarrier');
+
+    // make the topmost node root
+    depth_offset = tab.tabdb.depth;
+    tab.tabdb.parent = 0;
+
     var idx = this.tabArray.indexOf(tab);
     var subtree = [];
     var i=idx;
     for(; i < this.tabArray.length; i++) {
       var t = this.tabArray[i];
-      if(t.tabdb.depth <= tab.tabdb.depth && i>idx) break;
+      t.tabdb.depth -= depth_offset;
+      if(t.tabdb.depth <= 0 && i>idx) break;
 
+      t.refresh_depth();
       t.elem.detach();
       carrier.append(t.elem);
       subtree.push(t);
