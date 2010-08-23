@@ -250,44 +250,6 @@ Tab.prototype = {
       name : 'tabmovenew',
       tid : this.tabdb.tid,
     });
-    /*
-    // Not dropped on a window, create a new one
-    var thistab = this;
-    var dropcol = get_column(ev.clientX);
-
-    function removeAllButThisTab(tabs) {
-      for(var i=0; i < tabs.length; i++) {
-        if(tabs[i].id != thistab.tabdb.tid) {
-          chrome.tabs.remove(tabs[i].id);
-        }
-      }
-       
-    }
-    */
-
-    /*
-    chrome.windows.create(null, 
-      function(win) {
-
-        var wf = new WinFrame(win);
-        windowMap[win.id] = wf;
-        windowList.push(wf);
-
-        $('body').append(wf.elem);
-        wf.addTab(thistab);
-        wf.refreshStyle();
-        winColumns[dropcol].push(wf);
-        relayout_column(dropcol);
-
-        chrome.tabs.move(thistab.tabdb.tid,
-          { windowId : win.id, index:0 },
-          function() {
-            chrome.tabs.getAllInWindow(
-              win.id, removeAllButThisTab);
-          });
-      }
-    );
-    */
   },
 }
 
