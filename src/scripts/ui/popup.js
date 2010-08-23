@@ -24,7 +24,7 @@ function open_channel() {
 }
 
 function set_document_height(numtabs) {
-  var maxH = screen.height - 100;
+  var maxH = Math.min(screen.height - 100, 650);
   var h = 60 + numtabs*(UI.TAB_HEIGHT+2*UI.TAB_PADDING);
   while(h > maxH) {
     UI.scale--;
@@ -32,7 +32,7 @@ function set_document_height(numtabs) {
     h = 60 + numtabs*(UI.TAB_HEIGHT+2*UI.TAB_PADDING);
   }
   $('body').css('font-size', UI.FONT_SIZE+'px');
-  $('body').css('minHeight', h+'px');
+  $('body').css('minHeight', Math.min(h, maxH)+'px');
 }
 
 $(document).ready(function(){
