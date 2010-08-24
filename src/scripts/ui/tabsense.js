@@ -162,7 +162,8 @@ function bagEntryClicked(ev) {
 }
 
 function openSavedWindow(saved) {
-  chrome.windows.create(null,
+  chrome.windows.create(
+    { url: chrome.extension.getURL('dummy.html') },
     function(win) {
       var totalTabs = saved.tabs.length;
 
@@ -188,10 +189,19 @@ function openSavedWindow(saved) {
           */
         });
       }
+      chrome.tabs.getAllInWindow(win.id, removeDummyTab);
     }
   );
 
   load_bag();
+}
+
+function removeDummyTab(tabs) {
+  for(var i=0; i < tabs.length; i++) {
+    if(/dummy.html/.test(tabs[i].url)) {
+      chrome.tabs.remove(tabs[i].id);
+    }
+  }
 }
 
 function position_infopanel() {
