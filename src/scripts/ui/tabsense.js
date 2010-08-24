@@ -15,7 +15,34 @@ var inPopup = false;
 $c = console;
 
 var ui;
-$(document).ready(function(){
+$(document).ready(function() {
+  var trys = 0;
+
+  if(bgstatus == 'UNKNOWN') {
+    setTimeout(decide_start, 50);
+  } else {
+    decide_start();
+  }
+
+  function decide_start() {
+    if(bgstatus == 'READY') {
+      startUI();
+    } else if(bgstatus == 'NOTREADY') {
+        ui = UI(); 
+        $('body').append($('<div></div>')
+                  .attr('class','errmsg')
+                  .text('Background not initialized. Try again.'));
+        $('#creator').css('top',(UI.dh-40)+'px');
+        $('#creator').css('left',(UI.dw-120)+'px');
+    } else { // STILL UNKNOWN
+      if(trys++ < 10) {
+        setTimeout(decide_start, 50);
+      }
+    }
+  }
+}
+);
+function startUI() {
 
   ui = UI(); 
 
@@ -100,7 +127,7 @@ $(document).ready(function(){
     }
   }
 
-});
+}
 
 function load_bag(windows) {
   $('#bagbar').empty();

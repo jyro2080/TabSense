@@ -18,6 +18,11 @@ chrome.extension.onConnect.addListener(
           uiport = chrome.tabs.connect(uitab, { name:'bg2ui' });
           */
 
+          var resp = inited ? 'SUCCESS' : 'NOT_INIT';
+          port.postMessage({
+            name : 'register',
+            response : resp
+          });
 
         } else if(op.name == 'getcurwindow') {
 

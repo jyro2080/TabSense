@@ -1,5 +1,7 @@
 var $c = console;
 
+var inited = false;
+
 db.open();
 
 load_database_windows();
@@ -72,6 +74,9 @@ function match_db_real() {
   setTimeout(function() {
     cleanup_old_windows();
     process_new_windows();
+    setTimeout(function() {
+      inited = true;
+    }, 1000);
   }, 1000);
 }
 

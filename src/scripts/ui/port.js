@@ -9,9 +9,19 @@ var bgport = chrome.extension.connect({ name : 'ui2bg' });
 
 bgport.postMessage({ name:'register' });
 
+var bgstatus = 'UNKNOWN';
+
 bgport.onMessage.addListener(
   function(reply) {
-    if(reply.name == 'listwindows') {
+    if(reply.name == 'register') {
+
+      if(reply.response == 'SUCCESS') {
+        bgstatus = 'READY'; 
+      } else {
+        bgstatus = 'NOTREADY'; 
+      }
+
+    } else if(reply.name == 'listwindows') {
 
       doneWindows = 0;
       $('body').css('font-size', UI.FONT_SIZE+'px');

@@ -170,3 +170,15 @@ a:hover {
     text-align : center;
     cursor : pointer;
 }
+.errmsg {
+  color : #fff;
+  background-color : rgba(100,100,100,1.0);
+  font-size : 16px;
+  margin-left : 40%;
+  margin-right : 40%;
+  margin-top : 200px;
+  padding : 20px;
+  width : 20%;
+  text-align : center;
+  -webkit-border-radius:10px;
+}
