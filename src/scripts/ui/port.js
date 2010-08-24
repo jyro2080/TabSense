@@ -10,22 +10,11 @@ chrome.extension.sendRequest({name:'register'},
       }
   });
 
-// This run first thing on TabSense's main tab, 
-// so the selected tab will be it
-//chrome.tabs.getSelected(null, function(me) {
-//  bgport.postMessage({ name:'register', tabid : me.id });
-//});
-
-//bgport.postMessage({ name:'register' });
-
 var bgstatus = 'UNKNOWN';
 
 bgport.onMessage.addListener(
   function(reply) {
-    if(reply.name == 'register') {
-
-
-    } else if(reply.name == 'listwindows') {
+    if(reply.name == 'listwindows') {
 
       doneWindows = 0;
       $('body').css('font-size', UI.FONT_SIZE+'px');

@@ -8,34 +8,11 @@ chrome.extension.onRequest.addListener(
     sendResponse({ bgstatus : inited ? 'SUCCESS' : 'NOT_INIT' });
   });
 
-//var uitab = -1;
-//var uiport = null;
-
 chrome.extension.onConnect.addListener(
   function(port) {
-    //console.assert(port.name == 'ui2bg');
     port.onMessage.addListener(
       function(op) {
-        if(op.name == 'register') {
-
-          /*
-          if(uitab >= 0 && uitab != op.tabid) {
-            // close previously registered ui tab
-            chrome.tabs.remove(uitab);
-          }
-          uitab = op.tabid;
-          uiport = chrome.tabs.connect(uitab, { name:'bg2ui' });
-          */
-
-          /*
-          var resp = inited ? 'SUCCESS' : 'NOT_INIT';
-          port.postMessage({
-            name : 'register',
-            response : resp
-          });
-          */
-
-        } else if(op.name == 'getcurwindow') {
+        if(op.name == 'getcurwindow') {
 
           chrome.windows.getCurrent(function(win) {
             db.window.get('WHERE wid='+win.id, function(tx, r) {
