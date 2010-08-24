@@ -39,10 +39,14 @@ bgport.onMessage.addListener(
 
     } else if(reply.name == 'relisttabs') {
 
-      var wframe = UI.wMap[reply.wid]; console.assert(wframe);
-      wframe.empty();
-      wframe.addTabs(reply.tabs);
-      UI.layout_windows();
+      var wframe = UI.wMap[reply.wid]; 
+      if(wframe) {
+        wframe.empty();
+        wframe.addTabs(reply.tabs);
+        UI.layout_windows();
+      } else {
+        $c.debug('Skipping relisttabs for '+reply.wid+' (likely saved)');
+      }
 
     } else if(reply.name == 'listsavedwindows') {
       load_bag(reply.windows);
