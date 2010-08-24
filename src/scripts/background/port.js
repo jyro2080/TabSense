@@ -67,6 +67,7 @@ chrome.extension.onConnect.addListener(
           chrome.windows.create(
             { url:chrome.extension.getURL('dummy.html') }, 
             function(win) {
+              db.put(new db.window(win.id, null));
               for(var i=0; i < op.tabdblist.length; i++) {
 
                 var tabdb = op.tabdblist[i];

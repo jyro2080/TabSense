@@ -63,6 +63,7 @@ bgport.onMessage.addListener(
       $c.assert(UI.pendingWin);
       UI.pendingWin.windb = { wid : reply.wid, title : null };
       UI.wMap[reply.wid] = UI.pendingWin;
+      UI.pendingWin.elem.attr('id', ''+reply.wid);
       for(var i in UI.pendingWin.tabArray) {
         UI.pendingWin.tabArray[i].tabdb.wid = reply.wid;
       }
