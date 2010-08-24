@@ -89,10 +89,10 @@ chrome.tabs.onUpdated.addListener(
     }
 
     db.tab.update('url = ?, status =  ?, title = ?, faviconurl = ? ', 
-          'WHERE tid = ?',
+          'WHERE saved=0 and tid = ?',
           [tab.url, tab.status, tab.title, tab.favIconUrl, tid]); 
 
-    db.tab.get('WHERE tid = '+tid,
+    db.tab.get('WHERE saved=0 and tid = '+tid,
       function(tx, r) {
         if(r.rows.length != 1) {
           console.error('onUpdated '+r.rows.length+' for '+tid);
@@ -114,7 +114,7 @@ chrome.tabs.onSelectionChanged.addListener(
   function(tid, selectInfo) {
     // Update the current selected tab. 
     // This will be the parent tab of newly created tabs
-    db.tab.get('WHERE tid = '+tid, function(tx, r) {
+    db.tab.get('WHERE saved=0 and tid = '+tid, function(tx, r) {
         if(r.rows.length != 1) {
           return;
         }
@@ -163,7 +163,7 @@ chrome.tabs.onCreated.addListener(
         tab.id, tab.title, tab.url, tab.favIconUrl, 
         tab.index, tab.windowId, 
         currentTab.tid, currentTab.depth+1); 
-      db.tab.update('isparent=1','WHERE tid='+currentTab.tid);
+      db.tab.update('isparent=1','WHERE saved=0 and tid='+currentTab.tid);
       if(currentTab.collapsed) {
         expand_tab(currentTab.tid);
       }
@@ -181,7 +181,7 @@ chrome.tabs.onCreated.addListener(
 chrome.tabs.onRemoved.addListener(
   function(tid) {
 
-    db.tab.get('WHERE tid = '+tid,
+    db.tab.get('WHERE saved=0 and tid = '+tid,
       function(tx, r) {
         if(r.rows.length == 0) {
           return;
@@ -195,18 +195,18 @@ chrome.tabs.onRemoved.addListener(
           return;
         }
 
-        db.tab.del('WHERE saved = 0 AND tid = '+tid);
+        db.tab.del('WHERE saved=0 AND tid = '+tid);
 
         // check if the parent has any other children and update its
         // isparent flag accordingly
-        db.tab.get('WHERE parent = '+tab.parent, function(tx, r) {
+        db.tab.get('WHERE saved=0 and parent='+tab.parent, function(tx, r) {
           if(r.rows.length > 0) {
             // there are other children of this parent
             // do nothing
           } else {
             // this was the last child of its parent, mark its
             // isparent to 0
-            db.tab.update('isparent=0','WHERE tid='+tab.parent);
+            db.tab.update('isparent=0','WHERE saved=0 and tid='+tab.parent);
           }
         })
           
@@ -225,18 +225,18 @@ chrome.tabs.onRemoved.addListener(
 
 function unparent_children(parnt) {
   db.tab.update('parent = ? ', 
-    'WHERE parent = ?', [parnt.parent, parnt.tid]);
+    'WHERE saved=0 and parent = ?', [parnt.parent, parnt.tid]);
 }
 
 function bubble_up_children(parnt) {
-  db.tab.get('WHERE parent = '+parnt.tid,
+  db.tab.get('WHERE saved=0 and parent = '+parnt.tid,
     function(tx, r) {
       for(var i=0; i < r.rows.length; i++)  {
         bubble_up_children(r.rows.item(i));
       }
     }
   );
-  db.tab.update('depth = depth-1 ', 'WHERE parent = ?', [parnt.tid]);
+  db.tab.update('depth=depth-1 ', 'WHERE saved=0 and parent=?', [parnt.tid]);
 }
 
 /*
@@ -260,11 +260,11 @@ chrome.tabs.onAttached.addListener(
       return;
     }
     // Update our data model
-    db.tab.update('wid = ?', 'WHERE tid = ?', 
+    db.tab.update('wid = ?', 'WHERE saved=0 and tid = ?', 
       [attachInfo.newWindowId, tid]); 
 
     // Send UI update message
-    db.tab.get('WHERE tid = '+tid, function(tx, results){
+    db.tab.get('WHERE saved=0 and tid = '+tid, function(tx, results){
       if(results.rows.length != 1) {
         console.error('onAttached: '+results.rows.length+' for '+tid);
         return;
@@ -286,11 +286,11 @@ chrome.tabs.onDetached.addListener(
       return;
     }
     // Update our data model
-    db.tab.update('wid = ?, parent = ?, depth = ? ', 'WHERE tid = ?', 
+    db.tab.update('wid=?, parent=?, depth=? ', 'WHERE saved=0 and tid=?', 
             [-1, 0, 0, tid]); 
 
     // Send UI update message
-    db.tab.get('WHERE tid = '+tid, function(tx, results){
+    db.tab.get('WHERE saved=0 and tid='+tid, function(tx, results){
       if(results.rows.length != 1) {
         console.error('onDetached : '+results.rows.length+' for '+tid);
         return;
@@ -325,8 +325,8 @@ chrome.windows.onRemoved.addListener(
       atticId = 0;
     }
 
-    db.window.del('WHERE wid = '+wid);
-    db.tab.del('WHERE wid = '+wid);
+    db.window.del('WHERE saved=0 and wid='+wid);
+    db.tab.del('WHERE saved=0 and wid='+wid);
 
     if(uiport) {
       uiport.postMessage({
@@ -367,7 +367,7 @@ chrome.windows.onFocusChanged.addListener(
   function(wid) {
     chrome.tabs.getSelected(null, 
       function(tab) {
-        db.tab.get('WHERE tid = '+tab.id, function(tx, r) {
+        db.tab.get('WHERE saved=0 and tid='+tab.id, function(tx, r) {
           if(r.rows.length != 1) {
             return;
           }
