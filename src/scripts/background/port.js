@@ -1,6 +1,6 @@
 
-var uitab = -1;
-var uiport = null;
+//var uitab = -1;
+//var uiport = null;
 
 chrome.extension.onConnect.addListener(
   function(port) {
@@ -9,12 +9,15 @@ chrome.extension.onConnect.addListener(
       function(op) {
         if(op.name == 'register') {
 
+          /*
           if(uitab >= 0 && uitab != op.tabid) {
             // close previously registered ui tab
             chrome.tabs.remove(uitab);
           }
           uitab = op.tabid;
           uiport = chrome.tabs.connect(uitab, { name:'bg2ui' });
+          */
+
 
         } else if(op.name == 'getcurwindow') {
 
