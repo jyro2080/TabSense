@@ -1,10 +1,19 @@
 
+var uiport = null;
+
+chrome.extension.onRequest.addListener(
+  function(request, sender, sendResponse) {
+    $c.assert(sender.tab);
+    uiport = chrome.tabs.connect(sender.tab.id, { name:'bg2ui' });
+    sendResponse({ bgstatus : inited ? 'SUCCESS' : 'NOT_INIT' });
+  });
+
 //var uitab = -1;
 //var uiport = null;
 
 chrome.extension.onConnect.addListener(
   function(port) {
-    console.assert(port.name == 'ui2bg');
+    //console.assert(port.name == 'ui2bg');
     port.onMessage.addListener(
       function(op) {
         if(op.name == 'register') {
@@ -18,11 +27,13 @@ chrome.extension.onConnect.addListener(
           uiport = chrome.tabs.connect(uitab, { name:'bg2ui' });
           */
 
+          /*
           var resp = inited ? 'SUCCESS' : 'NOT_INIT';
           port.postMessage({
             name : 'register',
             response : resp
           });
+          */
 
         } else if(op.name == 'getcurwindow') {
 

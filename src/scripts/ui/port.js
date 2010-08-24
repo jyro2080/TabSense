@@ -1,13 +1,22 @@
 
 var bgport = chrome.extension.connect({ name : 'ui2bg' });
 
+chrome.extension.sendRequest({name:'register'},
+  function(response) {
+      if(response.bgstatus == 'SUCCESS') {
+        bgstatus = 'READY'; 
+      } else {
+        bgstatus = 'NOTREADY'; 
+      }
+  });
+
 // This run first thing on TabSense's main tab, 
 // so the selected tab will be it
 //chrome.tabs.getSelected(null, function(me) {
 //  bgport.postMessage({ name:'register', tabid : me.id });
 //});
 
-bgport.postMessage({ name:'register' });
+//bgport.postMessage({ name:'register' });
 
 var bgstatus = 'UNKNOWN';
 
@@ -15,11 +24,6 @@ bgport.onMessage.addListener(
   function(reply) {
     if(reply.name == 'register') {
 
-      if(reply.response == 'SUCCESS') {
-        bgstatus = 'READY'; 
-      } else {
-        bgstatus = 'NOTREADY'; 
-      }
 
     } else if(reply.name == 'listwindows') {
 

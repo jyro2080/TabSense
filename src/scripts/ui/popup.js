@@ -6,8 +6,8 @@ var inPopup = true;
 var windb = null;
 
 function open_channel() {
-  bgport = chrome.extension.connect({ name:'ui2bg' });
-  bgport.postMessage({ name:'register', tabid : -1 });
+  bgport = chrome.extension.connect({ name:'pop2bg' });
+  chrome.extension.sendRequest({name:'register'});
 
   bgport.onMessage.addListener(function(reply) {
     if(reply.name == 'getcurwindow') {
