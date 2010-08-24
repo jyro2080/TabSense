@@ -45,7 +45,7 @@ bgport.onMessage.addListener(
         wframe.addTabs(reply.tabs);
         UI.layout_windows();
       } else {
-        $c.debug('Skipping relisttabs for '+reply.wid+' (likely saved)');
+        $c.debug('Skipping relisttabs for '+reply.wid+' (likely saved/closed)');
       }
 
     } else if(reply.name == 'listsavedwindows') {
@@ -53,7 +53,8 @@ bgport.onMessage.addListener(
     } else if(reply.name == 'unsavewindow') {
       openSavedWindow(reply.saved);
     } else if(reply.name == 'savewindow') {
-      var wframe = UI.wMap[reply.wid]; console.assert(wframe);
+      var wframe = UI.wMap[reply.wid]; 
+      $c.assert(wframe, 'savewindow wframe not found '+reply.wid);
       wframe.destroy();
 
       chrome.windows.remove(parseInt(reply.wid));
