@@ -9,7 +9,7 @@ function WinFrame(windb, title_str) {
   if(!title_str && windb) {
     title_str = windb.title;
   }
-  if(title_str) {
+  if(title_str && title_str != 'undefined') {
     var text = WinFrame.createTitle(title_str);
   } else {
     var text = WinFrame.createTitle("Name this window");
