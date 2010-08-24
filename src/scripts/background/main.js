@@ -59,6 +59,20 @@ function load_real_windows(windows) {
   }
 }
 
+function match_db_real() {
+  for(var i in realData) {
+    for(var j in dbData) {
+      if(are_same_windows(dbData[j], realData[i])) {
+        update_db_window(j, i);
+        realData[i] = undefined;
+        dbData[j] = undefined;
+      }
+    }
+  }
+  cleanup_old_windows();
+  process_new_windows();
+}
+
 function are_same_windows(dbtabs, realtabs) {
   if(!dbtabs) return false;
   if(!realtabs) return false;
@@ -84,30 +98,15 @@ function update_db_window(_old, _new) {
   });
 }
 
-function match_db_real() {
-  for(var i in realData) {
-    for(var j in dbData) {
-      if(are_same_windows(dbData[j], realData[i])) {
-        update_db_window(j, i);
-        realData[i] = undefined;
-        dbData[j] = undefined;
-      }
-    }
-  }
-  cleanup_old_windows();
-  process_new_windows();
-}
-
-function cleanup_old_windows()
-{
+function cleanup_old_windows() {
   for(var i in dbData) {
     if(dbData[i]) {
       db.window.del('WHERE wid = '+i);
     }
   }
 }
-function process_new_windows()
-{
+
+function process_new_windows() {
   chrome.windows.getAll(null, function(windows) {
     for(var i in windows) {
       var win = windows[i];
