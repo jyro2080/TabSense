@@ -14,40 +14,6 @@ var inPopup = false;
 
 $c = console;
 
-/*
-var total_window = 0;
-
-function process_windows(windows) {
-  UI.totalWindows = windows.length;
-  for(var i=0; i < UI.totalWindows; i++) {
-    var w = windows[i];
-    UI.add_window(w);
-
-    bgport.postMessage({ name:'listtabs', wid:w.wid });
-  }
-}
-
-function process_tabs(tabs) {
-  var t = null;
-  for(var i=0; i < tabs.length; i++) {
-    t = tabs[i];
-    UI.add_tab(t);
-  }
-  if(t) { UI.restyle_window(t.wid); }
-  else { console.warn('No tab for window restyle'); }
-
-}
-
-function reprocess_tabs(tabs) {
-  if(tabs.length == 0) {
-    console.warn('No tabs to reprocess'); return;
-  }
-  var wframe = UI.wMap[tabs[0].wid];
-  wframe.empty();
-  process_tabs(tabs);
-}
-*/
-
 var ui;
 $(document).ready(function(){
 
