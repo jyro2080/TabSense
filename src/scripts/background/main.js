@@ -69,8 +69,10 @@ function match_db_real() {
       }
     }
   }
-  cleanup_old_windows();
-  process_new_windows();
+  setTimeout(function() {
+    cleanup_old_windows();
+    process_new_windows();
+  }, 1000);
 }
 
 function are_same_windows(dbtabs, realtabs) {
