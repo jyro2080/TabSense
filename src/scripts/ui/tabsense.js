@@ -180,7 +180,7 @@ function openSavedWindow(saved) {
     }
   );
 
-  load_bag();
+  bgport.postMessage({ name:'listsavedwindows' });
 }
 
 function removeDummyTab(tabs) {
