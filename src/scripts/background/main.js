@@ -87,15 +87,19 @@ function are_same_windows(dbtabs, realtabs) {
 
 function update_db_window(_old, _new) {
   db.window.update('wid = '+_new, ' WHERE wid = '+_old);
-  db.tab.update('wid = '+_new, ' WHERE wid = '+_old);
+  db.tab.update('wid = '+_new, ' WHERE wid = '+_old, null,
+    function(){
+      chrome.tabs.getAllInWindow(parseInt(_new), function(tabs) {
+        for(var i=0; i<tabs.length; i++) {
+          var tab = tabs[i];
+          db.tab.update('parent = '+tab.id, 
+            ' WHERE parent IN (SELECT tid FROM Tab WHERE url=?)', [tab.url]);
+          db.tab.update('tid = '+tab.id, ' WHERE wid = ? and url = ?',
+                        [_new, tab.url]);
+        }
+      });
+    });
 
-  chrome.tabs.getAllInWindow(parseInt(_new), function(tabs) {
-    for(var i=0; i<tabs.length; i++) {
-      var tab = tabs[i];
-      db.tab.update('tid = '+tab.id, ' WHERE wid = ? and url = ?',
-                    [_new, tab.url]);
-    }
-  });
 }
 
 function cleanup_old_windows() {
