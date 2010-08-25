@@ -42,6 +42,8 @@ $(document).ready(function() {
   }
 }
 );
+
+var facebookAdded = false;
 function startUI() {
 
   ui = UI(); 
@@ -65,18 +67,9 @@ function startUI() {
   $('#creator').css('left',(UI.dw-120)+'px');
 
   $('#topbar #info').click(function(ev) {
-    if($.trim($('#infopanel').html()) === '') {
-
-      var topline = $('<div></div>').attr('id','topline')
-        .append('<a href="'+SOURCE_URL+'">Source</a>'+
-          '&nbsp;&nbsp;&nbsp;'+
-          '<a href="'+BUGS_URL+'">Bugs/Features</a>'+
-          '&nbsp;&nbsp;&nbsp;'+
-          '<a id="close" href="#">Close</a>');
-      
-      $('#infopanel')
-        .append(topline)
-        .append(FACEBOOK_PAGE_HTML);
+    if(!facebookAdded) {
+      $(FACEBOOK_PAGE_HTML).insertAfter($('#infopanel #topline'));
+      facebookAdded = true;
     }
     $('#infopanel').show();
   });

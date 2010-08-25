@@ -122,9 +122,9 @@ a:hover {
     position : absolute;
     z-index : 100;
     background-color : #f7f7f7;
-    text-align : left;
+    text-align : center;
     width : 550px;
-    height : 600px;
+    height : 660px;
     display : none;
 
     -webkit-border-radius:5px;
@@ -140,6 +140,23 @@ a:hover {
 }
 #infopanel iframe {
     margin-left : 25px;
+}
+
+#infopanel #buycoffee div {
+  float : left;
+}
+#infopanel #buycoffee #link {
+  padding : 25px 5px 25px 50px;
+}
+
+#infopanel #buycoffee {
+  text-align : center;
+  padding-bottom : 5px;
+  font-size : 120%;
+  -webkit-border-radius:5px;
+  margin : 5px 150px 0px 150px;
+  color : #aaa;
+  text-shadow : 1px 1px 0.05em #000;
 }
 
 #bagbar {
