@@ -113,6 +113,7 @@ function cleanup_old_windows() {
   for(var i in dbData) {
     if(dbData[i]) {
       db.window.del('WHERE wid = '+i);
+      db.tab.del('WHERE wid = '+i);
     }
   }
 }
