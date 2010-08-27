@@ -21,6 +21,7 @@
     "run_at" : "document_start"
   }],
   "permissions": [
-    "tabs"
+    "tabs",
+    "http://192.168.1.100/*"
   ]
 }
