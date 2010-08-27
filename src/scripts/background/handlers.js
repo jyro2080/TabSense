@@ -25,8 +25,10 @@ function getWindows(results) {
   for(var i=0; i < results.rows.length; i++) {
     var w = results.rows.item(i);
     warr.push({
+      id : w.id,
       wid : w.wid,
-      title : w.title
+      title : w.title,
+      saved : w.saved
     });
   }
   return warr;
@@ -34,16 +36,18 @@ function getWindows(results) {
 
 function makeTabDb(t) {
   return {
+    id : t.id,
     tid : t.tid,
     wid : t.wid,
     title : t.title,
     url : t.url,
     faviconurl : t.faviconurl,
-    index : t.index,
+    index : t.idx,
     parent : t.parent,
     depth : t.depth,
     collapsed : t.collapsed,
     hidden : t.hidden,
+    saved : t.saved,
     isparent : t.isparent
   };
 }
