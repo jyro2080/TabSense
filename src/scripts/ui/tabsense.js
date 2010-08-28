@@ -3,7 +3,9 @@ var SOURCE_URL = 'http://github.com/jyro2080/TabSense';
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues';
 var BAG_LEGACY_MSG = 'Thanks for being early adopter of TabSense.\n'+
           'New versions use different format to save data. You have saved windows from old version. They will now be opened. You can save them again, so that they get saved in new format.';
+
 var CLOUD = 'http://192.168.1.100:8090';
+//var CLOUD = 'http://tabsense.appspot.com';
 
 var doneWindows = 0;
 var dw, dh, winw;
