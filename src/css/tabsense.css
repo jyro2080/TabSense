@@ -113,7 +113,7 @@ a:hover {
     margin : 5px 5px 5px 5px;
     -webkit-border-radius : 10px;
 }
-#topbar #info {
+#topbar #info, #cloud {
     float : right;
     margin : 5px 10px 5px 5px;
 }
