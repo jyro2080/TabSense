@@ -3,6 +3,7 @@ var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
 var BAG_LEGACY_MSG = 'Thanks for being early adopter of TabSense.\n'+
           'New versions use different format to save data. You have saved windows from old version. They will now be opened. You can save them again, so that they get saved in new format.'
+var CLOUD = 'http://192.168.1.100:8090';
 
 var doneWindows = 0;
 var dw, dh, winw;
@@ -43,7 +44,10 @@ $(document).ready(function() {
 }
 );
 
+var credsOK = false;
 var facebookAdded = false;
+var authUrl = null;
+
 function startUI() {
 
   ui = UI(); 
@@ -66,8 +70,25 @@ function startUI() {
   $('#creator').css('top',(UI.dh-40)+'px');
   $('#creator').css('left',(UI.dw-120)+'px');
 
+
+  $.get(CLOUD+'/_chkcreds', function(data) {
+    $c.log('got resp: '+data);
+    var response = JSON.parse(data);
+    credsOK = (response.result == 'SUCCESS');
+    authUrl = CLOUD+response.authUrl;
+  });
+
+  $('#topbar #cloud').click(function(ev) {
+    if(credsOK) {
+      $c.log('preparing cloud push');
+      prepare_cloud_push();
+    } else {
+      $c.log('Redir to '+authUrl);
+      location.href = authUrl;
+    }
+  });
+
   $('#topbar #info').click(function(ev) {
-    //push_to_cloud();
     if(!facebookAdded) {
       $(FACEBOOK_PAGE_HTML).insertAfter($('#infopanel #topline'));
       facebookAdded = true;
