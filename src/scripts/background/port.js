@@ -155,6 +155,50 @@ chrome.extension.onConnect.addListener(
           }
         } else if(op.name == 'expandtab') {
           expand_tab(op.tid, op.children);
+        } else if(op.name == 'tabdata2push') {
+          tabdata = {};
+          tabdata.format = 'plain';
+          tabdata.profile = 'Home';
+          tabdata.windows = [];
+          db.window.get('', function(tx, results) {
+            var numWindows = results.rows.length;
+            var doneWindows = 0;
+
+            for(var i=0; i<numWindows; i++) {
+              var win = results.rows.item(i);
+              var w = { 
+                      id : win.id, 
+                      title : win.title, 
+                      tabs : [],
+                      saved : win.saved 
+                    };
+              tabdata.windows.push(w);
+              get_tabs(win, w);
+            }
+
+            function get_tabs(win, w) {
+              db.tab.get('WHERE wid='+win.wid, function(tx, results) {
+                var numtabs = results.rows.length;
+                for(var i=0; i<numtabs; i++) {
+                  var tab = results.rows.item(i);
+                  w.tabs.push({
+                      id : tab.id, 
+                      url : tab.url, 
+                      faviconurl : tab.faviconurl,
+                      index : tab.idx,
+                      saved : tab.saved 
+                  });
+                }
+
+                if(++doneWindows == numWindows) {
+                  port.postMessage({
+                    name : 'tabdata2push',
+                    tabdata : JSON.stringify(tabdata)
+                  });
+                }
+              });
+            }
+          });
         }
       }
     );

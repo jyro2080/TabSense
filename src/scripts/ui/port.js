@@ -74,6 +74,8 @@ bgport.onMessage.addListener(
       }
       UI.layout_windows();
       UI.pendingWin = null;
+    } else if(reply.name == 'tabdata2push') {
+      push_to_cloud(reply.tabdata);
     } 
   }
 );

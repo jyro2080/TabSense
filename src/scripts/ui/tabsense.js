@@ -144,30 +144,12 @@ function startUI() {
 
 }
 
-function push_to_cloud() {
-  tabdata = {};
-  tabdata.format = 'plain';
-  tabdata.windows = [];
-  for(var i in UI.wMap) {
-    var win = UI.wMap[i];
-    if(!win) continue;
-    var w = { id : win.windb.id, 
-              title : win.windb.title, 
-              tabs : [],
-              saved : win.windb.saved };
-    for(var j in win.tabArray) {
-      var tab = win.tabArray[j].tabdb;
-      var t = { id : tab.id, url : tab.url, 
-                faviconurl : tab.faviconurl,
-                index : tab.index,
-                saved : tab.saved };
-      w.tabs.push(t);
-    }
-    $c.log(w);
-    tabdata.windows.push(w);
-  }
+function prepare_cloud_push() {
+  bgport.postMessage({ name : 'tabdata2push' });
+}
 
-  $.post('http://192.168.1.100/_save', { tabdata : JSON.stringify(tabdata) },
+function push_to_cloud(tabdata) {
+  $.post(CLOUD+'/_save', { tabdata : tabdata },
     function(data) {
       var response = JSON.parse(data);
       if(response.result != 'SUCCESS') {
@@ -176,6 +158,7 @@ function push_to_cloud() {
     }
   );
 }
+
 
 function load_bag(windows) {
   $('#bagbar').empty();
