@@ -184,6 +184,7 @@ chrome.extension.onConnect.addListener(
                   w.tabs.push({
                       id : tab.id, 
                       url : tab.url, 
+                      title : tab.title,
                       faviconurl : tab.faviconurl,
                       index : tab.idx,
                       saved : tab.saved 
