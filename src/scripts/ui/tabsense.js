@@ -1,8 +1,8 @@
 var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.php?id=139713996058999&amp;width=500&amp;connections=10&amp;stream=true&amp;header=false&amp;height=555" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:555px;" allowTransparency="true"></iframe>';
-var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
-var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
+var SOURCE_URL = 'http://github.com/jyro2080/TabSense';
+var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues';
 var BAG_LEGACY_MSG = 'Thanks for being early adopter of TabSense.\n'+
-          'New versions use different format to save data. You have saved windows from old version. They will now be opened. You can save them again, so that they get saved in new format.'
+          'New versions use different format to save data. You have saved windows from old version. They will now be opened. You can save them again, so that they get saved in new format.';
 var CLOUD = 'http://192.168.1.100:8090';
 
 var doneWindows = 0;
