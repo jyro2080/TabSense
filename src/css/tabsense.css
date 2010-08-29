@@ -1,7 +1,8 @@
 body {
-    font-family : Sans Serif, Arial;
+    font-family : Verdana, Sans Serif, Arial;
     -webkit-user-select : none;
     overflow : hidden;
+    color : #000;
 }
 a {
     color: gray;
@@ -47,9 +48,17 @@ a:hover {
 }
 .mtab {
     float : top;
+  border-top : 0.1em solid #ddd;
 }
+.mtabodd {
+  background : #fcfcfc;
+}
+.mtabeven {
+  background : #fefefe;
+}
+
 .mwin {
-    background-color : #999;
+    background-color : #555;
     float : top;
     position : absolute;
     -webkit-border-radius : 15px;

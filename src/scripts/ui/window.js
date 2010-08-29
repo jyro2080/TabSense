@@ -301,8 +301,10 @@ WinFrame.prototype = {
   },
 
   refreshStyle : function() {
-    $('.mtab:even',this.elem).css('background','#eeeeee');
-    $('.mtab:odd',this.elem).css('background','#e0e0e0');
+    $('.mtab:even',this.elem).addClass('mtabeven');
+    $('.mtab:odd',this.elem).addClass('mtabodd');
+    //$('.mtab:even',this.elem).css('background','#eeeeee');
+    //$('.mtab:odd',this.elem).css('background','#e0e0e0');
 
     //$('.mtab', this.elem).css({'width': (winw-50)+'px'})
     //$('.mtab > div', this.elem).css({'width': (winw-140)+'px'})
