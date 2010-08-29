@@ -42,6 +42,18 @@ function WinFrame(windb, title_str) {
 
     wtitle.append(email_icon);
     wtitle.append(save_icon);
+  } else {
+    var max_icon = $('<img/>').attr('class','maxicon')
+          .css({
+            'height' : UI.WTITLE_IMG_DIM+'px',
+            'width' : UI.WTITLE_IMG_DIM+'px'
+          })
+          .attr('src', WinFrame.maxIcon)
+          .click(function() {
+            chrome.tabs.create({url:
+              chrome.extension.getURL('newtab.html')});
+          });
+    wtitle.append(max_icon);
   }
 
   wtitle.append(text);
@@ -51,7 +63,9 @@ function WinFrame(windb, title_str) {
 }
 
 WinFrame.saveIcon = chrome.extension.getURL('images/save.png');
+WinFrame.hddIcon = chrome.extension.getURL('images/hdd.png');
 WinFrame.emailIcon = chrome.extension.getURL('images/email.png');
+WinFrame.maxIcon = chrome.extension.getURL('images/maximize.png');
 
 WinFrame.saveWindow = function(ev) {
   var wid = $(this).parent().parent().attr('id');
@@ -70,6 +84,7 @@ WinFrame.createTitle = function(title) {
 
 WinFrame.createTitleInput = function() {
   var inp = $('<input></input>')
+    .css('width',(UI.winw-150)+'px')
     .css('height', UI.WTITLE_INNER_HEIGHT+'px');
   var inpw = $('<div></div>');
   inpw.append(inp);
@@ -301,8 +316,10 @@ WinFrame.prototype = {
   },
 
   refreshStyle : function() {
-    $('.mtab:even',this.elem).css('background','#eeeeee');
-    $('.mtab:odd',this.elem).css('background','#e0e0e0');
+    $('.mtab:even',this.elem).addClass('mtabeven');
+    $('.mtab:odd',this.elem).addClass('mtabodd');
+    //$('.mtab:even',this.elem).css('background','#eeeeee');
+    //$('.mtab:odd',this.elem).css('background','#e0e0e0');
 
     //$('.mtab', this.elem).css({'width': (winw-50)+'px'})
     //$('.mtab > div', this.elem).css({'width': (winw-140)+'px'})

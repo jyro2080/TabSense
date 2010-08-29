@@ -1,7 +1,8 @@
 body {
-    font-family : Sans Serif, Arial;
+    font-family : Verdana, Sans Serif, Arial;
     -webkit-user-select : none;
     overflow : hidden;
+    color : #000;
 }
 a {
     color: gray;
@@ -47,9 +48,17 @@ a:hover {
 }
 .mtab {
     float : top;
+  border-top : 0.1em solid #ddd;
 }
+.mtabodd {
+  background : #fcfcfc;
+}
+.mtabeven {
+  background : #fefefe;
+}
+
 .mwin {
-    background-color : #999;
+    background-color : #555;
     float : top;
     position : absolute;
     -webkit-border-radius : 15px;
@@ -83,7 +92,6 @@ a:hover {
     text-align : center;
 }
 .mwin .wtitle div input {
-    width : 300px;
     text-align : center;
     color : #eee;
     background-color : #777;
@@ -95,7 +103,7 @@ a:hover {
     margin-top : 0px;
     padding-top :0px;
     height : 40px;
-    background-color : #ddd;
+    background-color : #fff;
     width : 100%;
     -webkit-box-shadow : rgba(20,20,20,1) 1px 1px 5px;
 }
@@ -172,8 +180,8 @@ a:hover {
     margin : 8px;
 }
 #bagbar .winentry {
-    background-color : #777;
-    color : #eee;
+    background-color : #555;
+    color : #fff;
     float : left;
     -webkit-border-top-left-radius:10px;
     -webkit-border-top-right-radius:10px;

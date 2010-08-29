@@ -39,8 +39,4 @@ $(document).ready(function(){
   open_channel();
   ui = UI();
   bgport.postMessage({ name:'getcurwindow' });
-  $('#allwin a').click(function() {
-    chrome.tabs.create({url:
-      chrome.extension.getURL('newtab.html')});
-  });
 });
