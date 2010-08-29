@@ -1,4 +1,6 @@
 var FACEBOOK_PAGE_HTML = '<iframe src="http://www.facebook.com/plugins/likebox.php?id=139713996058999&amp;width=500&amp;connections=10&amp;stream=true&amp;header=false&amp;height=555" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:500px; height:555px;" allowTransparency="true"></iframe>';
+var BUYCOFFEE_HTML = ' <div id="buycoffee"> <form action="https://www.paypal.com/cgi-bin/webscr" method="post"> <div id="link">Buy me Coffee</div> <input type="hidden" name="cmd" value="_s-xclick"> <input type="hidden" name="hosted_button_id" value="KFWM98T9L78Y4"> <input type="image" src="images/coffee.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online."> <img alt="" border="0" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" width="1" height="1"> </form> </div>'
+
 var SOURCE_URL = 'http://github.com/jyro2080/TabSense'
 var BUGS_URL = 'http://github.com/jyro2080/TabSense/issues'
 var BAG_LEGACY_MSG = 'Thanks for being early adopter of TabSense.\n'+
@@ -43,7 +45,7 @@ $(document).ready(function() {
 }
 );
 
-var facebookAdded = false;
+var infoHtmlAdded = false;
 function startUI() {
 
   ui = UI(); 
@@ -67,9 +69,10 @@ function startUI() {
   $('#creator').css('left',(UI.dw-120)+'px');
 
   $('#topbar #info').click(function(ev) {
-    if(!facebookAdded) {
+    if(!infoHtmlAdded) {
+      $(BUYCOFFEE_HTML).insertAfter($('#infopanel #topline'));
       $(FACEBOOK_PAGE_HTML).insertAfter($('#infopanel #topline'));
-      facebookAdded = true;
+      infoHtmlAdded = true;
     }
     $('#infopanel').show();
   });
