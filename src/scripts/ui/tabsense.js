@@ -127,7 +127,7 @@ function load_bag(windows) {
   if(!windows) return;
   var bagl = windows.length;
   if(bagl > 0) {
-    $('#bagbar').append($('<img/>').attr('src', WinFrame.saveIcon));
+    $('#bagbar').append($('<img/>').attr('src', WinFrame.hddIcon));
   }
   for(var i=0; i < bagl; i++) {
     var w = windows[i];

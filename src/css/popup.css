@@ -71,12 +71,7 @@ a:hover {
     -webkit-border-top-right-radius:15px;
     text-align:center;
 }
-.mwin .wtitle .saveicon {
-    float : right;
-    margin-right : 10px;
-    cursor : pointer;
-}
-.mwin .wtitle .emailicon {
+.mwin .wtitle .maxicon {
     float : right;
     margin-right : 10px;
     cursor : pointer;
