@@ -84,6 +84,7 @@ WinFrame.createTitle = function(title) {
 
 WinFrame.createTitleInput = function() {
   var inp = $('<input></input>')
+    .css('width',(UI.winw-150)+'px')
     .css('height', UI.WTITLE_INNER_HEIGHT+'px');
   var inpw = $('<div></div>');
   inpw.append(inp);
