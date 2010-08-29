@@ -77,9 +77,6 @@ function startUI() {
     $('#infopanel').show();
   });
 
-  $('#infopanel #close').click(function() { 
-    $(this).hide(); 
-  });
   $('#infopanel').click(function() { 
     $(this).hide(); 
   });
