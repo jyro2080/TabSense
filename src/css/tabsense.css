@@ -211,13 +211,14 @@ a:hover {
 .cloudpopup {
   display : none;
   width : 200px;
-  height : 75px;
+  height : 125px;
   -webkit-border-radius:10px;
   z-index : 100;
   background : #ddd;
   position:absolute;
   top : 30px;
   border : 1px solid #000;
+  padding : 5px;
 }
 .cloudpopup #loginbutton, #pushbutton{
   background : #0f0;
@@ -226,6 +227,9 @@ a:hover {
   padding : 10px;
   text-align : center;
   cursor : pointer;
+}
+.cloudpopup #profileinput{
+  width : 125px;
 }
 .cloudpopup #footnote{
   font-size : 70%;

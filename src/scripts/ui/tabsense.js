@@ -90,16 +90,42 @@ function startUI() {
       {
         $('#cloudpopupaction #currentprofile').text(profile_name);
         $('#cloudpopupaction #profileinput').hide();
+        $('#cloudpopupaction #saveprofile').hide();
+        $('#cloudpopupaction #nextpushmsg').show();
       } else {
         $('#cloudpopupaction #currentprofile').hide();
         $('#cloudpopupaction #changeprofile').hide();
         $('#cloudpopupaction #nextpushmsg').hide();
         $('#cloudpopupaction #profileinput').show();
+        $('#cloudpopupaction #saveprofile').show();
         $('#cloudpopupaction #profileinput').val('Profile name');
       }
     }
     credsOK ? $('#cloudpopupaction').show():
               $('#cloudpopuplogin').show();
+  });
+
+  $('#cloudpopupaction #saveprofile').click(function() {
+    var profile_name = $('#cloudpopupaction #profileinput').val();
+    if(profile_name) {
+      window.localStorage.setItem('tabsense-browser-profile', profile_name);
+
+      $('#cloudpopupaction #profileinput').hide();
+      $('#cloudpopupaction #saveprofile').hide();
+
+      $('#cloudpopupaction #currentprofile').text(profile_name);
+      $('#cloudpopupaction #currentprofile').show();
+      $('#cloudpopupaction #changeprofile').show();
+    }
+  });
+  $('#cloudpopupaction #pushbutton').click(function() {
+    var profile_name = window.localStorage.getItem(
+        'tabsense-browser-profile');
+    if(profile_name) {
+      prepare_cloud_push(profile_name);
+    } else {
+      alert('Enter profile name');
+    }
   });
   $('.cloudpopup').mouseleave(function(ev) {
     credsOK ? $('#cloudpopupaction').hide():
@@ -107,9 +133,6 @@ function startUI() {
   });
   $('#cloudpopuplogin #loginbutton').click(function(ev) {
       location.href = authUrl;
-  });
-  $('#cloudpopupaction #popupbutton').click(function(ev) {
-      prepare_cloud_push();
   });
     /*
   $('#topbar #cloud').click(function(ev) {
