@@ -219,7 +219,7 @@ a:hover {
   top : 30px;
   border : 1px solid #000;
 }
-.cloudpopup #loginbutton{
+.cloudpopup #loginbutton, #pushbutton{
   background : #0f0;
   -webkit-border-radius:5px;
   margin : 10px;

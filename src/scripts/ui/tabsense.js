@@ -83,7 +83,22 @@ function startUI() {
 
   $('.cloudpopup').css('left', (UI.dw-250)+'px');
   $('#topbar #cloud').mouseenter(function(ev) {
-    credsOK ? $('#cloudpopupaction').show() :
+    if(credsOK) {
+      var profile_name = window.localStorage.getItem(
+          'tabsense-browser-profile');
+      if(profile_name) 
+      {
+        $('#cloudpopupaction #currentprofile').text(profile_name);
+        $('#cloudpopupaction #profileinput').hide();
+      } else {
+        $('#cloudpopupaction #currentprofile').hide();
+        $('#cloudpopupaction #changeprofile').hide();
+        $('#cloudpopupaction #nextpushmsg').hide();
+        $('#cloudpopupaction #profileinput').show();
+        $('#cloudpopupaction #profileinput').val('Profile name');
+      }
+    }
+    credsOK ? $('#cloudpopupaction').show():
               $('#cloudpopuplogin').show();
   });
   $('.cloudpopup').mouseleave(function(ev) {
@@ -92,6 +107,9 @@ function startUI() {
   });
   $('#cloudpopuplogin #loginbutton').click(function(ev) {
       location.href = authUrl;
+  });
+  $('#cloudpopupaction #popupbutton').click(function(ev) {
+      prepare_cloud_push();
   });
     /*
   $('#topbar #cloud').click(function(ev) {
