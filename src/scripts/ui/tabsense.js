@@ -134,17 +134,6 @@ function startUI() {
   $('#cloudpopuplogin #loginbutton').click(function(ev) {
       location.href = authUrl;
   });
-    /*
-  $('#topbar #cloud').click(function(ev) {
-    if(credsOK) {
-      $c.log('preparing cloud push');
-      prepare_cloud_push();
-    } else {
-      $c.log('Redir to '+authUrl);
-      location.href = authUrl;
-    }
-  });
-    */
 
   $('#topbar #info').click(function(ev) {
     if(!infoHtmlAdded) {
