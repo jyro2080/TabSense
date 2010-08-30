@@ -158,7 +158,7 @@ chrome.extension.onConnect.addListener(
         } else if(op.name == 'tabdata2push') {
           tabdata = {};
           tabdata.format = 'plain';
-          tabdata.profile = 'Home';
+          tabdata.profile = op.profile;
           tabdata.windows = [];
           db.window.get('', function(tx, results) {
             var numWindows = results.rows.length;

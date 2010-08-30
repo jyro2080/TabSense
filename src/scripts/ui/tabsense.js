@@ -177,8 +177,8 @@ function startUI() {
 
 }
 
-function prepare_cloud_push() {
-  bgport.postMessage({ name : 'tabdata2push' });
+function prepare_cloud_push(profile) {
+  bgport.postMessage({ name : 'tabdata2push', profile : profile });
 }
 
 function push_to_cloud(tabdata) {
