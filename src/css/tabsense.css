@@ -207,3 +207,27 @@ a:hover {
   text-align : center;
   -webkit-border-radius:10px;
 }
+
+.cloudpopup {
+  display : none;
+  width : 200px;
+  height : 75px;
+  -webkit-border-radius:10px;
+  z-index : 100;
+  background : #ddd;
+  position:absolute;
+  top : 30px;
+  border : 1px solid #000;
+}
+.cloudpopup #loginbutton{
+  background : #0f0;
+  -webkit-border-radius:5px;
+  margin : 10px;
+  padding : 10px;
+  text-align : center;
+  cursor : pointer;
+}
+.cloudpopup #footnote{
+  font-size : 70%;
+  text-align : center;
+}

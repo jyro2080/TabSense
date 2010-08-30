@@ -81,6 +81,19 @@ function startUI() {
     authUrl = CLOUD+response.authUrl;
   });
 
+  $('.cloudpopup').css('left', (UI.dw-250)+'px');
+  $('#topbar #cloud').mouseenter(function(ev) {
+    credsOK ? $('#cloudpopupaction').show() :
+              $('#cloudpopuplogin').show();
+  });
+  $('.cloudpopup').mouseleave(function(ev) {
+    credsOK ? $('#cloudpopupaction').hide():
+              $('#cloudpopuplogin').hide();
+  });
+  $('#cloudpopuplogin #loginbutton').click(function(ev) {
+      location.href = authUrl;
+  });
+    /*
   $('#topbar #cloud').click(function(ev) {
     if(credsOK) {
       $c.log('preparing cloud push');
@@ -90,6 +103,7 @@ function startUI() {
       location.href = authUrl;
     }
   });
+    */
 
   $('#topbar #info').click(function(ev) {
     if(!infoHtmlAdded) {
