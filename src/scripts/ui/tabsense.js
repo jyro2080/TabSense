@@ -127,6 +127,13 @@ function startUI() {
       alert('Enter profile name');
     }
   });
+  $('#cloudpopupaction #changeprofile').click(function() {
+      $('#cloudpopupaction #profileinput').show();
+      $('#cloudpopupaction #saveprofile').show();
+      $('#cloudpopupaction #currentprofile').hide();
+      $('#cloudpopupaction #changeprofile').hide();
+  });
+
   $('.cloudpopup').mouseleave(function(ev) {
     credsOK ? $('#cloudpopupaction').hide():
               $('#cloudpopuplogin').hide();
